@@ -1,0 +1,48 @@
+/* Dark background and modern font */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #0e1628; /* Deep navy */
+    color: #e0e0e0;
+}
+
+/* Sidebar */
+.fi-sidebar {
+    background-color: #111827; /* dark navy */
+    border-right: 1px solid #1f2937;
+}
+
+/* Sidebar active item */
+.fi-sidebar-nav a.active {
+    background-color: #7c3aed !important; /* Purple highlight */
+    color: white !important;
+    border-radius: 8px;
+}
+
+/* Card / Table */
+.fi-table, .fi-card, .fi-resource-table {
+    background-color: #1e293b; /* Dark blue */
+    border-radius: 12px;
+    border: none;
+    box-shadow: none;
+}
+
+/* Buttons */
+.fi-btn {
+    border-radius: 8px;
+}
+
+.fi-btn.primary {
+    background-color: #7c3aed;
+    color: white;
+}
+
+.fi-btn.danger {
+    background-color: #ef4444;
+    color: white;
+}
+
+/* Pagination */
+.fi-pagination .fi-pagination-item.active {
+    background-color: #7c3aed;
+    color: white;
+}

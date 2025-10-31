@@ -1,0 +1,156 @@
+/* ========================================
+   CENTRALIZED COLOR SYSTEM
+   Modern Natural Palette Version
+   ======================================== */
+
+:root {
+    /* Primary Color Palette (Original Definitions) */
+    --hunter-green: #415f42;
+    --harvest-gold: #de991b;
+    --seal-brown: #642b0d;
+    --seal-brown-2: #562309;
+    --cosmic-latte: #fef6e5;
+    --burgundy: #800020;
+    --burgundy-hover: #660018;
+
+    /* Modern Natural Color Palette */
+    --clay-orange: #d78848; /* NEW ACCENT */
+    --cream-white: #faf9f6; /* NEW LIGHT BG */
+    --sage-green: #1a6b3c; /* NEW PRIMARY */
+    --charcoal-gray: #2e2e2e; /* NEW DARK/TEXT */
+    --sand-beige: #e8dcc5; /* NEW SECONDARY BG */
+
+    /* Derived/Supporting Tones for the New Palette */
+    --sage-dark: #6c7a60; /* Slightly darker sage for hover/darker primary */
+    --clay-light: #e0985c; /* Slightly lighter clay for light accent */
+
+    /* Semantic Color Mapping */
+    --primary-color: var(--sage-green);
+    --primary-dark: var(--sage-dark);
+    --primary-darker: var(--charcoal-gray);
+    --accent-color: var(--sage-green);
+    --accent-light: var(--clay-light);
+    --accent-dark: var(--hunter-green);
+
+    /* Text Colors */
+    --text-primary: var(--charcoal-gray);
+    --text-secondary: #ffffff;
+    --text-muted: #8a8a8a;
+    --text-light: #ffffff;
+    --text-dark: var(--charcoal-gray);
+
+    /* Background Colors */
+    --bg-primary: var(--cream-white);
+    --bg-secondary: var(--sand-beige);
+    --bg-light: var(--cream-white);
+    --bg-lighter: var(--sand-beige);
+    --bg-dark: var(--charcoal-gray);
+    --bg-accent: var(--sage-green);
+    --bg-orange: var(--clay-orange);
+    --bg-gold: var(--harvest-gold);
+
+    /* Border Colors */
+    --border-light: rgba(46, 46, 46, 0.05);
+    --border-medium: rgba(46, 46, 46, 0.1);
+    --border-dark: rgba(46, 46, 46, 0.2);
+    --border-primary: var(--sage-green);
+    --border-accent: var(--clay-orange);
+
+    /* Shadow Colors */
+    --shadow-light: rgba(0, 0, 0, 0.08);
+    --shadow-medium: rgba(0, 0, 0, 0.15);
+    --shadow-dark: rgba(0, 0, 0, 0.25);
+    --shadow-primary: rgba(125, 140, 111, 0.2);
+    --shadow-accent: rgba(215, 136, 72, 0.2);
+
+    /* Status Colors */
+    --success-color: #28a745;
+    --warning-color: var(--clay-orange);
+    --error-color: #dc3545;
+    --info-color: #17a2b8;
+
+    /* Rating Colors */
+    --rating-color: var(--clay-orange);
+    --rating-empty: #ddd;
+
+    /* Button Colors */
+    --btn-primary: var(--sage-green);
+    --btn-primary-hover: var(--sage-dark);
+    --btn-secondary: var(--clay-orange);
+    --btn-secondary-hover: #c47c40;
+    --btn-light: var(--cream-white);
+    --btn-light-hover: var(--sand-beige);
+    --btn-burgundy: var(--burgundy);
+    --btn-burgundy-hover: var(--burgundy-hover);
+
+    /* Link Colors */
+    --link-color: var(--sage-green);
+    --link-hover: var(--sage-dark);
+
+    /* Form Colors */
+    --input-border: var(--border-medium);
+    --input-focus: var(--sage-green);
+    --input-bg: var(--bg-secondary);
+    --input-disabled: var(--bg-light);
+
+    /* Overlay Colors */
+    --overlay-light: rgba(250, 249, 246, 0.9);
+    --overlay-dark: rgba(46, 46, 46, 0.7);
+    --overlay-primary: rgba(125, 140, 111, 0.9);
+    --overlay-accent: rgba(215, 136, 72, 0.9);
+
+    /* Gradient Definitions */
+    --gradient-primary: linear-gradient(
+        135deg,
+        var(--sage-green),
+        var(--sage-dark)
+    );
+    --gradient-accent: linear-gradient(
+        135deg,
+        var(--clay-orange),
+        var(--clay-light)
+    );
+    --gradient-light: linear-gradient(
+        135deg,
+        var(--bg-light),
+        var(--bg-lighter)
+    );
+    --gradient-overlay: linear-gradient(
+        135deg,
+        var(--sage-green),
+        var(--sage-dark)
+    );
+
+    /* Category Badge Colors */
+    --category-bg: linear-gradient(135deg, #f0f4ee, #e0e6d9);
+    --category-text: var(--sage-green);
+
+    /* Discount Badge Colors */
+    --discount-gradient: linear-gradient(
+        135deg,
+        var(--clay-orange),
+        var(--clay-light)
+    );
+
+    /* Card Colors */
+    --card-bg: var(--bg-light);
+    --card-border: var(--border-light);
+    --card-shadow: var(--shadow-light);
+    --card-shadow-hover: var(--shadow-medium);
+
+    /* Header Colors */
+    --header-bg: var(--bg-light);
+    --header-text: var(--text-primary);
+    --header-border: var(--border-light);
+
+    /* Footer Colors */
+    --footer-bg: var(--charcoal-gray);
+    --footer-text: var(--text-light);
+    --footer-link: var(--clay-orange);
+
+    /* Navigation Colors */
+    --nav-bg: var(--bg-light);
+    --nav-text: var(--text-primary);
+    --nav-active: var(--sage-green);
+    --nav-hover: var(--clay-orange);
+}
