@@ -632,7 +632,7 @@
             <div class="logo">
                 <div class="logo-icon" style="background: #fff; color: #F5A623;"><img
                         src="{{ Settings::setting('site_logo') }}" alt="Logo" style="height: 40px;"></div>
-                {{-- <div class="logo-text" style="color: #2C2C2C;">AfrikArtt</div> --}}
+                {{-- <div class="logo-text" style="color: #2C2C2C;">Royalit</div> --}}
             </div>
             <h1 class="header-title" style="color: #2C2C2C;">Thank You for Your Order</h1>
             <p class="header-subtitle" style="color: #6d4c00;">
@@ -797,9 +797,9 @@
                     Share your referral link. When a friend places their first order over $60, you both get $30 credit.
                 </p>
                 <div style="background: #fff; border: 1px solid #ddd; border-radius: 4px; padding: 10px 12px; font-size: 13px; color: #333; margin-bottom: 10px; word-break: break-all;">
-                    https://afrikartt.com/?ref={{ $order->user_id ?? 'guest' }}
+                    https://royalit.com/?ref={{ $order->user_id ?? 'guest' }}
                 </div>
-                <a href="https://afrikartt.com/?ref={{ $order->user_id ?? 'guest' }}" style="display: inline-block; background: #10b981; color: #fff; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 14px; font-weight: 600;">
+                <a href="https://royalit.com/?ref={{ $order->user_id ?? 'guest' }}" style="display: inline-block; background: #10b981; color: #fff; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 14px; font-weight: 600;">
                     Copy &amp; Share
                 </a>
             </div> --}}

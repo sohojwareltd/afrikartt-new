@@ -141,7 +141,7 @@
 
                         <p>New York, USA</p>
                         {{-- <p>+1 (518) 653-8997</p> --}}
-                        <p> Info@afrikartt.com</p>
+                        <p> Info@royalit.com</p>
 
                     </div>
                 </div>

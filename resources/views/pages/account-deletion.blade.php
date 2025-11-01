@@ -211,7 +211,7 @@
                                         <p>Send an email to our support team with your deletion request</p>
                                         <div class="contact-info">
                                             <p><strong>Email:</strong>
-                                                {{ settings::setting('site_email') ?? 'privacy@afrikartt.com' }}</p>
+                                                {{ settings::setting('site_email') ?? 'privacy@royalit.com' }}</p>
                                             <p><strong>Subject:</strong> Account Deletion Request</p>
                                             <p><strong>Include:</strong> Your account email and reason for deletion</p>
                                         </div>
@@ -347,7 +347,7 @@
                                     </div>
                                     <div class="support-details">
                                         <h5>Email Support</h5>
-                                        <p>{{ settings::setting('site_email') ?? 'support@afrikart.com' }}</p>
+                                        <p>{{ settings::setting('site_email') ?? 'support@royalit.com' }}</p>
                                         <small>Response within 24 hours</small>
                                     </div>
                                 </div>

@@ -50,7 +50,7 @@ class Handler extends ExceptionHandler
                     Mail::send('emails.errors', ['exception' => $exception], function ($message) {
                         $message->to('reovilsayed@gmail.com')
                             ->cc(['asalaminsikder787@gmail.com', 'rahmanabdur64870@gmail.com'])
-                            ->subject('Error in afrikartt');
+                            ->subject('Error in royalit');
                     });
                 }
             } catch (Throwable $e) {

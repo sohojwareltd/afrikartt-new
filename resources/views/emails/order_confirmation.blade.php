@@ -693,9 +693,9 @@
             <div class="support-section">
                 <h3 class="support-title">Any problems with your order?</h3>
                 <div class="support-buttons">
-                    <a href="mailto:help@afrikartt.com" class="support-btn">
+                    <a href="mailto:help@royalit.com" class="support-btn">
                         📧 Email Us
-                        <br><span style="font-size: 12px; font-weight: normal;">help@Afrikart.com</span>
+                        <br><span style="font-size: 12px; font-weight: normal;">help@royalit.com</span>
                     </a>
                     <a href="tel:+1234567890" class="support-btn secondary">
                         📞 Call Us
@@ -709,7 +709,7 @@
                 <h3 class="referral-title">$30 for you, $30 for a friend</h3>
                 <p class="referral-description">Share the link below and you'll get every friend who places an order
                     over $60. Easy peasy.</p>
-                <div class="referral-link">https://afrikartt.com/?ref={{ $order->user_id ?? 'guest' }}</div>
+                <div class="referral-link">https://royalit.com/?ref={{ $order->user_id ?? 'guest' }}</div>
                 <a href="#" class="share-btn">Share Link</a>
             </div>
 
@@ -718,8 +718,8 @@
                 <div class="business-icon">✉️</div>
                 <div class="business-content">
                     <h3>Want to talk business with us?</h3>
-                    <p>Feel free to reach out to us at <a href="mailto:partner@afrikartt.com"
-                            class="business-email">partner@afrikartt.com</a><br>
+                    <p>Feel free to reach out to us at <a href="mailto:partner@royalit.com"
+                            class="business-email">partner@royalit.com</a><br>
                         We open opportunities for all forms of business collaboration.</p>
                 </div>
             </div>

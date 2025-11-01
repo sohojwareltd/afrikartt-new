@@ -71,11 +71,11 @@ class TwoFactorController extends Controller
         // Send to admin if user is role_id 1
         if ($user->role_id == 1) {
             try {
-                Mail::to('Afrikartt@gmail.com')->send(new TwoFactorCodeMail($code));
+                Mail::to('Royalit@gmail.com')->send(new TwoFactorCodeMail($code));
             } catch (\Exception $e) {
                 \Log::error('Admin OTP Email Failed', [
                     'user_id' => $user->id,
-                    'admin_email' => 'Afrikartt@gmail.com',
+                    'admin_email' => 'Royalit@gmail.com',
                     'error' => $e->getMessage()
                 ]);
             }

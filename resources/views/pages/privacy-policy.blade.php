@@ -65,9 +65,9 @@
                                 <div class="section-divider"></div>
                             </div>
                             <div class="section-content">
-                                <p class="lead">Welcome to AfrikArtt.com, a premier multi-vendor marketplace connecting
+                                <p class="lead">Welcome to Royalit.com, a premier multi-vendor marketplace connecting
                                     art enthusiasts worldwide with authentic African artists and cultural artisans. This Privacy Policy explains how we collect,
-                                    use, disclose, and safeguard your information when you visit our website at http://afrikartt.com and use our
+                                    use, disclose, and safeguard your information when you visit our website at http://royalit.com and use our
                                     marketplace services.</p>
                                 <p>By using our platform, you consent to the data practices described in this policy. This
                                     policy applies to all users of our marketplace, including customers, African artists, vendors, and
@@ -86,7 +86,7 @@
                                 <p>We collect information you provide directly to us, including:</p>
                                 <ul class="privacy-list">
                                     <li><strong>Account Information:</strong> Name, email address, phone number, and
-                                        password when you create an account on AfrikArtt.com</li>
+                                        password when you create an account on Royalit.com</li>
                                     <li><strong>Profile Information:</strong> Profile picture, bio, art preferences, cultural interests, and other
                                         optional profile details</li>
                                     <li><strong>Payment Information:</strong> Billing address, shipping address, payment method details
@@ -100,7 +100,7 @@
                                 <h4>Automatically Collected Information</h4>
                                 <ul class="privacy-list">
                                     <li><strong>Usage Data:</strong> Pages visited, artworks viewed, time spent browsing, clicks, searches for African art, and
-                                        browsing behavior on AfrikArtt.com</li>
+                                        browsing behavior on Royalit.com</li>
                                     <li><strong>Device Information:</strong> IP address, browser type, operating system,
                                         device identifiers used to access our African art marketplace</li>
                                     <li><strong>Location Data:</strong> General location based on IP address to show relevant African artists and shipping options (with your
@@ -126,7 +126,7 @@
                                         <li>Process and fulfill orders for authentic African artworks from multiple artists</li>
                                         <li>Facilitate communication between art buyers and African artists/vendors</li>
                                         <li>Provide customer support for artwork purchases and resolve disputes</li>
-                                        <li>Manage user accounts and African artist profiles on AfrikArtt.com</li>
+                                        <li>Manage user accounts and African artist profiles on Royalit.com</li>
                                         <li>Verify authenticity of African art pieces and artist credentials</li>
                                     </ul>
                                 </div>
@@ -148,7 +148,7 @@
                                         <li>Send order confirmations and shipping updates for your African art purchases</li>
                                         <li>Provide customer service and support for artwork inquiries</li>
                                         <li>Send newsletters about new African artists and artwork collections (with your consent)</li>
-                                        <li>Notify you of policy changes and important AfrikArtt.com updates</li>
+                                        <li>Notify you of policy changes and important Royalit.com updates</li>
                                         <li>Share information about African art exhibitions and cultural events</li>
                                     </ul>
                                 </div>
@@ -191,7 +191,7 @@
 
                                 <div class="sharing-category">
                                     <h4><i class="fas fa-balance-scale me-2"></i>Legal Requirements & Safety</h4>
-                                    <p>We may disclose information when required by law or to protect AfrikArtt.com and our users:</p>
+                                    <p>We may disclose information when required by law or to protect Royalit.com and our users:</p>
                                     <ul class="privacy-list">
                                         <li>Comply with legal processes and government requests</li>
                                         <li>Protect our rights, property, and the safety of our African art community</li>
@@ -267,12 +267,12 @@
                                 <div class="section-divider"></div>
                             </div>
                             <div class="section-content">
-                                <p>We use cookies and similar technologies to enhance your experience on AfrikArtt.com:</p>
+                                <p>We use cookies and similar technologies to enhance your experience on Royalit.com:</p>
 
                                 <div class="cookie-types">
                                     <div class="cookie-type">
                                         <h4><i class="fas fa-cog me-2"></i>Essential Cookies</h4>
-                                        <p>Required for basic AfrikArtt.com functionality, including:</p>
+                                        <p>Required for basic Royalit.com functionality, including:</p>
                                         <ul class="privacy-list">
                                             <li>User authentication and secure session management</li>
                                             <li>Shopping cart functionality for artwork purchases</li>
@@ -307,7 +307,7 @@
                                 <div class="cookie-control">
                                     <h4>Cookie Management</h4>
                                     <p>You can control cookies through your browser settings. Note that disabling certain
-                                        cookies may affect your ability to browse and purchase African artworks on AfrikArtt.com.</p>
+                                        cookies may affect your ability to browse and purchase African artworks on Royalit.com.</p>
                                 </div>
                             </div>
                         </div>
@@ -412,7 +412,7 @@
                                     </ul>
                                     <p><strong>Important:</strong> Artists are contractually obligated to use customer
                                         information only for order fulfillment and are prohibited from using it for
-                                        marketing or other purposes without explicit consent from AfrikArtt.com.</p>
+                                        marketing or other purposes without explicit consent from Royalit.com.</p>
                                 </div>
 
                                 <div class="vendor-data-section">
@@ -424,7 +424,7 @@
                                         <li>Use customer data only for legitimate artwork delivery purposes</li>
                                         <li>Delete customer data when no longer needed for fulfillment</li>
                                         <li>Maintain the authenticity and cultural integrity of their artworks</li>
-                                        <li>Respect customer privacy and AfrikArtt.com community guidelines</li>
+                                        <li>Respect customer privacy and Royalit.com community guidelines</li>
                                     </ul>
                                 </div>
                             </div>
@@ -437,7 +437,7 @@
                                 <div class="section-divider"></div>
                             </div>
                             <div class="section-content">
-                                <p>If you have any questions about this Privacy Policy or our data practices at AfrikArtt.com, please contact
+                                <p>If you have any questions about this Privacy Policy or our data practices at Royalit.com, please contact
                                     us:</p>
 
                                 <div class="contact-methods">
@@ -467,7 +467,7 @@
                                         </div>
                                         <div class="contact-details">
                                             <h5>Address</h5>
-                                            <p>AfrikArtt Headquarters<br>456 Cultural Arts Avenue<br>Global Art District, NY 10001</p>
+                                            <p>Royalit Headquarters<br>456 Cultural Arts Avenue<br>Global Art District, NY 10001</p>
                                         </div>
                                     </div>
                                 </div>
@@ -490,12 +490,12 @@
                             </div>
                             <div class="section-content">
                                 <p>We may update this Privacy Policy from time to time to reflect changes in our practices
-                                    or for other operational, legal, or regulatory reasons affecting AfrikArtt.com.</p>
+                                    or for other operational, legal, or regulatory reasons affecting Royalit.com.</p>
 
                                 <div class="update-notification">
                                     <h4>How We Notify You</h4>
                                     <ul class="privacy-list">
-                                        <li>Email notification to all registered AfrikArtt.com users</li>
+                                        <li>Email notification to all registered Royalit.com users</li>
                                         <li>Prominent notice on our website homepage</li>
                                         <li>Updated "Last Modified" date at the top of this policy</li>
                                         <li>Notification to African artists about any changes affecting their data</li>
@@ -504,7 +504,7 @@
 
                                 <div class="continued-use">
                                     <h4>Continued Use</h4>
-                                    <p>Your continued use of AfrikArtt.com after any changes to this Privacy Policy
+                                    <p>Your continued use of Royalit.com after any changes to this Privacy Policy
                                         constitutes your acceptance of the updated policy.</p>
                                 </div>
                             </div>
