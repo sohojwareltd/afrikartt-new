@@ -6,9 +6,9 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 
-    <title>@yield('title', 'Afrikart E-commerce')</title>
+    <title>@yield('title', 'Royalit E-commerce')</title>
     <meta name="description" content="@yield('meta_description', 'This is a demo e-commerce website built with Laravel and Voyager.')">
-    <meta name="keywords" content="@yield('meta_keywords', 'ecommerce, online shop, afrikart, buy, sell, products')">
+    <meta name="keywords" content="@yield('meta_keywords', 'ecommerce, online shop, royalit, buy, sell, products')">
     <!-- Open Graph & Twitter Card Placeholders -->
     @yield('meta_og')
     @yield('meta_twitter')
@@ -143,7 +143,7 @@
     </main>
 
     <!-- Footer Start -->
-    <footer class="footer-modern py-5 text-light" id="footer" style="background: var(--primary-color);">
+    <footer class="footer-modern py-5 text-light" id="footer" style="background: var(--burgundy);">
         <div class="container">
             <div class="row gy-5 align-items-start">
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
@@ -202,7 +202,7 @@
             <div class="row align-items-center">
                 <div class="col-md-6 text-center text-md-start small">
                     &copy; {{ date('Y') }} <a href="{{ route('homepage') }}"
-                        class="fw-bold text-light text-decoration-none Copy">Afrikart E-commerce</a>. All rights
+                        class="fw-bold text-light text-decoration-none Copy">Royalit E-commerce</a>. All rights
                     reserved.
                     <span class="mx-2">|</span>
                     <a href="{{ route('privacy.policy') }}" class="text-light text-decoration-none Copy">Privacy
@@ -241,15 +241,15 @@
 
         .footer-modern .btn-pink,
         .btn-pink {
-            background: var(--bg-orange) !important;
+            background: var(--accent-color) !important;
             color: var(--text-light) !important;
             border: none !important;
         }
 
         .footer-modern .btn-pink:hover,
         .btn-pink:hover {
-            background: var(--bg-secondary) !important;
-            color: var(--primary-color) !important;
+            background: var(--sage-dark) !important;
+            color: var(--text-light) !important;
         }
 
         .footer-modern hr {

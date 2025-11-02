@@ -465,7 +465,7 @@
                 @endif
             </div>
 
-            <p>© {{ date('Y') }} Afrikart. All rights reserved.<br>
+            <p>© {{ date('Y') }} Royalit. All rights reserved.<br>
                 {{ $shop->user->verification->address ?? $shop->company_registration }}</p>
         </div>
     </div>

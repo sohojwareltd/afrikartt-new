@@ -873,10 +873,10 @@
         <div class="email-header">
             <div class="logo-section">
                 @if (Settings::setting('site_logo'))
-                    <img src="{{ Settings::setting('site_logo') }}" alt="Afrikart Logo" class="logo">
+                    <img src="{{ Settings::setting('site_logo') }}" alt="Royalit Logo" class="logo">
                 @else
                     <div style="font-size: 28px; font-weight: bold; color: white; position: relative; z-index: 2;">
-                        Afrikart</div>
+                        Royalit</div>
                 @endif
             </div>
             <h1 class="header-title">Order Confirmed!</h1>
@@ -1128,7 +1128,7 @@
                 <p class="support-message">Our customer support team is here to assist you with any questions or
                     concerns.</p>
                 <div class="support-contacts">
-                    <a href="mailto:{{ $order->shop->email ?? 'support@afrikart.com' }}" class="support-contact">
+                    <a href="mailto:{{ $order->shop->email ?? 'support@royalit.com' }}" class="support-contact">
                         <span>📧</span> Email Support
                     </a>
                     <a href="tel:{{ $order->shop->phone ?? '+1234567890' }}" class="support-contact">
@@ -1167,7 +1167,7 @@
         <!-- Footer -->
         <div class="email-footer">
             <div class="footer-content">
-                <h4 class="footer-title">Afrikart E-commerce</h4>
+                <h4 class="footer-title">Royalit E-commerce</h4>
                 <p class="footer-subtitle">Your trusted online shopping destination</p>
             </div>
             {{-- <div class="footer-social">
@@ -1183,7 +1183,7 @@
             </div>
             <div class="footer-contact">
                 <p>Questions about your order? Reply to this email or contact our support team.</p>
-                <p>© {{ date('Y') }} Afrikart E-commerce. All rights reserved.</p>
+                <p>© {{ date('Y') }} Royalit E-commerce. All rights reserved.</p>
                 <p>You received this email because you placed an order with us. This is a transactional email.</p>
             </div>
         </div>

@@ -1,22 +1,22 @@
-@section('title', 'Checkout | Afrikart E-commerce')
+@section('title', 'Checkout | Royalit E-commerce')
 @section('meta_description',
-    'Complete your purchase securely on Afrikart E-commerce. Fast, safe checkout with multiple
+    'Complete your purchase securely on Royalit E-commerce. Fast, safe checkout with multiple
     payment options and order tracking.')
-@section('meta_keywords', 'checkout, payment, order, purchase, ecommerce, online shopping, Afrikart')
+@section('meta_keywords', 'checkout, payment, order, purchase, ecommerce, online shopping, Royalit')
 @section('canonical_url', route('checkout'))
 @section('meta_og')
-    <meta property="og:title" content="Checkout | Afrikart E-commerce">
+    <meta property="og:title" content="Checkout | Royalit E-commerce">
     <meta property="og:description"
-        content="Complete your purchase securely on Afrikart E-commerce. Fast, safe checkout with multiple payment options and order tracking.">
+        content="Complete your purchase securely on Royalit E-commerce. Fast, safe checkout with multiple payment options and order tracking.">
     <meta property="og:image" content="{{ Settings::setting('site_logo') }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
 @endsection
 @section('meta_twitter')
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Checkout | Afrikart E-commerce">
+    <meta name="twitter:title" content="Checkout | Royalit E-commerce">
     <meta name="twitter:description"
-        content="Complete your purchase securely on Afrikart E-commerce. Fast, safe checkout with multiple payment options and order tracking.">
+        content="Complete your purchase securely on Royalit E-commerce. Fast, safe checkout with multiple payment options and order tracking.">
     <meta name="twitter:image" content="{{ Settings::setting('site_logo') }}">
 @endsection
 @extends('layouts.app')
@@ -1064,7 +1064,7 @@
                                                     class="text-decoration-underline fw-semibold link-accent">
                                                     Terms & Conditions
                                                 </a>
-                                                of Afrikart E-commerce
+                                                of Royalit E-commerce
                                             </label>
                                             @error('terms')
                                                 <span class="invalid-feedback d-block ms-2">{{ $message }}</span>

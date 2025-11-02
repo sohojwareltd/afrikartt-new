@@ -6,13 +6,13 @@
             <div class="row justify-content-center">
                 <div class="col-lg-7 col-xl-6 px-4">
 
-                    {{-- HEADER: AFRIKART Logo and Title --}}
+                    {{-- HEADER: Royalit Logo and Title --}}
                     <header class="text-center mb-5">
                         <div class="afrikart-logo-container mb-3 d-flex">
 
                             <img src="{{ asset('assets/img/afrilogo.png') }}" alt="" width="40">
 
-                            <h1 class="afrikart-brand-text ps-2">AFRIKART</h1>
+                            <h1 class="afrikart-brand-text ps-2">Royalit</h1>
                         </div>
 
                         <h2 class="h5 fw-bold afrikart-title-color" id="section-title">Vendor Terms & Agreement</h2>
@@ -34,25 +34,25 @@
                                         <button class="accordion-button afrikart-section-btn collapsed" type="button"
                                             data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false"
                                             aria-controls="collapseOne">
-                                            1. About Afrikart
+                                            1. About Royalit
                                         </button>
                                     </h2>
                                     <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
                                         data-bs-parent="#termsAccordion">
                                         <div class="accordion-body">
-                                            <p>Afrikart is more than a marketplace — it's a multiplatform e-commerce gateway
+                                            <p>Royalit is more than a marketplace — it's a multiplatform e-commerce gateway
                                                 that connects Africa's finest artisans, entrepreneurs, and producers
                                                 directly with U.S. consumers.</p>
                                             <p>Our mission is simple: to give African vendors direct access to U.S.
                                                 customers while providing buyers with authentic, premium, and ethically
                                                 sourced products.</p>
-                                            <p>By joining Afrikart, you're not just selling products — you're becoming part
+                                            <p>By joining Royalit, you're not just selling products — you're becoming part
                                                 of a movement to elevate African creativity and commerce worldwide.</p>
                                             <ul>
-                                                <li><strong>Who we are:</strong> Afrikart is a U.S.-based e-commerce
+                                                <li><strong>Who we are:</strong> Royalit is a U.S.-based e-commerce
                                                     multiplatform online marketplace that connects African vendors directly
                                                     with U.S. consumers.</li>
-                                                <li><strong>Where we sell:</strong> Products listed on Afrikart are
+                                                <li><strong>Where we sell:</strong> Products listed on Royalit are
                                                     showcased on our website as well as other connected e-commerce platforms
                                                     and sales channels, ensuring maximum reach.</li>
                                                 <li><strong>Our role:</strong> We provide the platform, tools, and logistics
@@ -78,23 +78,23 @@
                                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
                                         data-bs-parent="#termsAccordion">
                                         <div class="accordion-body">
-                                            <p>Afrikart is a consignment-based multiplatform marketplace. Vendors are paid
+                                            <p>Royalit is a consignment-based multiplatform marketplace. Vendors are paid
                                                 when their products are sold.</p>
                                             <ul>
                                                 <li>There is <strong>no subscription or listing fees</strong> to join
-                                                    Afrikart (this may change in the future).</li>
-                                                <li>Products are sold not only through Afrikart's website, but also through
+                                                    Royalit (this may change in the future).</li>
+                                                <li>Products are sold not only through Royalit's website, but also through
                                                     partner marketplaces, affiliate networks, and additional digital sales
                                                     platforms.</li>
                                                 <li>Vendors must upload their products directly through the Vendor Portal,
-                                                    which Afrikart reviews and approves before publishing.</li>
-                                                <li>Afrikart and Vendors work together to find the best shipping solutions,
+                                                    which Royalit reviews and approves before publishing.</li>
+                                                <li>Royalit and Vendors work together to find the best shipping solutions,
                                                     balancing cost, reliability, and speed.</li>
                                                 <li>Vendors are generally responsible for shipping costs to the U.S., while
-                                                    Afrikart advises on the most effective solutions.</li>
-                                                <li>Afrikart also provides warehousing, fulfillment, and returns management
+                                                    Royalit advises on the most effective solutions.</li>
+                                                <li>Royalit also provides warehousing, fulfillment, and returns management
                                                     services in the U.S.</li>
-                                                <li><strong>Afrikart does not take a commission. Instead, Afrikart applies a
+                                                <li><strong>Royalit does not take a commission. Instead, Royalit applies a
                                                         markup on products sold to cover platform, marketing, and
                                                         operational costs.</strong></li>
                                             </ul>
@@ -125,11 +125,11 @@
                                             <h6>Product Listings</h6>
                                             <ul>
                                                 <li>Vendors are responsible for posting their own products through
-                                                    Afrikart's Vendor Portal.</li>
+                                                    Royalit's Vendor Portal.</li>
                                                 <li>Listings must include accurate descriptions, clear pricing, and
                                                     high-quality images.</li>
-                                                <li>Afrikart reserves the right to review and approve all listings before
-                                                    they appear on Afrikart's website or other platforms.</li>
+                                                <li>Royalit reserves the right to review and approve all listings before
+                                                    they appear on Royalit's website or other platforms.</li>
                                             </ul>
 
                                             <h6>Packaging & Presentation</h6>
@@ -166,20 +166,20 @@
                                             <ul>
                                                 <li><strong>Step 1: Application</strong> - Submit a vendor application with
                                                     your company profile and product details.</li>
-                                                <li><strong>Step 2: Approval</strong> - Afrikart reviews your application to
+                                                <li><strong>Step 2: Approval</strong> - Royalit reviews your application to
                                                     confirm alignment with our product categories and quality standards.
                                                 </li>
                                                 <li><strong>Step 3: Product Catalog Submission & Upload</strong> - Vendors
                                                     prepare product photos, descriptions, and wholesale pricing. Vendors
-                                                    upload their products directly into Afrikart's Vendor Portal. Afrikart
-                                                    reviews and approves listings before they go live across Afrikart's
+                                                    upload their products directly into Royalit's Vendor Portal. Royalit
+                                                    reviews and approves listings before they go live across Royalit's
                                                     website and connected platforms.</li>
-                                                <li><strong>Step 4: Shipping & Storage</strong> - Afrikart and Vendor agree
+                                                <li><strong>Step 4: Shipping & Storage</strong> - Royalit and Vendor agree
                                                     on the best shipping plan and coordinate delivery of products to
-                                                    customers or Afrikart's U.S. warehouse (if warehousing is chosen).</li>
+                                                    customers or Royalit's U.S. warehouse (if warehousing is chosen).</li>
                                                 <li><strong>Step 5: Sales & Tracking</strong> - Once approved, products are
-                                                    live on Afrikart's multiplatform network. Vendors can track sales,
-                                                    payments, and inventory through Afrikart's systems.</li>
+                                                    live on Royalit's multiplatform network. Vendors can track sales,
+                                                    payments, and inventory through Royalit's systems.</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -198,7 +198,7 @@
                                         data-bs-parent="#termsAccordion">
                                         <div class="accordion-body">
                                             <ul>
-                                                <li>Vendors are paid only as products are sold on Afrikart and its connected
+                                                <li>Vendors are paid only as products are sold on Royalit and its connected
                                                     platforms.</li>
                                                 <li>Payout timelines depend on product type and return policies. For
                                                     example, consumables such as honey that do not require returns are
@@ -206,11 +206,11 @@
                                                     payout.</li>
                                                 <li>Payments are adjusted for returns, refunds, and other applicable
                                                     factors.</li>
-                                                <li>Afrikart issues vendor payouts promptly after sales are finalized, but
+                                                <li>Royalit issues vendor payouts promptly after sales are finalized, but
                                                     final processing time may vary depending on the vendor's bank.</li>
-                                                <li><strong>Afrikart does not take a commission but applies a markup for
+                                                <li><strong>Royalit does not take a commission but applies a markup for
                                                         platform, marketing, and operational costs.</strong></li>
-                                                <li>If a Vendor requests advance payment before sales, Afrikart will
+                                                <li>If a Vendor requests advance payment before sales, Royalit will
                                                     negotiate terms on a case-by-case basis.</li>
                                             </ul>
                                         </div>
@@ -230,12 +230,12 @@
                                         aria-labelledby="headingSix" data-bs-parent="#termsAccordion">
                                         <div class="accordion-body">
                                             <ul>
-                                                <li>Afrikart or the Vendor may terminate this agreement at any time with
+                                                <li>Royalit or the Vendor may terminate this agreement at any time with
                                                     written notice.</li>
                                                 <li><strong>Vendor-Initiated Termination:</strong> Vendor must notify
-                                                    Afrikart in writing at least 30 days before stopping product listings or
+                                                    Royalit in writing at least 30 days before stopping product listings or
                                                     shipments.</li>
-                                                <li><strong>Afrikart-Initiated Termination:</strong> Afrikart may terminate
+                                                <li><strong>Royalit-Initiated Termination:</strong> Royalit may terminate
                                                     if:
                                                     <ul>
                                                         <li>Products consistently fail quality standards.</li>
@@ -247,7 +247,7 @@
                                                     </ul>
                                                 </li>
                                                 <li><strong>Post-Termination:</strong> Vendor remains responsible for
-                                                    outstanding orders. Afrikart will settle any pending payouts for
+                                                    outstanding orders. Royalit will settle any pending payouts for
                                                     products sold prior to termination, adjusted for returns, refunds, or
                                                     other applicable factors.</li>
                                             </ul>
@@ -267,7 +267,7 @@
                                     <div id="collapseSeven" class="accordion-collapse collapse"
                                         aria-labelledby="headingSeven" data-bs-parent="#termsAccordion">
                                         <div class="accordion-body">
-                                            <p>Afrikart promotes products across multiple channels: websites, affiliate
+                                            <p>Royalit promotes products across multiple channels: websites, affiliate
                                                 platforms, social media, newsletters, and partnerships.</p>
                                             <h6>Vendor Role:</h6>
                                             <ul>
@@ -297,9 +297,9 @@
                                                         notice.</strong></li>
                                                 <li>Warehousing and fulfillment services in the U.S.</li>
                                                 <li>Customer service and returns management.</li>
-                                                <li>Scalability — focus on production while Afrikart manages sales and
+                                                <li>Scalability — focus on production while Royalit manages sales and
                                                     logistics.</li>
-                                                <li>Increased exposure through Afrikart's marketing campaigns, partner
+                                                <li>Increased exposure through Royalit's marketing campaigns, partner
                                                     platforms, and newsletters.</li>
                                                 <li>Participation in seasonal or themed product collections and featured
                                                     vendor spotlights.</li>
@@ -321,10 +321,10 @@
                                         aria-labelledby="headingNine" data-bs-parent="#termsAccordion">
                                         <div class="accordion-body">
                                             <ul>
-                                                <li>Afrikart is legally registered in the U.S.</li>
+                                                <li>Royalit is legally registered in the U.S.</li>
                                                 <li>Vendors must comply with all U.S. safety and import requirements.</li>
                                                 <li>Vendors retain ownership of their intellectual property.</li>
-                                                <li>Afrikart is not liable for product damage before arrival at the
+                                                <li>Royalit is not liable for product damage before arrival at the
                                                     warehouse or delivery if shipped directly.</li>
                                             </ul>
                                         </div>
@@ -349,7 +349,7 @@
                                                 <li><strong>Sales Dashboard:</strong> real-time tracking.</li>
                                                 <li><strong>Policy Updates:</strong> written notice for changes.</li>
                                             </ul>
-                                            <p><strong>Contact:</strong> Website: Afrikart.com | Email: Afrikart@gmail.com
+                                            <p><strong>Contact:</strong> Website: Royalit.com | Email: Royalit@gmail.com
                                             </p>
                                         </div>
                                     </div>
@@ -367,8 +367,8 @@
                                     <div id="collapseEleven" class="accordion-collapse collapse"
                                         aria-labelledby="headingEleven" data-bs-parent="#termsAccordion">
                                         <div class="accordion-body">
-                                            <p>This Agreement is entered into between <strong>Afrikart, LLC</strong> and the
-                                                Vendor, governing participation in Afrikart's marketplace. It refers to the
+                                            <p>This Agreement is entered into between <strong>Royalit, LLC</strong> and the
+                                                Vendor, governing participation in Royalit's marketplace. It refers to the
                                                 Onboarding Packet for operational details.</p>
 
                                             <h6>1. Vendor Information</h6>
@@ -381,21 +381,21 @@
                                             <h6>3. Product Listings & Quality</h6>
                                             <ul>
                                                 <li>Vendor ensures compliance with U.S. laws and quality standards.</li>
-                                                <li>Afrikart may review/reject listings.</li>
+                                                <li>Royalit may review/reject listings.</li>
                                             </ul>
 
                                             <h6>4. Shipping & Fulfillment</h6>
                                             <ul>
-                                                <li>Afrikart provides warehousing, fulfillment, and returns management in
+                                                <li>Royalit provides warehousing, fulfillment, and returns management in
                                                     the U.S.</li>
-                                                <li>Afrikart works with vendors to find effective shipping solutions.</li>
+                                                <li>Royalit works with vendors to find effective shipping solutions.</li>
                                                 <li>Vendor ensures products are packaged securely.</li>
                                                 <li>Vendors are highly encouraged to have necessary exporting licenses.</li>
                                             </ul>
 
                                             <h6>5. Payment Terms</h6>
                                             <ul>
-                                                <li>Vendor earns the agreed wholesale price; Afrikart applies a markup, no
+                                                <li>Vendor earns the agreed wholesale price; Royalit applies a markup, no
                                                     commission.</li>
                                                 <li>Payments after sales, adjusted for returns/refunds.</li>
                                                 <li>Advance payments on case-by-case basis.</li>
@@ -405,22 +405,22 @@
                                             <ul>
                                                 <li>Either party may terminate with written notice (30 days for vendors).
                                                 </li>
-                                                <li>Afrikart may terminate immediately for non-compliance, unethical
+                                                <li>Royalit may terminate immediately for non-compliance, unethical
                                                     practices, or order failures.</li>
                                                 <li>Outstanding payouts settled post-termination.</li>
                                             </ul>
 
                                             <h6>7. Intellectual Property & Marketing</h6>
                                             <ul>
-                                                <li>Vendor retains ownership; Afrikart has limited license to use images and
+                                                <li>Vendor retains ownership; Royalit has limited license to use images and
                                                     brand content for sales and promotion.</li>
                                             </ul>
 
                                             <h6>8. Limitation of Liability</h6>
                                             <ul>
-                                                <li>Afrikart not liable for damage prior to warehouse receipt or direct
+                                                <li>Royalit not liable for damage prior to warehouse receipt or direct
                                                     delivery.</li>
-                                                <li>Vendor indemnifies Afrikart against claims from defective products or
+                                                <li>Vendor indemnifies Royalit against claims from defective products or
                                                     non-compliance.</li>
                                             </ul>
 
@@ -476,7 +476,9 @@
 
                         {{-- SUBMIT BUTTON --}}
                         <div class="align-items-center d-flex justify-content-between mt-4">
-                            <a href="{{ asset('assets/Afrikart - Vendor Onboarding Packet And Agreement.pdf') }}">View Full
+                            {{-- <a href="{{ asset('assets/Afrikart - Vendor Onboarding Packet And Agreement.pdf') }}">View Full
+                                Vendor Agreement (PDF)</a> --}}
+                            <a href="#">View Full
                                 Vendor Agreement (PDF)</a>
                             <button type="submit" id="continueBtn" class="btn afrikart-submit-btn" disabled>
                                 AGREE & CONTINUE

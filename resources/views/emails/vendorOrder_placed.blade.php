@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thank You for Your Order - Afrikart</title>
+    <title>Thank You for Your Order - Royalit</title>
     <style>
         * {
             margin: 0;
@@ -812,7 +812,7 @@
                     <p>Feel free to reach out to us at <a href="mailto:{{ Settings::setting('site_email') }}"
                             class="business-email">{{ Settings::setting('site_email') }}</a><br>
                         We welcome all forms of business collaboration and partnership opportunities. Let's grow
-                        together with Afrikart!</p>
+                        together with Royalit!</p>
                 </div>
             </div>
         </div>
@@ -830,10 +830,10 @@
                 </div>
             </div>
             <div style="font-size: 15px; color: #ffffff; margin-bottom: 8px;">
-                &copy; {{ date('Y') }} Afrikart. All rights reserved.
+                &copy; {{ date('Y') }} Royalit. All rights reserved.
             </div>
             <div style="font-size: 13px; color: #ffffff; margin-bottom: 8px;">
-                {{ Settings::setting('site_address', 'Afrikart HQ, Accra, Ghana 00233') }}
+                {{ Settings::setting('site_address', 'Royalit HQ, Accra, Ghana 00233') }}
             </div>
         </div>
     </div>

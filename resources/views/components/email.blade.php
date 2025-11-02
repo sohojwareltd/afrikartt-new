@@ -10,7 +10,7 @@
 
     <link rel="icon" href="images/favicon.png" type="image/x-icon">
 
-    <title>Afrikart E-commerce |Email</title>
+    <title>Royalit E-commerce |Email</title>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
@@ -172,7 +172,7 @@
                                                         <h5
                                                             style="font-size: 13px; text-transform: uppercase; margin: 0; color:#ddd; letter-spacing:1px; font-weight: 500;">
                                                             This email was created using the <span
-                                                                style="color: #f58888;">Afrikart E-commerce</span>.</h5>
+                                                                style="color: #f58888;">Royalit E-commerce</span>.</h5>
 
                                                     </td>
                                                 </tr>

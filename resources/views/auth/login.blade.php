@@ -203,7 +203,7 @@
                 <img src="{{ asset('/assets/img/login-bg.png') }}" alt="">
             </div>
             <div class="login-card">
-                <span class="brand-logo">Afrikart Ecommerce</span>
+                <span class="brand-logo">Royalit Ecommerce</span>
                 <div class="login-header">
                     <h1>Welcome Back</h1>
                     <p>Please login to your account</p>

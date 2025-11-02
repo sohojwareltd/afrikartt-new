@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Become a Vendor on Afrikart | Vendor Registration')
+@section('title', 'Become a Vendor on Royalit | Vendor Registration')
 @section('meta_description',
-    'Join Afrikart as a vendor and submit your company and products to reach customers
+    'Join Royalit as a vendor and submit your company and products to reach customers
     worldwide. Complete vendor registration and product submission form.')
-@section('meta_keywords', 'vendor registration, become vendor, Afrikart vendor, product submission, seller application')
+@section('meta_keywords', 'vendor registration, become vendor, Royalit vendor, product submission, seller application')
 
 @section('css')
     <style>
@@ -315,7 +315,7 @@
     <!-- Hero Section -->
     <div class="container mt-4">
         <div class="checkout-hero mb-4 position-relative">
-            <h2 class="fw-bold mb-1 text-light">Become a Vendor on Afrikart</h2>
+            <h2 class="fw-bold mb-1 text-light">Become a Vendor on Royalit</h2>
             <p class="mb-0">Submit your company and products to reach customers worldwide</p>
 
             <div class="checkout-hero-steps d-none d-md-flex position-absolute end-0 top-0 h-100 align-items-center pe-4">
@@ -751,7 +751,7 @@
                     <input type="checkbox" class="form-check-input @error('terms_agreement') is-invalid @enderror"
                         id="terms_agreement" name="terms_agreement" required>
                     <label class="form-check-label mb-0 ms-2" for="terms_agreement">
-                        I agree to Afrikart Vendor Terms & Conditions <span class="required">*</span>
+                        I agree to Royalit Vendor Terms & Conditions <span class="required">*</span>
                     </label>
                 </div>
                 @error('terms_agreement')

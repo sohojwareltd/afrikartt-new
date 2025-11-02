@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thank You for Your Order - Afrikart</title>
+    <title>Thank You for Your Order - Royalit</title>
     <style>
         * {
             margin: 0;
@@ -557,7 +557,7 @@
         <div class="header">
             <div class="logo">
                 <div class="logo-icon">🎨</div>
-                <div class="logo-text">Afrikart</div>
+                <div class="logo-text">Royalit</div>
             </div>
             <h1 class="header-title">Thank You for Order</h1>
             <p class="header-subtitle">Your order's in. We're working to get it packed up and out the door expect a
@@ -732,7 +732,7 @@
         <div class="footer">
             <div class="footer-logo">
                 <div class="logo-icon">🎨</div>
-                <div class="logo-text">Afrikart</div>
+                <div class="logo-text">Royalit</div>
             </div>
 
             <div class="social-links">
@@ -744,7 +744,7 @@
             </div>
 
             <div class="footer-address">
-                Afrikart HQ, 123 Creative Street Unit 10<br>
+                Royalit HQ, 123 Creative Street Unit 10<br>
                 Accra, Ghana 00233
             </div>
 

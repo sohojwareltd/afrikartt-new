@@ -40,7 +40,7 @@
                             <div class="section-divider"></div>
                         </div>
                         <div class="section-content">
-                            <p class="lead">We understand that you may wish to delete your account from Afrikart.com. This
+                            <p class="lead">We understand that you may wish to delete your account from Royalit.com. This
                                 policy outlines your rights and our process for account deletion.</p>
                             <p>You have the right to request the deletion of your personal data and account at any time. We
                                 will process your request in accordance with applicable data protection laws.</p>
@@ -192,7 +192,7 @@
                                         </p>
                                         <div class="method-steps">
                                             <ol>
-                                                <li>Log into your Afrikart.com account</li>
+                                                <li>Log into your Royalit.com account</li>
                                                 <li>Go to Account Settings</li>
                                                 <li>Select Privacy tab</li>
                                                 <li>Click "Delete Account"</li>

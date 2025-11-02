@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thank You for Your Order - Afrikart</title>
+    <title>Thank You for Your Order - Royalit</title>
     <style>
         * {
             margin: 0;
@@ -631,7 +631,7 @@
             <div class="logo">
                 <div class="logo-icon" style="background: #fff; color: #F5A623;"><img
                         src="{{ Settings::setting('site_logo') }}" alt="Logo" style="height: 40px;"></div>
-                {{-- <div class="logo-text" style="color: #2C2C2C;">Afrikart</div> --}}
+                {{-- <div class="logo-text" style="color: #2C2C2C;">Royalit</div> --}}
             </div>
             <h1 class="header-title" style="color: #2C2C2C;">Thank You for Your Order</h1>
             <p class="header-subtitle" style="color: #6d4c00;">
@@ -798,9 +798,9 @@
                     Share your referral link. When a friend places their first order over $60, you both get $30 credit.
                 </p>
                 <div style="background: #fff; border: 1px solid #ddd; border-radius: 4px; padding: 10px 12px; font-size: 13px; color: #333; margin-bottom: 10px; word-break: break-all;">
-                    https://Afrikart.com/?ref={{ $order->user_id ?? 'guest' }}
+                    https://Royalit.com/?ref={{ $order->user_id ?? 'guest' }}
                 </div>
-                <a href="https://Afrikart.com/?ref={{ $order->user_id ?? 'guest' }}" style="display: inline-block; background: #10b981; color: #fff; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 14px; font-weight: 600;">
+                <a href="https://Royalit.com/?ref={{ $order->user_id ?? 'guest' }}" style="display: inline-block; background: #10b981; color: #fff; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 14px; font-weight: 600;">
                     Copy &amp; Share
                 </a>
             </div> --}}
@@ -813,7 +813,7 @@
                     <p>Feel free to reach out to us at <a href="mailto:{{ Settings::setting('site_email') }}"
                             class="business-email">{{ Settings::setting('site_email') }}</a><br>
                         We welcome all forms of business collaboration and partnership opportunities. Let's grow
-                        together with Afrikart!</p>
+                        together with Royalit!</p>
                 </div>
             </div>
         </div>
@@ -831,10 +831,10 @@
                 </div>
             </div>
             <div style="font-size: 15px; color: #ffffff; margin-bottom: 8px;">
-                &copy; {{ date('Y') }} Afrikart. All rights reserved.
+                &copy; {{ date('Y') }} Royalit. All rights reserved.
             </div>
             <div style="font-size: 13px; color: #ffffff; margin-bottom: 8px;">
-                {{ Settings::setting('site_address', 'Afrikart HQ, Accra, Ghana 00233') }}
+                {{ Settings::setting('site_address', 'Royalit HQ, Accra, Ghana 00233') }}
             </div>
         </div>
     </div>

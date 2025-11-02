@@ -178,7 +178,7 @@
                                     </li>
 
 
-                                    <p class="py-4" style="font-size: 13px">Follow our social media for Afrikart
+                                    <p class="py-4" style="font-size: 13px">Follow our social media for Royalit
                                         E-commerce
                                         news and updates. </p>
                                 </ul>
@@ -258,7 +258,7 @@
                         <div class="col text-center footer-copy">
                             <div class="footer-bottom-copy d-flex justify-content-start ">
                                 <div class="ec-copy text-dark text-left" style="color:#000000 !important;opacity:1;">
-                                    Copyright © 2023 <a class="site-name text-upper" href="#">Afrikart
+                                    Copyright © 2023 <a class="site-name text-upper" href="#">Royalit
                                         E-commerce<span>.</span></a>. All Rights Reserved</div>
                                 <div class="img">
                                 </div>

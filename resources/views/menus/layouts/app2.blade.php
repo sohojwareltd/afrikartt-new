@@ -22,7 +22,7 @@
         <div class="container-fluid ">
           <div class="col-2">
             <a class="navbar-brand" href="#">
-              Afrikart E-commerce
+              Royalit E-commerce
             </a>
           </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

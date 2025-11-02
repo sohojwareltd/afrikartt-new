@@ -10,18 +10,18 @@
     --seal-brown: #642b0d;
     --seal-brown-2: #562309;
     --cosmic-latte: #fef6e5;
-    --burgundy: #800020;
-    --burgundy-hover: #660018;
+    --burgundy: #000000;
+    --burgundy-hover: #000000;
 
     /* Modern Natural Color Palette */
     --clay-orange: #d78848; /* NEW ACCENT */
     --cream-white: #faf9f6; /* NEW LIGHT BG */
-    --sage-green: #1a6b3c; /* NEW PRIMARY */
+    --sage-green: #f68b1e; /* NEW PRIMARY */
     --charcoal-gray: #2e2e2e; /* NEW DARK/TEXT */
     --sand-beige: #e8dcc5; /* NEW SECONDARY BG */
 
     /* Derived/Supporting Tones for the New Palette */
-    --sage-dark: #6c7a60; /* Slightly darker sage for hover/darker primary */
+    --sage-dark: #e07e1b; /* Slightly darker sage for hover/darker primary */
     --clay-light: #e0985c; /* Slightly lighter clay for light accent */
 
     /* Semantic Color Mapping */

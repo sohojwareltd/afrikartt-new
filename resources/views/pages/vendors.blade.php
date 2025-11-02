@@ -2,25 +2,25 @@
     $route = route('shops');
 @endphp
 
-@section('title', 'All Vendors & Shops | Afrikart E-commerce')
+@section('title', 'All Vendors & Shops | Royalit E-commerce')
 @section('meta_description',
-    'Browse all verified vendors and shops on Afrikart E-commerce. Find trusted sellers, quality
+    'Browse all verified vendors and shops on Royalit E-commerce. Find trusted sellers, quality
     products, and great deals from our curated list of vendors.')
-@section('meta_keywords', 'vendors, shops, sellers, ecommerce, online stores, Afrikart, verified vendors')
+@section('meta_keywords', 'vendors, shops, sellers, ecommerce, online stores, Royalit, verified vendors')
 @section('canonical_url', route('vendors'))
 @section('meta_og')
-    <meta property="og:title" content="All Vendors & Shops | Afrikart E-commerce">
+    <meta property="og:title" content="All Vendors & Shops | Royalit E-commerce">
     <meta property="og:description"
-        content="Browse all verified vendors and shops on Afrikart E-commerce. Find trusted sellers, quality products, and great deals from our curated list of vendors.">
+        content="Browse all verified vendors and shops on Royalit E-commerce. Find trusted sellers, quality products, and great deals from our curated list of vendors.">
     <meta property="og:image" content="{{ Settings::setting('site_logo') }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
 @endsection
 @section('meta_twitter')
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="All Vendors & Shops | Afrikart E-commerce">
+    <meta name="twitter:title" content="All Vendors & Shops | Royalit E-commerce">
     <meta name="twitter:description"
-        content="Browse all verified vendors and shops on Afrikart E-commerce. Find trusted sellers, quality products, and great deals from our curated list of vendors.">
+        content="Browse all verified vendors and shops on Royalit E-commerce. Find trusted sellers, quality products, and great deals from our curated list of vendors.">
     <meta name="twitter:image" content="{{ Settings::setting('site_logo') }}">
 @endsection
 

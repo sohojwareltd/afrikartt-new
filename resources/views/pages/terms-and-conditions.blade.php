@@ -40,7 +40,7 @@
                             <div class="section-divider"></div>
                         </div>
                         <div class="section-content">
-                            <p class="lead">Welcome to Afrikart.com, a premier multi-vendor marketplace connecting art
+                            <p class="lead">Welcome to Royalit.com, a premier multi-vendor marketplace connecting art
                                 enthusiasts worldwide with authentic African artists and cultural artisans.</p>
                             <p>By accessing and using our platform, you agree to be bound by these Terms and Conditions. If
                                 you do not agree to these terms, please do not use our services.</p>
@@ -139,11 +139,11 @@
                             <div class="section-divider"></div>
                         </div>
                         <div class="section-content">
-                            <p>All content on Afrikart.com, including but not limited to text, graphics, logos, and images,
+                            <p>All content on Royalit.com, including but not limited to text, graphics, logos, and images,
                                 is protected by copyright and other intellectual property laws.</p>
                             <ul class="terms-list">
                                 <li>Artists retain ownership of their original artwork</li>
-                                <li>Platform content is owned by Afrikart.com or licensed to us</li>
+                                <li>Platform content is owned by Royalit.com or licensed to us</li>
                                 <li>Users may not reproduce content without permission</li>
                                 <li>Unauthorized use may result in legal action</li>
                             </ul>
@@ -157,7 +157,7 @@
                             <div class="section-divider"></div>
                         </div>
                         <div class="section-content">
-                            <p>Afrikart.com provides our platform "as is" and makes no warranties regarding the accuracy,
+                            <p>Royalit.com provides our platform "as is" and makes no warranties regarding the accuracy,
                                 completeness, or reliability of content or services.</p>
                             <ul class="terms-list">
                                 <li>We are not liable for damages arising from platform use</li>
@@ -183,7 +183,7 @@
                                     </div>
                                     <div class="contact-details">
                                         <h5>Email</h5>
-                                        <p>{{ settings::setting('site_email') ?? 'support@afrikart.com' }}</p>
+                                        <p>{{ settings::setting('site_email') ?? 'support@royalit.com' }}</p>
                                     </div>
                                 </div>
                                 <div class="contact-method">

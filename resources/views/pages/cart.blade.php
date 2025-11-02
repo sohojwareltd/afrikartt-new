@@ -1,22 +1,22 @@
-@section('title', 'Shopping Cart | Afrikart E-commerce')
+@section('title', 'Shopping Cart | Royalit E-commerce')
 @section('meta_description',
-    'Review and manage your shopping cart items on Afrikart E-commerce. Secure checkout, easy
+    'Review and manage your shopping cart items on Royalit E-commerce. Secure checkout, easy
     quantity updates, and instant price calculations.')
-@section('meta_keywords', 'shopping cart, cart, checkout, ecommerce, online shopping, Afrikart')
+@section('meta_keywords', 'shopping cart, cart, checkout, ecommerce, online shopping, Royalit')
 @section('canonical_url', route('cart'))
 @section('meta_og')
-    <meta property="og:title" content="Shopping Cart | Afrikart E-commerce">
+    <meta property="og:title" content="Shopping Cart | Royalit E-commerce">
     <meta property="og:description"
-        content="Review and manage your shopping cart items on Afrikart E-commerce. Secure checkout, easy quantity updates, and instant price calculations.">
+        content="Review and manage your shopping cart items on Royalit E-commerce. Secure checkout, easy quantity updates, and instant price calculations.">
     <meta property="og:image" content="{{ Settings::setting('site_logo') }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
 @endsection
 @section('meta_twitter')
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Shopping Cart | Afrikart E-commerce">
+    <meta name="twitter:title" content="Shopping Cart | Royalit E-commerce">
     <meta name="twitter:description"
-        content="Review and manage your shopping cart items on Afrikart E-commerce. Secure checkout, easy quantity updates, and instant price calculations.">
+        content="Review and manage your shopping cart items on Royalit E-commerce. Secure checkout, easy quantity updates, and instant price calculations.">
     <meta name="twitter:image" content="{{ Settings::setting('site_logo') }}">
 @endsection
 

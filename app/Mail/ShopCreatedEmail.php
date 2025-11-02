@@ -28,7 +28,7 @@ class ShopCreatedEmail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your Shop is Live on Afrikart',
+            subject: 'Your Shop is Live on Royalit',
         );
     }
 

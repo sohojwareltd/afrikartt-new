@@ -418,9 +418,9 @@
         <div class="email-header">
             <div class="logo-section">
                 @if (Settings::setting('site_logo'))
-                    <img src="{{ Settings::setting('site_logo') }}" alt="Afrikart Logo" class="logo">
+                    <img src="{{ Settings::setting('site_logo') }}" alt="Royalit Logo" class="logo">
                 @else
-                    <div style="font-size: 24px; font-weight: bold; color: white;">Afrikart</div>
+                    <div style="font-size: 24px; font-weight: bold; color: white;">Royalit</div>
                 @endif
             </div>
             <h1 class="header-title">🛍️ New Order Received!</h1>
@@ -610,7 +610,7 @@
         <!-- Footer -->
         <div class="email-footer">
             <div class="footer-content">
-                <h4>Afrikart E-commerce Admin</h4>
+                <h4>Royalit E-commerce Admin</h4>
                 <p>Your trusted e-commerce platform</p>
             </div>
             <div class="footer-links">
@@ -620,7 +620,7 @@
             </div>
             <div class="footer-contact">
                 <p>This is an automated notification. Please do not reply to this email.</p>
-                <p>© {{ date('Y') }} Afrikart E-commerce. All rights reserved.</p>
+                <p>© {{ date('Y') }} Royalit E-commerce. All rights reserved.</p>
             </div>
         </div>
     </div>

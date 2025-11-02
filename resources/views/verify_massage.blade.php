@@ -18,7 +18,7 @@
                 <i class="fas fa-paper-plane me-2"></i> Resend email
             </a>
             <div class="text-center text-secondary small mt-2">
-                Need help? <a href="mailto:support@afrikart.com"
+                Need help? <a href="mailto:support@royalit.com"
                     style="color:var(--accent-color);text-decoration:underline;">Contact
                     support</a>
             </div>

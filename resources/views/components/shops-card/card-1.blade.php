@@ -446,11 +446,11 @@
         align-items: center;
         justify-content: center;
         gap: 6px;
-        padding: 8px 12px;
+        padding: 9px 12px !important;
+        border-radius: 3px !important;
         background: var(--accent-color) !important;
         color: var(--text-light);
         text-decoration: none;
-        border-radius: 8px;
         font-weight: 600;
         font-size: 0.8rem;
         transition: all 0.3s ease;
@@ -466,11 +466,11 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 8px 12px;
+        padding: 9px 12px !important;
+        border-radius: 3px !important;
         color: var(--text-light) !important;
-        border: 1px solid var(--accent-color) !important;
-        background: var(--accent-color) !important;
-        border-radius: 8px;
+        border: 1px solid var(--burgundy) !important;
+        background: var(--burgundy) !important;
         font-weight: 600;
         font-size: 0.8rem;
         transition: all 0.3s ease;
@@ -478,10 +478,10 @@
     }
 
     .shop-follow-btn:hover {
-        background: var(--primary-dark) !important;
+        background: var(--burgundy) !important;
         color: var(--text-light) !important;
         transform: translateY(-1px);
-        border-color: var(--primary-dark) !important;
+        border-color: var(--burgundy) !important;
     }
 
     /* Responsive adjustments */

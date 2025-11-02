@@ -314,7 +314,7 @@
                             <tr style="border-top: 2px solid black">
                                 <td class="p-1 d-flex align-items-center">
 
-                                    <span class="ms-1">Thank You! -Afrikart E-commerce</span>
+                                    <span class="ms-1">Thank You! -Royalit E-commerce</span>
                                 </td>
                                 <td class="text-end " style="text-transform:uppercase">usd</td>
                             </tr>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Verification Pending - Afrikart E-commerce')
+@section('title', 'Verification Pending - Royalit E-commerce')
 
 @section('css')
     <style>
@@ -423,7 +423,7 @@
     <div class="container d-flex justify-content-center align-items-center">
         <div class="verification-container my-5">
             <div class="verification-header">
-                <div class="logo"><span>Afrikart</span> E-commerce</div>
+                <div class="logo"><span>Royalit</span> E-commerce</div>
                 <h1>Account Verification</h1>
                 <div class="status-badge">
                     <i class="fas fa-hourglass-half"></i>
@@ -537,7 +537,7 @@
             </div>
 
             <div class="verification-footer">
-                <p>© 2023 Afrikart E-commerce. All rights reserved.</p>
+                <p>© 2023 Royalit E-commerce. All rights reserved.</p>
                 <div class="contact-info">
                     Need help? Contact us at <a
                         href="mailto:{{ Settings::setting('admin_email') }}">{{ Settings::setting('admin_email') }}</a>

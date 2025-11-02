@@ -805,7 +805,7 @@
         <!-- Footer -->
         <div class="email-footer">
             <div class="footer-content">
-                <h4 class="footer-title">Afrikart Vendor Portal</h4>
+                <h4 class="footer-title">Royalit Vendor Portal</h4>
                 <p class="footer-subtitle">Growing your business, one order at a time</p>
             </div>
             <div class="footer-links">
@@ -816,8 +816,8 @@
                 <a href="{{ url('/vendor/support') }}">Support</a> --}}
             </div>
             <div class="footer-contact">
-                <p>Questions? Contact our vendor support team at vendor-support@Afrikart.com</p>
-                <p>© {{ date('Y') }} Afrikart E-commerce. All rights reserved.</p>
+                <p>Questions? Contact our vendor support team at vendor-support@Royalit.com</p>
+                <p>© {{ date('Y') }} Royalit E-commerce. All rights reserved.</p>
             </div>
         </div>
     </div>

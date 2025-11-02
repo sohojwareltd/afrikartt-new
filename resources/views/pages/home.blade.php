@@ -1,22 +1,22 @@
 @extends('layouts.app')
-@section('title', 'Afrikart E-commerce | Home')
+@section('title', 'Royalit E-commerce | Home')
 @section('meta_description',
-    'Discover trending products, top shops, and exclusive deals on Afrikart E-commerce. Shop by
+    'Discover trending products, top shops, and exclusive deals on Royalit E-commerce. Shop by
     category and enjoy a seamless online shopping experience.')
-@section('meta_keywords', 'ecommerce, online shopping, trending products, best shops, Afrikart')
+@section('meta_keywords', 'ecommerce, online shopping, trending products, best shops, Royalit')
 @section('meta_og')
-    <meta property="og:title" content="Afrikart E-commerce | Home">
+    <meta property="og:title" content="Royalit E-commerce | Home">
     <meta property="og:description"
-        content="Discover trending products, top shops, and exclusive deals on Afrikart E-commerce. Shop by category and enjoy a seamless online shopping experience.">
+        content="Discover trending products, top shops, and exclusive deals on Royalit E-commerce. Shop by category and enjoy a seamless online shopping experience.">
     <meta property="og:image" content="{{ Settings::setting('site_logo') }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
 @endsection
 @section('meta_twitter')
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Afrikart E-commerce | Home">
+    <meta name="twitter:title" content="Royalit E-commerce | Home">
     <meta name="twitter:description"
-        content="Discover trending products, top shops, and exclusive deals on Afrikart E-commerce. Shop by category and enjoy a seamless online shopping experience.">
+        content="Discover trending products, top shops, and exclusive deals on Royalit E-commerce. Shop by category and enjoy a seamless online shopping experience.">
     <meta name="twitter:image" content="{{ Settings::setting('site_logo') }}">
 @endsection
 @section('canonical_url', route('homepage'))
@@ -760,11 +760,11 @@
             display: inline-flex;
             align-items: center;
             gap: 12px;
-            padding: 7px 14px;
+            padding: 9px 12px;
+            border-radius: 3px;
             background: var(--accent-color);
             color: var(--text-light);
             text-decoration: none;
-            border-radius: 50px;
             font-weight: 600;
             font-size: 1.1rem;
             letter-spacing: 0.5px;

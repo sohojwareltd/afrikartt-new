@@ -116,11 +116,11 @@
             <div class="row justify-content-center">
                 <div class="col-md-7 col-12  text-center mb-4">
                     <div class="register-header py-4 mb-0">
-                        <h1 class="mb-1">Get Started with <span style="font-weight:700;">Afrikart Ecommerce</span></h1>
+                        <h1 class="mb-1">Get Started with <span style="font-weight:700;">Royalit Ecommerce</span></h1>
                         <p class="mb-0">Create your free account</p>
                     </div>
                     <div class="alert alert-primary mx-auto mt-4" role="alert" style="max-width: 622px;">
-                        Join Afrikart Ecommerce and start shopping or selling easily.
+                        Join Royalit Ecommerce and start shopping or selling easily.
                     </div>
                 </div>
                 <div class="col-md-7 col-12">

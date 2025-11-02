@@ -24,6 +24,7 @@
 .ec-select-inner {
     height: 54px !important;
 }
+
 .ec-select-inner-cat {
     height: 40px !important;
 }
@@ -32,9 +33,11 @@
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
 }
+
 .header-top {
     margin-top: 10px;
 }
+
 .sellers-dropdown {
     /* height: 32px !important; */
     width: auto !important;
@@ -42,12 +45,15 @@
     background-color: var(--bg-dark);
     border-radius: 8px;
 }
+
 .sellers-dropdown select {
     color: var(--text-light) !important;
 }
+
 .sellers-dropdown option {
     color: var(--text-primary) !important;
 }
+
 .sellers-dropdown::after {
     color: var(--text-light) !important;
 }
@@ -66,6 +72,7 @@
     #desktop-search {
         display: none;
     }
+
     .header-search .form-control {
         border-top-left-radius: 10px !important;
         border-bottom-left-radius: 10px !important;
@@ -81,6 +88,7 @@
         width: 50px !important;
     }
 }
+
 .header-search .form-control {
     min-height: 40px !important;
     height: 40px !important;
@@ -122,21 +130,26 @@ select {
     .search-bar {
         width: 200px;
     }
+
     .margin-left {
         margin-left: 0 !important;
     }
 }
+
 @media (min-width: 992px) {
     .search-bar {
         width: 350px;
     }
+
     .margin-left {
         margin-left: 0.5rem !important;
     }
+
     .header-top {
         display: none;
     }
 }
+
 .mid-header::after {
     content: "\f107";
     position: absolute;
@@ -160,9 +173,11 @@ select {
     align-items: center;
     color: var(--text-light) !important;
 }
+
 .mid-header {
     width: 280px !important;
 }
+
 .mid-header::before {
     content: "\f009";
     position: absolute;
@@ -186,12 +201,15 @@ select {
     align-items: center;
     color: var(--text-light) !important;
 }
+
 .mid-header select {
     margin-left: 30px !important;
 }
+
 .mid-bn {
     background-color: var(--bg-light) !important;
 }
+
 .related-product-sec-title {
     font-size: 24px;
     border-left: 5px solid var(--primary-color);
@@ -202,9 +220,11 @@ select {
     background-color: var(--bg-secondary);
     border-radius: 30px !important;
 }
+
 .continue a:hover {
     color: var(--text-light) !important;
 }
+
 @media only screen and (min-width: 575px) and (max-width: 991px) {
     .mobile-logo {
         display: none !important;
@@ -215,34 +235,42 @@ select {
     .tab-logo {
         display: none;
     }
+
     .ec-gl-btn p {
         font-size: 12px !important;
     }
+
     .sort-by {
         font-size: 11px;
     }
+
     #ec-select {
         font-size: 12px !important;
     }
+
     .cart-heading {
         margin-top: 10px !important;
         text-align: center;
         margin-bottom: 10px !important;
     }
+
     .hr {
         margin-top: 10px !important;
         margin-bottom: 10px !important;
     }
+
     .ec-cart-rightside {
         margin-top: 0 !important;
     }
 }
+
 .eci-facebook,
 .eci-linkedin {
     color: var(--text-light);
     background-color: #0072b1;
     border: 1px solid;
 }
+
 .eci-facebook:hover,
 .eci-linkedin:hover {
     transition: 0.7s;
@@ -250,32 +278,39 @@ select {
     background-color: var(--bg-secondary);
     border: 1px solid;
 }
+
 .eci-twitter {
     color: blue;
     background-color: var(--bg-secondary);
     border: 1px solid;
 }
+
 .eci-twitter:hover {
     transition: 0.9s;
     color: var(--text-light);
     background-color: blue;
 }
+
 .eci-instagram {
     color: #e1306c;
     background-color: var(--bg-secondary);
     border: 1px solid;
 }
+
 .eci-instagram:hover {
     transition: 0.7s;
     color: var(--text-light);
     background-color: #e1306c;
 }
+
 .ec-footer .footer-top .ec-footer-widget .ec-footer-heading {
     color: var(--text-dark) !important;
 }
+
 .ec-footer .footer-top .ec-footer-widget .ec-footer-links .ec-footer-link a {
     color: var(--text-secondary) !important;
 }
+
 /* Modern Shops Page Design */
 .modern-shops-container {
     background: var(--bg-light);
@@ -469,7 +504,7 @@ select {
     vertical-align: middle;
 }
 
-.rating-option input[type="checkbox"]:checked ~ .rating-checkmark {
+.rating-option input[type="checkbox"]:checked~.rating-checkmark {
     background: var(--primary-color);
     border-color: var(--primary-color);
 }
@@ -480,7 +515,7 @@ select {
     display: none;
 }
 
-.rating-option input[type="checkbox"]:checked ~ .rating-checkmark:after {
+.rating-option input[type="checkbox"]:checked~.rating-checkmark:after {
     display: block;
 }
 
@@ -497,7 +532,7 @@ select {
 }
 
 .rating-option:hover,
-.rating-option input[type="checkbox"]:focus ~ .rating-checkmark {
+.rating-option input[type="checkbox"]:focus~.rating-checkmark {
     background: var(--bg-light);
     box-shadow: 0 2px 8px var(--shadow-primary);
 }
@@ -703,11 +738,14 @@ select {
     position: relative;
     z-index: 1;
 }
+
 .btn-burgundy {
     background-color: var(--burgundy) !important;
     color: var(--text-light) !important;
     border-color: var(--burgundy) !important;
+    border-radius: 3px !important;
 }
+
 .btn-burgundy:hover {
     background-color: var(--burgundy-hover) !important;
     border-color: var(--burgundy-hover) !important;

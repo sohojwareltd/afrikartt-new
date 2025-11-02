@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Contact Message - Afrikart</title>
+    <title>New Contact Message - Royalit</title>
     <style>
         /* Reset and Base Styles */
         * {
@@ -393,9 +393,9 @@
             <div class="header-content">
                 <div class="logo-section">
                     <div class="logo-icon">
-                        <img src="{{ Settings::setting('site_logo') }}" alt="Afrikart Logo" height="40">
+                        <img src="{{ Settings::setting('site_logo') }}" alt="Royalit Logo" height="40">
                     </div>
-                    <h1 class="company-name">Afrikart</h1>
+                    <h1 class="company-name">Royalit</h1>
                     <p class="header-subtitle">African Art Marketplace</p>
                 </div>
                 <div class="notification-badge">
@@ -409,7 +409,7 @@
             <div class="message-intro">
                 <h2 style="color: #585353">🔔 New Contact Form Submission</h2>
                 <p class="intro-text">
-                    A new message has been submitted through the Afrikart contact form.
+                    A new message has been submitted through the Royalit contact form.
                     Please review the details below and respond promptly to maintain our excellent customer service
                     standards.
                 </p>
@@ -501,7 +501,7 @@
         <div class="action-section">
             <h3 class="action-title">⚡ Quick Response</h3>
             <p class="action-subtitle">Click below to respond directly to this customer inquiry</p>
-            <a href="mailto:{{ $contactData['email'] ?? '' }}?subject=Re: Your Afrikart Inquiry{{ !empty($contactData['order_number']) ? ' - Order ' . $contactData['order_number'] : '' }}&body=Dear {{ $contactData['first_name'] ?? 'Valued Customer' }},%0D%0A%0D%0AThank you for contacting Afrikart. We have received your message and will be happy to assist you.%0D%0A%0D%0ABest regards,%0D%0AAfrikart Support Team"
+            <a href="mailto:{{ $contactData['email'] ?? '' }}?subject=Re: Your Royalit Inquiry{{ !empty($contactData['order_number']) ? ' - Order ' . $contactData['order_number'] : '' }}&body=Dear {{ $contactData['first_name'] ?? 'Valued Customer' }},%0D%0A%0D%0AThank you for contacting Royalit. We have received your message and will be happy to assist you.%0D%0A%0D%0ABest regards,%0D%0ARoyalit Support Team"
                 class="btn-primary">
                 <!-- Email Icon SVG -->
                 <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-label="Email Icon"
@@ -519,20 +519,20 @@
         <!-- Footer -->
         <div class="email-footer">
             <div class="footer-content">
-                <h4 class="footer-title">Afrikart Support Team</h4>
+                <h4 class="footer-title">Royalit Support Team</h4>
                 <p class="footer-text">
-                    This email was automatically generated from the Afrikart contact form.
+                    This email was automatically generated from the Royalit contact form.
                     Please respond to customer inquiries within 2 hours to maintain our service standards.
                 </p>
 
                 <div class="footer-links">
                     <a href="{{ route('homepage') }}" class="footer-link">Visit Website</a>
                     <a href="{{ route('faqs') }}" class="footer-link">Support Center</a>
-                    <a href="mailto:support@afrikart.com" class="footer-link">Contact Admin</a>
+                    <a href="mailto:support@royalit.com" class="footer-link">Contact Admin</a>
                 </div>
 
                 <div class="footer-bottom">
-                    <p>&copy; {{ date('Y') }} Afrikart. All rights reserved.</p>
+                    <p>&copy; {{ date('Y') }} Royalit. All rights reserved.</p>
                     <p>African Art Marketplace - Connecting Artists with the World</p>
                 </div>
             </div>

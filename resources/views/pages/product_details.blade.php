@@ -400,12 +400,12 @@
     </style>
 @endsection
 @section('canonical_url', route('product_details', $mainProduct->slug))
-@section('title', $mainProduct->name . ' | Afrikart E-commerce')
+@section('title', $mainProduct->name . ' | Royalit E-commerce')
 @section('meta_description', Str::limit(strip_tags($mainProduct->short_description ?? $mainProduct->description), 150))
 @section('meta_keywords', $mainProduct->name . ', ' . ($mainProduct->prodcats->pluck('name')->implode(', ') ??
     'product'))
 @section('meta_og')
-    <meta property="og:title" content="{{ $mainProduct->name }} | Afrikart E-commerce">
+    <meta property="og:title" content="{{ $mainProduct->name }} | Royalit E-commerce">
     <meta property="og:description"
         content="{{ Str::limit(strip_tags($mainProduct->short_description ?? $mainProduct->description), 150) }}">
     <meta property="og:image" content="{{ Storage::url($mainProduct->image) }}">
@@ -414,7 +414,7 @@
 @endsection
 @section('meta_twitter')
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $mainProduct->name }} | Afrikart E-commerce">
+    <meta name="twitter:title" content="{{ $mainProduct->name }} | Royalit E-commerce">
     <meta name="twitter:description"
         content="{{ Str::limit(strip_tags($mainProduct->short_description ?? $mainProduct->description), 150) }}">
     <meta name="twitter:image" content="{{ Storage::url($mainProduct->image) }}">

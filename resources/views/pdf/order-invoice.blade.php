@@ -238,7 +238,7 @@
         </div>
 
         <div class="footer">
-            <p>Afrikart E-commerce | New York, USA | Info@Afrikart.com</p>
+            <p>Royalit E-commerce | New York, USA | Info@Royalit.com</p>
             <p>This is a computer generated invoice. No signature required.</p>
         </div>
     </div>

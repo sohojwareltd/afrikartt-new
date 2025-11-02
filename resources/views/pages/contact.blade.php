@@ -109,7 +109,7 @@
                                     <input class="form-check-input" type="checkbox" id="privacy_agree" name="privacy_agree"
                                         required>
                                     <label class="form-check-label ms-2" for="privacy_agree">
-                                        I agree to Afrikart's <a href="{{ route('privacy.policy') }}" target="_blank"
+                                        I agree to Royalit's <a href="{{ route('privacy.policy') }}" target="_blank"
                                             class="policy-link">Privacy Policy</a> and consent to the processing of my
                                         personal data for the purpose of this inquiry. <span class="required">*</span>
                                     </label>
@@ -214,7 +214,7 @@
                                     <div class="office-details">
                                         <h6>North America HQ</h6>
                                         <p>
-                                            Afrikart Inc.<br>
+                                            Royalit Inc.<br>
                                             123 Art District<br>
                                             New York, NY 10001<br>
                                             United States

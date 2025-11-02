@@ -405,7 +405,7 @@
 </head>
 
 <body>
-    <div class="watermark">AFRIKART</div>
+    <div class="watermark">Royalit</div>
     <div class="container">
         <header style="background-color: #2b6cb0 !important; color: white !important; padding: 25px;">
             <div class="logo-container" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -610,7 +610,7 @@
         </div>
 
         <footer>
-            <p>© 2023 Afrikart. All rights reserved. | Vendor Verification Report</p>
+            <p>© 2023 Royalit. All rights reserved. | Vendor Verification Report</p>
             <p>This document contains confidential information and is intended only for authorized personnel.</p>
         </footer>
     </div>

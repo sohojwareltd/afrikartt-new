@@ -760,7 +760,7 @@
             <div class="agreement-section">
                 {{-- <div class="policy-card">
                     <div class="policy-header">
-                        <h4><i class="fas fa-gavel"></i> Afrikart Vendor Terms & Conditions</h4>
+                        <h4><i class="fas fa-gavel"></i> Royalit Vendor Terms & Conditions</h4>
                         <button type="button" class="btn-toggle-policy">
                             <i class="fas fa-chevron-down"></i>Read Full Terms
                         </button>
@@ -772,11 +772,11 @@
                             <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">
                                 Terms and Conditions
                             </a>
-                            carefully before using the Afrikart platform.
+                            carefully before using the Royalit platform.
                         </p>
                         <p>
                             This includes the complete vendor agreement, terms of service, privacy policy,
-                            and all legal requirements for selling on Afrikart.
+                            and all legal requirements for selling on Royalit.
                         </p>
                     </section>
 
@@ -784,7 +784,7 @@
                     <div class="form-group checkbox-group">
                         <label class="checkbox-label">
                             <input type="checkbox" name="agreement[terms]" value="1" required>
-                            <span>I have read and agree to Afrikart Vendor Terms & Conditions *</span>
+                            <span>I have read and agree to Royalit Vendor Terms & Conditions *</span>
                         </label>
                     </div>
                 </div> --}}

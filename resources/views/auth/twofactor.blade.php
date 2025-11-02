@@ -161,7 +161,7 @@
                 <img src="{{ asset('/assets/img/login-bg.png') }}" alt="">
             </div>
             <div class="login-card">
-                <span class="brand-logo">Afrikart Ecommerce</span>
+                <span class="brand-logo">Royalit Ecommerce</span>
                 <div class="login-header">
                     <h1>Verify your login</h1>
                     <p>Enter the 6-digit code we sent to your email</p>

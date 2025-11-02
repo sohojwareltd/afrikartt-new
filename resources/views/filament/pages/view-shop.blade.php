@@ -541,7 +541,7 @@
                                                                                                 data-choice="active">
                                                                                                 <option value="10892"
                                                                                                     data-custom-properties="[object Object]">
-                                                                                                    Afrikart/option>
+                                                                                                    Royalit/option>
                                                                                             </select>
                                                                                             <div
                                                                                                 class="choices__list choices__list--single">
@@ -552,7 +552,7 @@
                                                                                                     data-custom-properties="[object Object]"
                                                                                                     aria-selected="true"
                                                                                                     data-deletable="">
-                                                                                                    Afrikart<button
+                                                                                                    Royalit<button
                                                                                                         type="button"
                                                                                                         class="choices__button"
                                                                                                         aria-label="Remove item: '10892'"
@@ -585,7 +585,7 @@
                                                                                                     data-select-text=""
                                                                                                     data-choice-selectable=""
                                                                                                     aria-selected="true">
-                                                                                                    Afrikart</div>
+                                                                                                    Royalit</div>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>

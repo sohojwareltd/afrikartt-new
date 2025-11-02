@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $shop->name . ' | Shop on Afrikart E-commerce')
+@section('title', $shop->name . ' | Shop on Royalit E-commerce')
 @section('meta_description',
     Str::limit(
     $shop->description ??
@@ -7,25 +7,25 @@
     'Shop ' .
     $shop->name .
     ' on
-    Afrikart E-commerce. Quality products, great deals, and excellent customer service.'),
+    Royalit E-commerce. Quality products, great deals, and excellent customer service.'),
     160,
     ))
-@section('meta_keywords', $shop->name . ', shop, store, ecommerce, online shopping, Afrikart, ' . $shop->city . ', ' .
+@section('meta_keywords', $shop->name . ', shop, store, ecommerce, online shopping, Royalit, ' . $shop->city . ', ' .
     $shop->state)
 @section('canonical_url', route('store_front', $shop->slug))
 @section('meta_og')
-    <meta property="og:title" content="{{ $shop->name }} | Shop on Afrikart E-commerce">
+    <meta property="og:title" content="{{ $shop->name }} | Shop on Royalit E-commerce">
     <meta property="og:description"
-        content="{{ Str::limit($shop->description ?? ($shop->short_description ?? 'Shop ' . $shop->name . ' on Afrikart E-commerce. Quality products, great deals, and excellent customer service.'), 160) }}">
+        content="{{ Str::limit($shop->description ?? ($shop->short_description ?? 'Shop ' . $shop->name . ' on Royalit E-commerce. Quality products, great deals, and excellent customer service.'), 160) }}">
     <meta property="og:image" content="{{ Storage::url($shop->logo) }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
 @endsection
 @section('meta_twitter')
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $shop->name }} | Shop on Afrikart E-commerce">
+    <meta name="twitter:title" content="{{ $shop->name }} | Shop on Royalit E-commerce">
     <meta name="twitter:description"
-        content="{{ Str::limit($shop->description ?? ($shop->short_description ?? 'Shop ' . $shop->name . ' on Afrikart E-commerce. Quality products, great deals, and excellent customer service.'), 160) }}">
+        content="{{ Str::limit($shop->description ?? ($shop->short_description ?? 'Shop ' . $shop->name . ' on Royalit E-commerce. Quality products, great deals, and excellent customer service.'), 160) }}">
     <meta name="twitter:image" content="{{ Storage::url($shop->logo) }}">
 @endsection
 

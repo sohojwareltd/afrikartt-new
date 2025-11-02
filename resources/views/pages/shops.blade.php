@@ -18,24 +18,24 @@
     $currentFilterProducts = request('filter_products', 'most-sold');
 @endphp
 
-@section('title', 'All Shops | Afrikart E-commerce')
+@section('title', 'All Shops | Royalit E-commerce')
 @section('meta_description',
-    'Browse all shops on Afrikart E-commerce. Find top-rated vendors, trending stores, and the
+    'Browse all shops on Royalit E-commerce. Find top-rated vendors, trending stores, and the
     best deals in one place.')
-@section('meta_keywords', 'shops, vendors, ecommerce, online stores, Afrikart')
+@section('meta_keywords', 'shops, vendors, ecommerce, online stores, Royalit')
 @section('meta_og')
-    <meta property="og:title" content="All Shops | Afrikart E-commerce">
+    <meta property="og:title" content="All Shops | Royalit E-commerce">
     <meta property="og:description"
-        content="Browse all shops on Afrikart E-commerce. Find top-rated vendors, trending stores, and the best deals in one place.">
+        content="Browse all shops on Royalit E-commerce. Find top-rated vendors, trending stores, and the best deals in one place.">
     <meta property="og:image" content="{{ Settings::setting('site_logo') }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
 @endsection
 @section('meta_twitter')
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="All Shops | Afrikart E-commerce">
+    <meta name="twitter:title" content="All Shops | Royalit E-commerce">
     <meta name="twitter:description"
-        content="Browse all shops on Afrikart E-commerce. Find top-rated vendors, trending stores, and the best deals in one place.">
+        content="Browse all shops on Royalit E-commerce. Find top-rated vendors, trending stores, and the best deals in one place.">
     <meta name="twitter:image" content="{{ Settings::setting('site_logo') }}">
 @endsection
 @section('canonical_url', route('shops'))

@@ -16,7 +16,7 @@
             {{-- Announcement Marquee --}}
             <div class="announcement-wrapper overflow-hidden position-relative flex-grow-1 ms-3">
                 <div class="announcement-text">
-                    {{ Settings::setting('site_announcement') ? Settings::setting('site_announcement') : 'Afrikart’s Grand Opening Is Here! Enjoy 15% OFF Across Our Entire Collection of Handcrafted African Goods.' }}
+                    {{ Settings::setting('site_announcement') ? Settings::setting('site_announcement') : 'Royalit Grand Opening Is Here! Enjoy 15% OFF Across Our Entire Collection of Handcrafted African Goods.' }}
                 </div>
             </div>
         </div>
@@ -44,7 +44,7 @@
                 {{-- Logo Column --}}
                 <div class="col-auto">
                     <a href="{{ route('homepage') }}" class="navbar-brand">
-                        <img src="{{ Settings::setting('site_logo') }}" alt="Afrikart" style="height: 48px;">
+                        <img src="{{ Settings::setting('site_logo') }}" alt="Royalit" style="height: 48px;">
                     </a>
                 </div>
 
@@ -60,10 +60,8 @@
                 <div class="col-md">
                     <form action="{{ route('shops') }}" method="get">
                         <div class="input-group">
-                            <input style="border-top-left-radius: 50px; border-bottom-left-radius: 50px;" type="text"
-                                class="form-control" name="search" placeholder="Search products..."
-                                value="{{ request('search') }}">
-                            <select class="form-select border-0" name="category" style="max-width: 200px;">
+                            <select class="form-select border-0 bg-black h-auto" name="category"
+                                style="max-width: 200px; color: var(--bg-light) !important;">
                                 <option value="" class="text-dark">All Categories</option>
                                 @foreach ($categories as $category)
                                     @if ($category->childrens->count())
@@ -83,9 +81,14 @@
                                     @endif
                                 @endforeach
                             </select>
-                            <button style="border-top-right-radius: 50px; border-bottom-right-radius: 50px;"
-                                class="btn btn-success px-3" type="submit" title="Search">
-                                <i class="fas fa-search me-2"></i>
+
+                            <input type="text"
+                                class="form-control" name="search" placeholder="Search products..."
+                                value="{{ request('search') }}">
+
+                            <button style="border-top-right-radius: 3px; border-bottom-right-radius: 3px;"
+                                class="btn btn-success px-3 h-auto" type="submit" title="Search">
+                                <i class="fas fa-search me-2"></i> <span class="d-none d-md-inline">Search</span>
                             </button>
                         </div>
                     </form>
@@ -184,7 +187,7 @@
                     {{-- Logo Column --}}
                     <div class="col-auto">
                         <a href="{{ route('homepage') }}" class="navbar-brand p-0">
-                            <img src="{{ Settings::setting('site_logo') }}" alt="Afrikart" style="height: 40px;">
+                            <img src="{{ Settings::setting('site_logo') }}" alt="Royalit" style="height: 40px;">
                         </a>
                     </div>
 
@@ -229,7 +232,6 @@
                                 <input type="text" class="form-control border-0" name="search"
                                     placeholder="Search products..." value="{{ request('search') }}">
 
-                                {{-- Categories Dropdown is now included in mobile search --}}
                                 <select class="form-select border-start border-end" name="category"
                                     style="max-width: 130px;">
                                     <option value="" class="text-dark">All</option>
@@ -251,6 +253,7 @@
                                         @endif
                                     @endforeach
                                 </select>
+                                {{-- Categories Dropdown is now included in mobile search --}}
 
                                 <button class="btn btn-success" type="submit" title="Search"><i
                                         class="fas fa-search"></i></button>
@@ -263,7 +266,7 @@
     </div>
 
 
-    <div class="container-fluid py-2 px-3" style="background-color: #415f4247 !important;">
+    {{-- <div class="container-fluid py-2 px-3" style="background-color: #415f4247 !important;">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12 px-0">
@@ -271,14 +274,12 @@
                         <div class="d-flex gap-2 category-scroll">
                             @foreach ($categories as $category)
                                 @if ($category->childrens->count())
-                                    {{-- Category with Sub-categories (Modal Trigger) --}}
                                     <button type="button"
                                         class="category-btn flex-shrink-0 @if (request('category') == $category->slug) active @endif"
                                         data-bs-toggle="modal" data-bs-target="#categoryModal-{{ $category->id }}">
                                         {{ $category->name }}
                                     </button>
 
-                                    {{-- Category Modal --}}
                                     <div class="modal fade category-modal" id="categoryModal-{{ $category->id }}"
                                         tabindex="-1" aria-hidden="true">
                                         <div
@@ -307,7 +308,6 @@
                                         </div>
                                     </div>
                                 @else
-                                    {{-- Simple Category Link --}}
                                     <a href="{{ route('shops', ['category' => $category->slug]) }}"
                                         class="category-btn flex-shrink-0 @if (request('category') == $category->slug) active @endif">
                                         {{ $category->name }}
@@ -319,7 +319,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <nav class="navbar navbar-expand-md navbar-light bg-light shadow">
         <div class="container">
@@ -719,14 +719,14 @@
             font-size: 1.5rem;
             position: relative;
             transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 8px var(--shadow-primary);
+            /* box-shadow: 0 2px 8px var(--shadow-primary); */
             text-decoration: none;
         }
 
         .header-icon-btn:hover,
         .header-icon-btn:focus {
             color: var(--primary-dark) !important;
-            box-shadow: 0 4px 16px var(--shadow-primary);
+            /* box-shadow: 0 4px 16px var(--shadow-primary);  */
         }
 
         .header-icon-badge {
@@ -807,7 +807,8 @@
         .signup-btn {
             width: auto !important;
             height: 44px;
-            border-radius: 22px !important;
+            /* border-radius: 22px !important; */
+            border: 0px !important;
             padding: 0.5rem 1rem;
             display: flex;
             align-items: center;

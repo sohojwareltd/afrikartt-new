@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Payment Cancelled | Afrikart E-commerce')
+@section('title', 'Payment Cancelled | Royalit E-commerce')
 @section('meta_description',
-    'Your payment was cancelled. You can try again or continue shopping on Afrikart
+    'Your payment was cancelled. You can try again or continue shopping on Royalit
     E-commerce.')
-@section('meta_keywords', 'payment cancelled, payment failed, checkout, ecommerce, Afrikart')
+@section('meta_keywords', 'payment cancelled, payment failed, checkout, ecommerce, Royalit')
 @section('canonical_url', route('payment.cancel'))
 
 @section('meta_og')
-    <meta property="og:title" content="Payment Cancelled | Afrikart E-commerce">
+    <meta property="og:title" content="Payment Cancelled | Royalit E-commerce">
     <meta property="og:description"
-        content="Your payment was cancelled. You can try again or continue shopping on Afrikart E-commerce.">
+        content="Your payment was cancelled. You can try again or continue shopping on Royalit E-commerce.">
     <meta property="og:image" content="{{ Settings::setting('site_logo') }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
@@ -18,9 +18,9 @@
 
 @section('meta_twitter')
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Payment Cancelled | Afrikart E-commerce">
+    <meta name="twitter:title" content="Payment Cancelled | Royalit E-commerce">
     <meta name="twitter:description"
-        content="Your payment was cancelled. You can try again or continue shopping on Afrikart E-commerce.">
+        content="Your payment was cancelled. You can try again or continue shopping on Royalit E-commerce.">
     <meta name="twitter:image" content="{{ Settings::setting('site_logo') }}">
 @endsection
 
