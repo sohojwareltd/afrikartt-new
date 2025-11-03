@@ -10,7 +10,7 @@ class MenuItem extends Model
     use HasFactory;
 
     protected $fillable = [
-        'menu_id', 'label', 'url', 'target', 'icon_class', 'color', 'parent_id', 'route', 'parameters', 'order',
+        'menu_id', 'title', 'url', 'target', 'icon_class', 'color', 'parent_id', 'route', 'parameters', 'order',
     ];
 
     public function menu()

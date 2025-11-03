@@ -15,11 +15,13 @@
             --shadow-lg: var(--shadow-dark);
             --transition: all 0.3s ease;
         }
+
         .login-wrapper {
             display: flex;
             min-height: 100vh;
             background-color: var(--bg-light);
         }
+
         .login-content {
             flex: 1;
             display: flex;
@@ -27,6 +29,7 @@
             justify-content: center;
             padding: 2rem;
         }
+
         .login-card {
             width: 100%;
             max-width: 400px;
@@ -35,6 +38,7 @@
             box-shadow: var(--shadow-medium);
             padding: 2.5rem;
         }
+
         .brand-logo {
             font-size: 1.75rem;
             font-weight: 700;
@@ -43,23 +47,28 @@
             text-align: center;
             display: block;
         }
+
         .login-header {
             text-align: center;
             margin-bottom: 2rem;
         }
+
         .login-header h1 {
             font-size: 1.5rem;
             font-weight: 600;
             color: var(--accent-color);
             margin-bottom: 0.5rem;
         }
+
         .login-header p {
             color: var(--text-secondary);
             font-size: 1rem;
         }
+
         .form-group {
             margin-bottom: 1.25rem;
         }
+
         .form-label {
             display: block;
             margin-bottom: 0.5rem;
@@ -67,6 +76,7 @@
             font-size: 0.875rem;
             font-weight: 500;
         }
+
         .form-control {
             width: 100%;
             height: 3rem;
@@ -76,60 +86,71 @@
             font-size: 0.875rem;
             transition: all 0.2s;
         }
+
         .form-control:focus {
             border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px var(--shadow-primary);
+            /* box-shadow: 0 0 0 3px var(--shadow-primary); */
             outline: none;
         }
+
         .forgot-password {
             text-align: right;
             margin: -0.75rem 0 1rem;
         }
+
         .forgot-password a {
             color: var(--accent-color);
             font-size: 0.875rem;
             text-decoration: none;
             transition: color 0.2s;
         }
+
         .forgot-password a:hover {
             color: var(--primary-dark);
         }
+
         .btn-login {
             width: 100%;
             height: 3rem;
             background: var(--accent-color);
             color: var(--text-light);
             border: none;
-            border-radius: 8px;
+            border-radius: 3px;
             font-size: 1rem;
             font-weight: 500;
             cursor: pointer;
             transition: background 0.2s;
         }
+
         .btn-login:hover {
             background: var(--primary-dark);
         }
+
         .divider {
             display: flex;
             align-items: center;
             margin: 1.5rem 0;
             color: var(--text-secondary);
         }
+
         .divider::before,
         .divider::after {
             content: "";
             flex: 1;
             border-bottom: 1px solid var(--border-light);
         }
+
         .divider-text {
             padding: 0 1rem;
             font-size: 0.875rem;
         }
+
         .social-login {
             display: flex;
             justify-content: center;
             margin-bottom: 1.5rem;
         }
+
         .btn-social {
             display: flex;
             align-items: center;
@@ -146,27 +167,33 @@
             cursor: pointer;
             transition: all 0.2s;
         }
+
         .btn-social:hover {
             background: var(--bg-light);
         }
+
         .btn-social i {
             margin-right: 0.5rem;
             font-size: 1rem;
         }
+
         .signup-link {
             text-align: center;
             font-size: 0.875rem;
         }
+
         .signup-link a {
             color: var(--accent-color);
             font-weight: 500;
             text-decoration: none;
             transition: color 0.2s;
         }
+
         .signup-link a:hover {
             text-decoration: underline;
             color: var(--primary-dark);
         }
+
         .input-icon {
             position: absolute;
             right: 15px;
@@ -174,18 +201,22 @@
             transform: translateY(-50%);
             color: var(--accent-color);
         }
+
         @media (min-width: 768px) {
             .login-image {
                 display: block;
             }
+
             .login-card {
                 padding: 3rem;
             }
         }
+
         @media (min-width: 853px) and (max-width: 1280px) {
             .login-wrapper {
                 min-height: 61vh;
             }
+
             .login-image {
                 display: none !important;
             }
@@ -210,7 +241,7 @@
                 </div>
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
-                    @if(request('redirect'))
+                    @if (request('redirect'))
                         <input type="hidden" name="redirect" value="{{ request('redirect') }}">
                     @endif
                     <div class="form-group position-relative">

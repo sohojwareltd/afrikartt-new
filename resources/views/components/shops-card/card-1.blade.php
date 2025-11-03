@@ -160,7 +160,7 @@
 <style>
     .modern-shop-card {
         background: var(--bg-secondary);
-        border-radius: 16px;
+        border-radius: 3px !important;
         overflow: hidden;
         box-shadow: 0 4px 20px var(--shadow-light);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

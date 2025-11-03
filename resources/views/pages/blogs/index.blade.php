@@ -29,7 +29,7 @@
                                 </h5>
                                 <p class="text-secondary mb-4">{{ Str::limit($blog->excerpt, 120) }}</p>
                                 <a href="{{ route('blog.details', $blog->slug) }}"
-                                    class="mt-auto btn btn-outline-primary rounded-pill">
+                                    class="mt-auto btn btn-outline-primary">
                                     Read More
                                 </a>
                             </div>
@@ -47,7 +47,7 @@
                     style="width: 150px; opacity: 0.8;">
                 <h4 class="mt-4 fw-semibold">No Blogs Available Yet</h4>
                 <p class="text-muted">Check back soon for the latest updates and stories.</p>
-                <a href="{{ url('/') }}" class="btn btn-primary mt-3 rounded-pill px-4">
+                <a href="{{ url('/') }}" class="btn btn-primary mt-3 px-4">
                     Back to Home
                 </a>
             </div>

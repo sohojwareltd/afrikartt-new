@@ -82,9 +82,8 @@
                                 @endforeach
                             </select>
 
-                            <input type="text"
-                                class="form-control" name="search" placeholder="Search products..."
-                                value="{{ request('search') }}">
+                            <input type="text" class="form-control h-auto" name="search"
+                                placeholder="Search products..." value="{{ request('search') }}">
 
                             <button style="border-top-right-radius: 3px; border-bottom-right-radius: 3px;"
                                 class="btn btn-success px-3 h-auto" type="submit" title="Search">
@@ -228,13 +227,10 @@
                 <div class="row mt-2">
                     <div class="col-12">
                         <form action="{{ route('shops') }}" method="get">
-                            <div class="input-group rounded-pill overflow-hidden shadow-sm border">
-                                <input type="text" class="form-control border-0" name="search"
-                                    placeholder="Search products..." value="{{ request('search') }}">
-
-                                <select class="form-select border-start border-end" name="category"
+                            <div class="input-group overflow-hidden shadow-sm">
+                                <select class="form-select border-start border-end h-auto" name="category"
                                     style="max-width: 130px;">
-                                    <option value="" class="text-dark">All</option>
+                                    <option value="" class="text-dark">All Categories</option>
                                     @foreach ($categories as $category)
                                         @if ($category->childrens->count())
                                             <optgroup label="{{ $category->name }}">
@@ -253,9 +249,13 @@
                                         @endif
                                     @endforeach
                                 </select>
+
+                                <input type="text" class="form-control border-0 h-auto" name="search"
+                                    placeholder="Search products..." value="{{ request('search') }}">
+
                                 {{-- Categories Dropdown is now included in mobile search --}}
 
-                                <button class="btn btn-success" type="submit" title="Search"><i
+                                <button class="btn btn-success h-auto" type="submit" title="Search"><i
                                         class="fas fa-search"></i></button>
                             </div>
                         </form>
@@ -590,7 +590,7 @@
         /* Top Bar Styling */
         .main-header .header-top {
             font-size: 0.95rem;
-            background: var(--bg-gold) !important;
+            background: var(--primary-dark) !important;
             color: var(--text-light) !important;
         }
 
@@ -631,16 +631,17 @@
 
         /* Form Select (Category Dropdown in Search) */
         .main-header .form-select {
-            background-color: var(--bg-light);
-            border: 2px solid var(--accent-color);
-            border-radius: 8px;
-            color: var(--text-secondary);
+            background-color: var(--burgundy);
+            /* border: 2px solid var(--accent-color); */
+            margin-left: unset !important;
+            border-radius: 3px !important;
+            color: var(--text-light) !important;
             font-weight: 500;
             transition: all 0.3s ease;
         }
 
         .main-header .form-select:focus {
-            background-color: var(--bg-secondary);
+            background-color: var(--bg-light);
             border-color: var(--accent-color);
             box-shadow: 0 0 0 0.2rem var(--shadow-primary);
             color: var(--text-dark);
@@ -648,7 +649,7 @@
 
         .main-header .form-select:hover {
             border-color: var(--accent-color);
-            background-color: var(--bg-secondary);
+            background-color: var(--burgundy);
         }
 
         /* Optgroup and Option Styling */

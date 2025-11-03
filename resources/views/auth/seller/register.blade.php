@@ -35,6 +35,7 @@
             background: var(--accent-color) !important;
             color: #fff !important;
             border: none !important;
+            border-radius: 3px;
         }
 
         .btn-green:hover {
@@ -54,7 +55,8 @@
 
         .form-control:focus {
             border-color: var(--accent-color) !important;
-            box-shadow: 0 0 0 0.2rem rgba(1, 153, 154, 0.15) !important;
+            box-shadow: none !important;
+            outline: none !important;
         }
 
         a {

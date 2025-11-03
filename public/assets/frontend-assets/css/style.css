@@ -3935,9 +3935,10 @@ textarea.form-control.is-invalid {
 }
 
 .btn-outline-primary:hover {
-    color: #000000;
-    background-color: #555;
-    border-color: #555;
+    color: #ffffff;
+    background-color: #000000;
+    border-color: #000000;
+    border-radius: 3px !important;
 }
 
 .btn-outline-primary:focus {

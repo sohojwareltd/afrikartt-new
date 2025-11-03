@@ -40,6 +40,7 @@
             font-weight: 700;
             box-shadow: 0 2px 8px var(--shadow-primary);
             transition: background 0.2s, box-shadow 0.2s;
+            border-radius: 3px;
         }
         .btn-green:hover {
             background: var(--primary-dark) !important;
@@ -57,7 +58,7 @@
         }
         .form-control:focus {
             border-color: var(--primary-green) !important;
-            box-shadow: var(--input-focus-shadow) !important;
+            /* box-shadow: var(--input-focus-shadow) !important; */
         }
         .alert {
             border-left: 4px solid var(--accent-color) !important;

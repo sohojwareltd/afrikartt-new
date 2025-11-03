@@ -56,7 +56,7 @@
 
         .form-control:focus {
             border-color: var(--accent-color) !important;
-            box-shadow: 0 0 0 0.2rem rgba(1, 153, 154, 0.15) !important;
+            /* box-shadow: 0 0 0 0.2rem rgba(1, 153, 154, 0.15) !important; */
         }
 
         a {

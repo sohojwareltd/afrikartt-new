@@ -626,7 +626,7 @@
         .btn-submit {
             background: var(--contact-primary);
             border: none;
-            border-radius: 50px;
+            border-radius: 3px;
             font-size: 1.1rem;
             font-weight: 600;
             color: white;
@@ -725,7 +725,7 @@
             color: white;
             text-decoration: none;
             padding: 0.875rem 1rem;
-            border-radius: 12px;
+            border-radius: 3px;
             text-align: center;
             transition: var(--contact-transition);
             font-weight: 500;
@@ -1010,7 +1010,7 @@
 
         .resource-card {
             background: var(--contact-light);
-            border-radius: 16px;
+            border-radius: 3px;
             padding: 2rem;
             height: 100%;
             transition: var(--contact-transition);
