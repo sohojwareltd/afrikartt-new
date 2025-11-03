@@ -1369,18 +1369,19 @@
                             {{-- Banners that remain after the 12th product --}}
                             @if ($index + 1 == 12)
                     </div>
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="container my-4">
                             <div class="row" style="height: max-content;">
-                                {{-- <div class="col-lg-4 ps-0 d-flex mid-bn">
+                                <div class="col-lg-4 ps-0 d-flex mid-bn">
                                     <x-banner.home-catalog-mid-left />
-                                </div> --}}
+                                </div>
                                 <div class="col-lg-12 mid-bn mb-4" style="height: 100%;">
                                     <x-banner.home-catalog-mid-right />
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
+                    <x-banner.home-mid-six-image-banner />
                     <div class="row">
                         @endif
 
