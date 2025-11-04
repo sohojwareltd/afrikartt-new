@@ -224,7 +224,7 @@
                                     <!-- Product Group (4 products) -->
                                     <div class="content-card mb-3">
                                         <div class="card-body">
-                                            <div class="row">
+                                            <div class="row row-cols-lg-4 row-cols-md-3 row-cols-2 mt-4">
                                                 @foreach ($productGroup as $product)
                                                     <x-products.product :product="$product" />
                                                 @endforeach
@@ -302,7 +302,7 @@
                                 </div>
                                 <div class="card-body">
                                     @if (count($shop->products) > 0)
-                                        <div class="row">
+                                        <div class="row row-cols-lg-4 row-cols-md-3 row-cols-2 mt-4">
                                             @foreach ($shop->products as $product)
                                                 <x-products.product :product="$product" />
                                             @endforeach

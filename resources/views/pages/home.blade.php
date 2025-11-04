@@ -1173,7 +1173,7 @@
     @endphp
     <x-app.header />
     <section class="hero">
-        <div class="container-fluid">
+        <div class="container">
             <div class="hero-slider-wrapper mt-4">
                 {{-- <div class="col-lg-5 d-none d-lg-block" style="min-height: 100%;">
                     <x-banner.home-left-banner />
@@ -1210,7 +1210,7 @@
                 </div>
             </div> --}}
 
-            <div class="swiper category-swiper pb-5 pt-5">
+            {{-- <div class="swiper category-swiper pb-5 pt-5">
                 <div class="swiper-wrapper">
                     @foreach ($categories->chunk(2) as $categoryChunk)
                         <div class="swiper-slide">
@@ -1240,7 +1240,7 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </div> --}}
         </div>
     </section>
     <!--category Section End -->
@@ -1263,10 +1263,10 @@
                                     </div>
                                     <div class="ec-spe-section" data-animation="slideInLeft">
                                         <div class="ec-spe-products">
-                                            @foreach ($latest_products->chunk(4) as $products)
+                                            @foreach ($latest_products->chunk(6) as $products)
                                                 <div class="ec-fs-product">
                                                     <div class="ec-fs-pro-inner">
-                                                        <div class="row row-cols-lg-5 cols-2 mt-4">
+                                                        <div class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4">
                                                             @foreach ($products as $product)
                                                                 {{-- @dd($product) --}}
                                                                 <x-products.product :product="$product" />
@@ -1283,9 +1283,6 @@
 
                             </div>
                         </div>
-                        <!-- New Product Content -->
-
-
                     </section>
                 @endif
 
@@ -1316,10 +1313,10 @@
                                     <div class="ec-spe-section" data-animation="slideInLeft">
                                         <div class="ec-spe-products">
                                             @if ($recommandProducts->count() > 0)
-                                                @foreach ($recommandProducts->chunk(4) as $products)
+                                                @foreach ($recommandProducts->chunk(6) as $products)
                                                     <div class="ec-fs-product">
                                                         <div class="ec-fs-pro-inner">
-                                                            <div class="row row-cols-lg-5 cols-2 mt-4">
+                                                            <div class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4">
                                                                 @foreach ($products as $product)
                                                                     <x-products.product :product="$product" />
                                                                 @endforeach
@@ -1328,10 +1325,10 @@
                                                     </div>
                                                 @endforeach
                                             @else
-                                                @foreach ($bestsaleproducts->chunk(4) as $products)
+                                                @foreach ($bestsaleproducts->chunk(6) as $products)
                                                     <div class="ec-fs-product">
                                                         <div class="ec-fs-pro-inner">
-                                                            <div class="row row-cols-lg-5 cols-2 mt-4">
+                                                            <div class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4">
                                                                 @foreach ($products as $product)
                                                                     <x-products.product :product="$product" />
                                                                 @endforeach
@@ -1362,7 +1359,7 @@
                 </div>
 
                 <div class="tab-pane fade show active" id="all">
-                    <div class="row">
+                    <div class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4">
                         @foreach ($allproducts as $index => $product)
                             <x-products.product :product="$product" />
 
@@ -1418,10 +1415,10 @@
                         </div>
                         <div class="ec-spe-section" data-animation="slideInLeft">
                             <div class="ec-spe-products">
-                                @foreach ($showcaseProducts->chunk(4) as $products)
+                                @foreach ($showcaseProducts->chunk(6) as $products)
                                     <div class="ec-fs-product">
                                         <div class="ec-fs-pro-inner">
-                                            <div class="row row-cols-lg-5 cols-2 mt-4">
+                                            <div class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4">
                                                 @foreach ($products as $product)
                                                     {{-- @dd($product) --}}
                                                     <x-products.product :product="$product" />

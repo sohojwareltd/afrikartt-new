@@ -86,7 +86,7 @@
                         @foreach ($latest_products->chunk(5) as $products)
                             <div class="ec-fs-product">
                                 <div class="ec-fs-pro-inner">
-                                    <div class="row row-cols-lg-5 cols-2 mt-4">
+                                    <div class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4">
                                         @foreach ($products as $product)
                                             <x-products.product :product="$product" :variant="'red'" :showMultipleCategories="true" />
                                         @endforeach

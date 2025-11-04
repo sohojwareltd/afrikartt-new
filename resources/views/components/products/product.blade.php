@@ -39,7 +39,7 @@
     $showMultipleCategories = $showMultipleCategories ?? true;
 @endphp
 
-<div class="col-md-4 col-sm-6 col-12 mb-4 col-lg-3">
+<div class="mb-3">
     <div class="product-card">
         {{-- Product Image Section --}}
         <div class="product-image-wrapper">
@@ -93,7 +93,7 @@
         <div class="product-content" style="cursor: pointer;"
             onclick="window.location.href='{{ route('product_details', $product->slug) }}'">
             {{-- Product Category --}}
-            <div class="product-category">
+            {{-- <div class="product-category">
                 @if ($showMultipleCategories && $product->prodcats->count() > 0)
                     @foreach ($product->prodcats as $categoryName)
                         <span>{{ $categoryName->name }}</span>
@@ -101,7 +101,7 @@
                 @else
                     <span>{{ $product->category->name ?? 'General' }}</span>
                 @endif
-            </div>
+            </div> --}}
 
             {{-- Product Title --}}
             <h3 class="product-title">
@@ -153,7 +153,7 @@
             @endif
 
             {{-- Add to Cart Button --}}
-            @if ($product->is_variable_product === 1)
+            {{-- @if ($product->is_variable_product === 1)
                 <a href="{{ route('product_details', $product->slug) }}" class="add-to-cart-btn"
                     aria-label="View {{ $product->name }} details">
                     <span class="btn-text text-light">Select Options</span>
@@ -184,7 +184,7 @@
                         </button>
                     </div>
                 </form>
-            @endif
+            @endif --}}
 
         </div>
 

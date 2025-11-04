@@ -34,7 +34,7 @@
     @endphp
 
     <div class="header-main py-3 bg-white" style="background-color: var(--bg-light) !important;">
-        <div class="container-fluid py-2 px-3">
+        <div class="container py-2 px-3">
 
             {{-- ================================================================= --}}
             {{-- DESKTOP HEADER LAYOUT (Visible from md breakpoint and up) --}}

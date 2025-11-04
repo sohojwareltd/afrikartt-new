@@ -985,7 +985,7 @@
                         <h2 class="related-product-sec-title">Related products</h2>
                     </div>
 
-                    <div class="row">
+                    <div class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4">
                         @foreach ($related_products as $product)
                             <x-products.product :product="$product" />
                         @endforeach

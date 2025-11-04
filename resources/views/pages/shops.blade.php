@@ -238,7 +238,7 @@
                             <!-- Products Grid -->
                             <div class="shop-pro-content">
                                 <div class="shop-pro-inner">
-                                    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+                                    <div class="row row-cols-lg-4 row-cols-md-2 row-cols-sm-1 cols-1">
                                         @foreach ($products as $product)
                                             <x-products.product :product="$product" :variant="'green'" :showMultipleCategories="true" />
                                         @endforeach

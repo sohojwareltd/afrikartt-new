@@ -25,12 +25,12 @@ class ProductRepository
         $this->recommand = Session::get('recommand', []);
     }
 
-    public static function getLatestProducts(int $limit = 4)
+    public static function getLatestProducts(int $limit = 12)
     {
         return (new self())->latestProducts($limit);
     }
 
-    public  function latestProducts(int $limit = 4)
+    public  function latestProducts(int $limit = 12)
     {
 
         $locationPostcodes = $this->locationPostcodes;
@@ -53,12 +53,12 @@ class ProductRepository
         });
     }
 
-    public static function getBestsaleProducts(int $limit = 4)
+    public static function getBestsaleProducts(int $limit = 12)
     {
         return (new self())->bestsaleProducts($limit);
     }
 
-    public  function bestsaleProducts(int $limit = 4)
+    public  function bestsaleProducts(int $limit = 12)
     {
         $locationPostcodes = $this->locationPostcodes;
         return   Cache::remember('bestsaleproducts:' . md5(json_encode($locationPostcodes)) . '_' . $limit, 3600, function () use ($locationPostcodes, $limit) {
@@ -82,12 +82,12 @@ class ProductRepository
         });
     }
 
-    public static function getRecommandProducts(int $limit = 4)
+    public static function getRecommandProducts(int $limit = 12)
     {
         return (new self())->recommandProducts($limit);
     }
 
-    public  function recommandProducts(int $limit = 4)
+    public  function recommandProducts(int $limit = 12)
     {
         $recommand = $this->recommand;
         return  Cache::remember('recommandProducts:' . md5(json_encode($recommand)) . '_' . $limit, 3600, function () use ($recommand, $limit) {
@@ -106,7 +106,7 @@ class ProductRepository
         });
     }
 
-    public static function getAllProducts(int $paginate = 12)
+    public static function getAllProducts(int $paginate = 24)
     {
         return (new self())->allProducts($paginate);
     }
