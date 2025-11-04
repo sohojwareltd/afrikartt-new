@@ -218,7 +218,7 @@ Route::get('account-deletion', [PageController::class, 'accountDeletion'])->name
 Route::get('contact', [PageController::class, 'contact'])->name('contact');
 Route::post('contact', [PageController::class, 'contactStore'])->name('contact.store');
 Route::get('payment/cancel', [PageController::class, 'paymentCancel'])->name('payment.cancel');
-Route::get('why-sell-on-afrikart', [PageController::class, 'whySellOnAfrikart'])->name('why.sell.on.afrikart');
+Route::get('why-sell-on-royalit', [PageController::class, 'whySellOnAfrikart'])->name('why.sell.on.afrikart');
 Route::get('sellers-helps', [PageController::class, 'sellersHelps'])->name('sellers.helps');
 Route::get('/stripe/handle/{order}', [CheckoutController::class, 'handle'])->name('payment.handle');
 Route::get('payment/handle/paypal/{order}', [CheckoutController::class, 'handlePaypal'])->name('payment.handle.paypal');

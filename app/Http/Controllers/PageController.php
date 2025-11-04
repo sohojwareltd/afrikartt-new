@@ -598,7 +598,7 @@ class PageController extends Controller
 
     public function whySellOnAfrikart()
     {
-        $whySell = Page::where('slug', 'why-sell-on-afrikartt')->where('status', 'ACTIVE')->first();
+        $whySell = Page::where('slug', 'why-sell-on-royalit')->where('status', 'ACTIVE')->first();
         return view('pages.why_sell_on_afrikart', compact('whySell'));
     }
 
