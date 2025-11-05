@@ -660,11 +660,11 @@
 
 
                         <div class="ec-spe-products">
-                            @foreach ($related_products->chunk(4) as $products)
+                            @foreach ($related_products->chunk(6) as $products)
                                 <div class="ec-fs-product">
                                     <div class="ec-fs-pro-inner">
 
-                                        <div class="row">
+                                        <div class="row row-cols-lg-6 row-cols-md-2 row-cols-sm-1 cols-1 ms-0 me-0">
 
                                             @foreach ($products as $product)
                                                 <x-products.product :product="$product" />

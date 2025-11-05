@@ -1,5 +1,5 @@
 <header class="main-header shadow-sm">
-    <div class="header-top py-3 mt-0 d-block">
+    <div class="header-top mt-0 d-block">
         <div class="container d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-2">
                 {{-- Social Icons --}}
@@ -14,10 +14,13 @@
             </div>
 
             {{-- Announcement Marquee --}}
-            <div class="announcement-wrapper overflow-hidden position-relative flex-grow-1 ms-3">
+            {{-- <div class="announcement-wrapper overflow-hidden position-relative flex-grow-1 ms-3">
                 <div class="announcement-text">
                     {{ Settings::setting('site_announcement') ? Settings::setting('site_announcement') : 'Royalit Grand Opening Is Here! Enjoy 15% OFF Across Our Entire Collection of Handcrafted African Goods.' }}
                 </div>
+            </div> --}}
+            <div class="">
+                <img src="{{ asset('assets/img/JBF-brands-top-strip_template.gif') }}" style="width: 100%;" alt="brands-top-strip">
             </div>
         </div>
     </div>
@@ -590,7 +593,7 @@
         /* Top Bar Styling */
         .main-header .header-top {
             font-size: 0.95rem;
-            background: var(--primary-dark) !important;
+            background: var(--burgundy) !important;
             color: var(--text-light) !important;
         }
 

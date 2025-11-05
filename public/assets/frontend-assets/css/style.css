@@ -1495,8 +1495,8 @@ progress {
     flex-shrink: 0;
     width: 100%;
     max-width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
+    padding-right: 3px;
+    padding-left: 3px;
     margin-top: 0;
 }
 
@@ -16340,7 +16340,8 @@ li {
     }
 
     .container {
-        max-width: 1250px;
+        /* max-width: 1250px; */
+        max-width: 1190px;
     }
 }
 
@@ -19646,7 +19647,7 @@ h6,
 
 /*----  Social Style  ----*/
 .header-top {
-    padding: 10px 0;
+    /* padding: 10px 0; */
     border-bottom: 1px solid #eeeeee;
 }
 

@@ -104,15 +104,15 @@
             </div> --}}
 
             {{-- Product Title --}}
-            <h3 class="product-title">
+            <h3 class="product-title mb-0">
                 <a href="{{ route('product_details', $product->slug) }}"
                     aria-label="View {{ $product->name }} details">
-                    {{ Str::limit($product->name, 35) }}
+                    {{ Str::limit($product->name, 20) }}
                 </a>
             </h3>
 
             {{-- Product Rating --}}
-            <div class="product-rating" aria-label="Rating: {{ $averageRating }} out of 5 stars">
+            {{-- <div class="product-rating" aria-label="Rating: {{ $averageRating }} out of 5 stars">
                 <div class="stars" role="img" aria-label="Rating: {{ $averageRating }} stars">
                     @for ($i = 1; $i <= 5; $i++)
                         @if ($i <= $fullStars)
@@ -125,7 +125,7 @@
                     @endfor
                 </div>
                 <span class="rating-count">({{ $ratingCount }})</span>
-            </div>
+            </div> --}}
 
             {{-- Product Price --}}
             @if ($currentPrice)

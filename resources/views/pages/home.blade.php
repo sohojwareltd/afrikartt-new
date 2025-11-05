@@ -1266,7 +1266,8 @@
                                             @foreach ($latest_products->chunk(6) as $products)
                                                 <div class="ec-fs-product">
                                                     <div class="ec-fs-pro-inner">
-                                                        <div class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4">
+                                                        <div
+                                                            class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4 ms-0 me-0">
                                                             @foreach ($products as $product)
                                                                 {{-- @dd($product) --}}
                                                                 <x-products.product :product="$product" />
@@ -1316,7 +1317,8 @@
                                                 @foreach ($recommandProducts->chunk(6) as $products)
                                                     <div class="ec-fs-product">
                                                         <div class="ec-fs-pro-inner">
-                                                            <div class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4">
+                                                            <div
+                                                                class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4 me-0 ms-0">
                                                                 @foreach ($products as $product)
                                                                     <x-products.product :product="$product" />
                                                                 @endforeach
@@ -1328,7 +1330,8 @@
                                                 @foreach ($bestsaleproducts->chunk(6) as $products)
                                                     <div class="ec-fs-product">
                                                         <div class="ec-fs-pro-inner">
-                                                            <div class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4">
+                                                            <div
+                                                                class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4 me-0 ms-0">
                                                                 @foreach ($products as $product)
                                                                     <x-products.product :product="$product" />
                                                                 @endforeach
@@ -1418,7 +1421,7 @@
                                 @foreach ($showcaseProducts->chunk(6) as $products)
                                     <div class="ec-fs-product">
                                         <div class="ec-fs-pro-inner">
-                                            <div class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4">
+                                            <div class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4 me-0 ms-0">
                                                 @foreach ($products as $product)
                                                     {{-- @dd($product) --}}
                                                     <x-products.product :product="$product" />
@@ -1458,7 +1461,7 @@
                                     <div class="ec-fs-product">
                                         <div class="ec-fs-pro-inner">
 
-                                            <div class="row mt-4">
+                                            <div class="row mt-4 ms-0 me-0">
                                                 @foreach ($shops as $shop)
                                                     <div class="col-lg-3 col-12 mb-4 pro-gl-content-shop">
                                                         <x-shops-card.card-1 :shop="$shop" />

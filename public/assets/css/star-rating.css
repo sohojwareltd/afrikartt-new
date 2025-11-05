@@ -32,6 +32,7 @@
     white-space: nowrap;
     width: 180px;
 }
+
 .ec-t-review-rating .rating-container .rating-stars {
     position: relative;
     cursor: pointer;
@@ -41,6 +42,7 @@
     white-space: nowrap;
     width: 145px;
 }
+
 .ec-pro-rating .rating-container .rating-stars {
     position: relative;
     cursor: pointer;
@@ -50,6 +52,7 @@
     white-space: nowrap;
     width: 110px;
 }
+
 .rating-container .rating-stars {
     position: relative;
     cursor: pointer;
@@ -57,8 +60,9 @@
     display: inline-block;
     overflow: hidden;
     white-space: nowrap;
-    width: 130px;
+    width: 92px;
 }
+
 .rating-container .rating-input {
     position: absolute;
     cursor: pointer;
@@ -200,15 +204,19 @@
 .rating-xl {
     font-size: 48px;
 }
+
 .rating-lg {
     font-size: 40px;
 }
+
 .rating-md {
     font-size: 32px;
 }
+
 .rating-sm {
     font-size: 24px;
 }
+
 .rating-xs {
     font-size: 13px;
 }
@@ -216,15 +224,19 @@
 .rating-xl .caption {
     font-size: 20px;
 }
+
 .rating-lg .caption {
     font-size: 18px;
 }
+
 .rating-md .caption {
     font-size: 16px;
 }
+
 .rating-sm .caption {
     font-size: 14px;
 }
+
 .rating-xs .caption {
     font-size: 12px;
 }
