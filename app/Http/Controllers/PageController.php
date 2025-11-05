@@ -269,27 +269,31 @@ class PageController extends Controller
         } else {
             $shops = Shop::active();
         }
-        $shops = $shops->country()->with(['products' => function ($query) {
-            $query->whereHas('prodcats', function ($query) {
-                $query->where('slug', request()->category);
-            });
-        }])
+        $shops = $shops->country()
             ->when($request->filled('category'), function ($query) {
-                $query->whereHas('products', function ($query) {
-                    $query->whereHas('prodcats', function ($query) {
-                        $query->where('slug', request()->category);
+                $query->with(['products' => function ($q) {
+                    $q->whereHas('prodcats', function ($q2) {
+                        $q2->where('slug', request()->category);
                     });
+                }])->whereHas('products.prodcats', function ($q3) {
+                    $q3->where('slug', request()->category);
                 });
-            })->when(Session::has('post_city'), function ($q) {
+            }, function ($query) {
+                $query->with('products');
+            })
+            ->when(Session::has('post_city'), function ($q) {
                 $post_city = Session::get('post_city');
                 return $q->where(function ($qp) use ($post_city) {
-                    $qp->where('post_code', 'like', '%' . $post_city . '%')->orWhere('city', 'like', '%' . $post_city . '%');
+                    $qp->where('post_code', 'like', '%' . $post_city . '%')
+                        ->orWhere('city', 'like', '%' . $post_city . '%');
                 });
-            })->when(Session::has('state'), function ($q) {
+            })
+            ->when(Session::has('state'), function ($q) {
                 $state = Session::get('state');
                 return $q->where('state', 'like', '%' . $state . '%');
             })
             ->get();
+
         return view('pages.vendors', compact('shops'));
     }
 

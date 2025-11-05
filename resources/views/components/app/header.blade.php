@@ -20,7 +20,8 @@
                 </div>
             </div> --}}
             <div class="">
-                <img src="{{ asset('assets/img/JBF-brands-top-strip_template.gif') }}" style="width: 100%;" alt="brands-top-strip">
+                <img src="{{ asset('assets/img/JBF-brands-top-strip_template.gif') }}" style="width: 100%;"
+                    alt="brands-top-strip">
             </div>
         </div>
     </div>
@@ -89,7 +90,7 @@
                                 placeholder="Search products..." value="{{ request('search') }}">
 
                             <button style="border-top-right-radius: 3px; border-bottom-right-radius: 3px;"
-                                class="btn btn-success px-3 h-auto" type="submit" title="Search">
+                                class="btn btn-success px-3 h-auto text-light" type="submit" title="Search">
                                 <i class="fas fa-search me-2"></i> <span class="d-none d-md-inline">Search</span>
                             </button>
                         </div>

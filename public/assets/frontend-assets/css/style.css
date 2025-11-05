@@ -2168,8 +2168,8 @@ progress {
 }
 
 .form-check-input:checked {
-    background-color: #555;
-    border-color: #555;
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
 }
 
 .form-check-input:checked[type="checkbox"] {
@@ -25895,11 +25895,11 @@ i.ecicon.eci-star-o {
 .ec-single-pro-tab-nav .nav-tabs .nav-link:hover {
     /* color: #ffffff; */
     /* background-color: #3474d4; */
-    border-bottom: 2px solid #3bb77e;
+    border-bottom: 2px solid #f68b1e;
 }
 
 .ec-single-pro-tab-nav .nav-tabs .nav-link.active {
-    border-bottom: 2px solid #3bb77e;
+    border-bottom: 2px solid #f68b1e;
 }
 
 .ec-single-pro-tab-nav li {

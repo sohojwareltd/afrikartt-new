@@ -122,9 +122,9 @@
         }
 
         /* @keyframes spin {
-                                                                                                        from { transform: rotate(0deg); }
-                                                                                                        to { transform: rotate(360deg); }
-                                                                                                    } */
+                                                                                                                                from { transform: rotate(0deg); }
+                                                                                                                                to { transform: rotate(360deg); }
+                                                                                                                            } */
 
         .product-title {
             font-size: 0.9rem;
@@ -138,8 +138,8 @@
 
         @media (max-width: 576px) {
             /* .product-image {
-                                    height: 180px;
-                                } */
+                                                            height: 180px;
+                                                        } */
 
             .product-content {
                 padding: 12px;
@@ -223,14 +223,14 @@
         }
 
         .variation-card:hover {
-            border-color: #28a745;
+            border-color: var(--accent-color);
             background: #f8fff9;
             box-shadow: 0 4px 8px rgba(40, 167, 69, 0.1);
             transform: translateY(-2px);
         }
 
         .variation-card.selected {
-            border-color: #28a745;
+            border-color: var(--accent-color);
             background: #f8fff9;
             box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2);
             transform: translateY(-2px);
@@ -253,7 +253,7 @@
 
         /* Focus styles for accessibility */
         .variation-card:focus {
-            outline: 2px solid #28a745;
+            outline: 2px solid var(--accent-color);
             outline-offset: 2px;
         }
 
@@ -335,14 +335,14 @@
         }
 
         .btn-guest-warning {
-            background-color: #ffc107;
-            border-color: #ffc107;
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
             color: #000;
         }
 
         .btn-guest-warning:hover {
-            background-color: #ffb400;
-            border-color: #ffb400;
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
             color: #000;
         }
 
@@ -764,9 +764,10 @@
 
                                                             <div class="d-flex gap-2 flex-grow-1">
                                                                 <input type="submit"
-                                                                    class="btn btn-sm btn-success flex-fill"
-                                                                    name="add_to_cart" id="add-to-cart-btn"
-                                                                    value="Add to Cart">
+                                                                    class="btn btn-sm flex-fill text-light"
+                                                                    name="add_to_cart"
+                                                                    style="background-color: var(--accent-color); border-radius: 3px"
+                                                                    id="add-to-cart-btn" value="Add to Cart">
 
 
                                                                 <button class="btn btn-sm btn-burgundy flex-fill"
@@ -802,119 +803,122 @@
                 </div>
             </div>
             <!-- Single product tab start -->
-            <div class="ec-single-pro-tab" id="ratings">
-                <div class="ec-single-pro-tab-wrapper">
-                    <div class="ec-single-pro-tab-nav d-flex justify-content-center">
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item">
-                                <a class="nav-link {{ Request()->has('id') ? '' : 'active' }} " data-bs-toggle="tab"
-                                    data-bs-target="#ec-spt-nav-details" role="tablist">Detail</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" data-bs-target="#ec-spt-nav-info"
-                                    role="tablist">More Information</a>
-                            </li>
+            <div class="container">
+                <div class="ec-single-pro-tab" id="ratings">
+                    <div class="ec-single-pro-tab-wrapper">
+                        <div class="ec-single-pro-tab-nav d-flex justify-content-center">
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Request()->has('id') ? '' : 'active' }} " data-bs-toggle="tab"
+                                        data-bs-target="#ec-spt-nav-details" role="tablist">Detail</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" data-bs-target="#ec-spt-nav-info"
+                                        role="tablist">More Information</a>
+                                </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link {{ Request()->has('id') ? ' active' : '' }}" data-bs-toggle="tab"
-                                    data-bs-target="#ec-spt-nav-review" role="tablist">Reviews</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="tab-content  ec-single-pro-tab-content">
-                        <div id="ec-spt-nav-details" class="tab-pane fade show active">
-                            <div class="ec-single-pro-tab-desc"
-                                style="word-break: normal; overflow-wrap: normal; white-space: normal; hyphens: none;">
-
-                                <p>{!! $mainProduct->description !!}</p>
-                            </div>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ Request()->has('id') ? ' active' : '' }}" data-bs-toggle="tab"
+                                        data-bs-target="#ec-spt-nav-review" role="tablist">Reviews</a>
+                                </li>
+                            </ul>
                         </div>
-                        <div id="ec-spt-nav-info" class="tab-pane fade">
-                            <div class="ec-single-pro-tab-moreinfo">
-                                <ul>
-                                    <li><span>Weight</span> {{ $mainProduct->weight }} {{ $mainProduct->weight_unit }}
-                                    </li>
-                                    <li><span>Dimensions</span> {{ $mainProduct->dimensions }} cm</li>
-                                    <li><span>Shipping Cost</span> {{ Sohoj::price($mainProduct->shipping_cost) }}</li>
-                                </ul>
-                            </div>
-                        </div>
+                        <div class="tab-content  ec-single-pro-tab-content">
+                            <div id="ec-spt-nav-details" class="tab-pane fade show active">
+                                <div class="ec-single-pro-tab-desc"
+                                    style="word-break: normal; overflow-wrap: normal; white-space: normal; hyphens: none;">
 
-                        <div id="ec-spt-nav-review"
-                            class="tab-pane fade {{ Request()->has('id') ? 'show active' : '' }}">
-                            <div class="row">
-                                <div class="ec-t-review-wrapper">
-                                    @foreach ($mainProduct->ratings as $rating)
-                                        <div class="ec-t-review-item">
-                                            <div class="ec-t-review-avtar">
-                                                <img src="{{ asset('assets/img/single_product/person.png') }}"
-                                                    alt="" />
-                                            </div>
-                                            <div class="ec-t-review-content">
-                                                <div class="ec-t-review-top">
-                                                    <div class="ec-t-review-name">{{ $rating->name }}</div>
-                                                    <div class="ec-t-review-rating">
-                                                        <input name="rating" type="number"
-                                                            value="{{ $rating->rating }}" class="rating published_rating"
-                                                            data-size="sm">
-                                                    </div>
-                                                </div>
-
-                                                <div class="ec-t-review-bottom">
-                                                    <p>
-                                                        {{ $rating->review }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
+                                    <p>{!! $mainProduct->description !!}</p>
                                 </div>
-                                @php
-                                    $user = Auth()->id();
-                                    $rating = App\Models\Rating::where('user_id', $user)
-                                        ->where('product_id', $mainProduct->id)
-                                        ->get();
+                            </div>
+                            <div id="ec-spt-nav-info" class="tab-pane fade">
+                                <div class="ec-single-pro-tab-moreinfo">
+                                    <ul>
+                                        <li><span>Weight</span> {{ $mainProduct->weight }} {{ $mainProduct->weight_unit }}
+                                        </li>
+                                        <li><span>Dimensions</span> {{ $mainProduct->dimensions }} cm</li>
+                                        <li><span>Shipping Cost</span> {{ Sohoj::price($mainProduct->shipping_cost) }}</li>
+                                    </ul>
+                                </div>
+                            </div>
 
-                                @endphp
-                                @if (Auth::check())
-                                    @if ($rating->count() == 0)
-                                        <div class="ec-ratting-content">
-                                            <h3>Add a Review</h3>
-                                            <div class="ec-ratting-form">
-                                                <form action="{{ route('rating', ['product_id' => $mainProduct->id]) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    <div class="ec-ratting-star">
-                                                        <span>Your rating:</span>
-                                                        <input value="1" name="rating"
-                                                            class="rating product_rating" data-size="xs">
+                            <div id="ec-spt-nav-review"
+                                class="tab-pane fade {{ Request()->has('id') ? 'show active' : '' }}">
+                                <div class="row">
+                                    <div class="ec-t-review-wrapper">
+                                        @foreach ($mainProduct->ratings as $rating)
+                                            <div class="ec-t-review-item">
+                                                <div class="ec-t-review-avtar">
+                                                    <img src="{{ asset('assets/img/single_product/person.png') }}"
+                                                        alt="" />
+                                                </div>
+                                                <div class="ec-t-review-content">
+                                                    <div class="ec-t-review-top">
+                                                        <div class="ec-t-review-name">{{ $rating->name }}</div>
+                                                        <div class="ec-t-review-rating">
+                                                            <input name="rating" type="number"
+                                                                value="{{ $rating->rating }}"
+                                                                class="rating published_rating" data-size="sm">
+                                                        </div>
                                                     </div>
 
-
-                                                    <div class="ec-ratting-input form-submit">
-                                                        <textarea name="review" placeholder="Enter Your Comment"></textarea>
-                                                        <button class="btn btn-dark" type="submit"
-                                                            value="Submit">Submit</button>
+                                                    <div class="ec-t-review-bottom">
+                                                        <p>
+                                                            {{ $rating->review }}
+                                                        </p>
                                                     </div>
-                                                </form>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    @php
+                                        $user = Auth()->id();
+                                        $rating = App\Models\Rating::where('user_id', $user)
+                                            ->where('product_id', $mainProduct->id)
+                                            ->get();
+
+                                    @endphp
+                                    @if (Auth::check())
+                                        @if ($rating->count() == 0)
+                                            <div class="ec-ratting-content">
+                                                <h3>Add a Review</h3>
+                                                <div class="ec-ratting-form">
+                                                    <form
+                                                        action="{{ route('rating', ['product_id' => $mainProduct->id]) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        <div class="ec-ratting-star">
+                                                            <span>Your rating:</span>
+                                                            <input value="1" name="rating"
+                                                                class="rating product_rating" data-size="xs">
+                                                        </div>
+
+
+                                                        <div class="ec-ratting-input form-submit">
+                                                            <textarea name="review" placeholder="Enter Your Comment"></textarea>
+                                                            <button class="btn btn-dark" type="submit"
+                                                                value="Submit">Submit</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @else
+                                        <div class="alert alert-warning d-flex align-items-center gap-3 p-4 rounded shadow-sm"
+                                            style="background: linear-gradient(90deg, #fffbe6 60%, #fff9cc 100%); border-left: 4px solid #ffc107;">
+                                            <i class="fas fa-info-circle fa-lg text-warning"></i>
+                                            <div>
+                                                <span style="font-weight: 500; color: #856404;">
+                                                    <strong>Note:</strong>
+                                                    Please <a href="{{ route('login') }}"
+                                                        class="text-decoration-underline text-warning"
+                                                        style="font-weight:600;">login</a> to add a review.
+                                                </span>
                                             </div>
                                         </div>
                                     @endif
-                                @else
-                                    <div class="alert alert-warning d-flex align-items-center gap-3 p-4 rounded shadow-sm"
-                                        style="background: linear-gradient(90deg, #fffbe6 60%, #fff9cc 100%); border-left: 4px solid #ffc107;">
-                                        <i class="fas fa-info-circle fa-lg text-warning"></i>
-                                        <div>
-                                            <span style="font-weight: 500; color: #856404;">
-                                                <strong>Note:</strong>
-                                                Please <a href="{{ route('login') }}"
-                                                    class="text-decoration-underline text-warning"
-                                                    style="font-weight:600;">login</a> to add a review.
-                                            </span>
-                                        </div>
-                                    </div>
-                                @endif
 
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -970,7 +974,7 @@
                         <a href="{{ route('register') }}?redirect={{ urlencode(request()->fullUrl()) }}"
                             class="btn btn-outline-dark w-100" id="signup-buy-btn"><i
                                 class="fas fa-user-plus me-2"></i>Sign up and Buy</a>
-                        <button type="button" class="btn btn-guest-warning w-100" id="guest-buy-btn"><i
+                        <button type="button" class="btn btn-guest-warning text-light w-100" id="guest-buy-btn"><i
                                 class="fas fa-bolt me-2"></i>Buy as Guest</button>
                     </div>
                 </div>

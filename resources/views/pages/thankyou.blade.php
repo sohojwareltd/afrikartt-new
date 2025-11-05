@@ -17,14 +17,14 @@
 
         .thankyou-icon {
             font-size: 5rem;
-            color: #DE991B;
+            color: var(--accent-color);
             margin-bottom: 1.5rem;
         }
 
         .thankyou-title {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #DE991B;
+            color: var(--accent-color);
             margin-bottom: 0.5rem;
         }
 
@@ -41,13 +41,14 @@
         .btn-green,
         .btn-green:active,
         .btn-green:focus {
-            background: #DE991B;
+            background: var(--accent-color);
             color: #fff;
             border: none;
+            border-radius: 3px !important;
         }
 
         .btn-green:hover {
-            background: #c2841a;
+            background: var(--accent-color);
             color: #fff;
         }
 
@@ -56,7 +57,7 @@
         }
 
         .new-arrivals-title {
-            color: #DE991B;
+            color: var(--accent-color);
             font-weight: 700;
             font-size: 2rem;
         }
@@ -83,10 +84,10 @@
                 <!-- New Product Content -->
                 <div class="ec-spe-section  data-animation=" slideInLeft">
                     <div class="ec-spe-products">
-                        @foreach ($latest_products->chunk(5) as $products)
+                        @foreach ($latest_products->chunk(6) as $products)
                             <div class="ec-fs-product">
                                 <div class="ec-fs-pro-inner">
-                                    <div class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4">
+                                    <div class="row row-cols-lg-6 row-cols-md-3 row-cols-2 mt-4 ms-0 me-0">
                                         @foreach ($products as $product)
                                             <x-products.product :product="$product" :variant="'red'" :showMultipleCategories="true" />
                                         @endforeach

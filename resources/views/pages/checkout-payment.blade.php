@@ -565,7 +565,7 @@
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            background: var(--success-color, #28a745);
+            background: var(--accent-color);
             color: white;
             display: flex;
             align-items: center;
@@ -738,6 +738,7 @@
             height: 20px;
             accent-color: var(--accent-color);
             margin-top: 3px;
+            border: 1px solid var(--accent-color);
         }
 
         .terms-wrapper label {
@@ -756,17 +757,17 @@
 
         /* Checkout Button */
         .checkout-btn {
-            background: var(--btn-primary);
+            background: var(--accent-color);
             color: var(--text-light);
             font-size: 1.05rem;
-            border-radius: 8px;
+            border-radius: 3px;
             /* padding: 10px 24px; */
             border: none;
             transition: all 0.25s ease;
         }
 
         .checkout-btn:hover {
-            background: var(--btn-primary-hover);
+            background: var(--accent-color);
         }
 
         /* ✅ Responsive adjustments */

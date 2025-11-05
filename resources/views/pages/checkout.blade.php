@@ -631,8 +631,9 @@
                                                 </div>
 
                                             </div>
-                                            <button type="submit" class="btn btn-primary mt-5" id="continue-to-payment"
-                                                disabled>Continue to Payment</button>
+                                            <button type="submit" class="btn mt-5 text-light"
+                                                style="background-color: var(--accent-color); border-radius:3px"
+                                                id="continue-to-payment" disabled>Continue to Payment</button>
                                         </div>
 
 
