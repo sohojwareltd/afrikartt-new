@@ -71,7 +71,7 @@ class PageController extends Controller
             return [
                 'latest_products'   => ProductRepository::getLatestProducts() ?: collect(),
                 'bestsaleproducts'  => ProductRepository::getBestsaleProducts() ?: collect(),
-                'recommandProducts' => ProductRepository::getRecommandProducts() ?: collect(),
+                'recommendProducts' => ProductRepository::getRecommendProducts() ?: collect(),
                 'latest_shops'      => ShopRepository::getLatestShops() ?: collect(),
                 'prodcats'          => CategoryRepository::getAllCategoriesWithProducts() ?: collect(),
                 'showcaseProducts'  => $showcaseProducts,
@@ -106,11 +106,11 @@ class PageController extends Controller
         $mainProduct->increment('views');
 
 
-        $recommand = session()->get('recommand', []);
+        $recommend = session()->get('recommend', []);
 
-        if (!in_array($mainProduct->id, $recommand)) {
-            $recommand[] = $mainProduct->id;
-            session()->put('recommand', $recommand);
+        if (!in_array($mainProduct->id, $recommend)) {
+            $recommend[] = $mainProduct->id;
+            session()->put('recommend', $recommend);
         }
         return view('pages.product_details', compact('related_products', 'mainProduct'));
     }

@@ -1313,8 +1313,8 @@
                                     </div>
                                     <div class="ec-spe-section" data-animation="slideInLeft">
                                         <div class="ec-spe-products">
-                                            @if ($recommandProducts->count() > 0)
-                                                @foreach ($recommandProducts->chunk(6) as $products)
+                                            @if ($recommendProducts->count() > 0)
+                                                @foreach ($recommendProducts->chunk(6) as $products)
                                                     <div class="ec-fs-product">
                                                         <div class="ec-fs-pro-inner">
                                                             <div

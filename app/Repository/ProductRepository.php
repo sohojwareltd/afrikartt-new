@@ -17,12 +17,12 @@ class ProductRepository
         'prodcats:id,name,slug'
     ];
     protected $locationPostcodes;
-    protected $recommand;
+    protected $recommend;
 
     public function __construct()
     {
         $this->locationPostcodes = Session::get('location.postcode', []);
-        $this->recommand = Session::get('recommand', []);
+        $this->recommend = Session::get('recommend', []);
     }
 
     public static function getLatestProducts(int $limit = 12)
@@ -82,20 +82,20 @@ class ProductRepository
         });
     }
 
-    public static function getRecommandProducts(int $limit = 12)
+    public static function getRecommendProducts(int $limit = 12)
     {
-        return (new self())->recommandProducts($limit);
+        return (new self())->recommendProducts($limit);
     }
 
-    public  function recommandProducts(int $limit = 12)
+    public  function recommendProducts(int $limit = 12)
     {
-        $recommand = $this->recommand;
-        return  Cache::remember('recommandProducts:' . md5(json_encode($recommand)) . '_' . $limit, 3600, function () use ($recommand, $limit) {
+        $recommend = $this->recommend;
+        return  Cache::remember('recommendProducts:' . md5(json_encode($recommend)) . '_' . $limit, 3600, function () use ($recommend, $limit) {
             return Product::query()
                 ->select($this->select)
                 ->country()
                 ->whereNull('parent_id')
-                ->whereIn('id', $recommand)
+                ->whereIn('id', $recommend)
                 ->with($this->relations)
                 ->limit($limit)
                 ->price()
