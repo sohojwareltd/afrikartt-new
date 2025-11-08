@@ -15,7 +15,7 @@ use App\Models\User;
 use App\Models\Slider;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
-use App\Repository\ShopRepsitory;
+use App\Repository\ShopRepository;
 use App\Setting\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -72,7 +72,7 @@ class PageController extends Controller
                 'latest_products'   => ProductRepository::getLatestProducts() ?: collect(),
                 'bestsaleproducts'  => ProductRepository::getBestsaleProducts() ?: collect(),
                 'recommandProducts' => ProductRepository::getRecommandProducts() ?: collect(),
-                'latest_shops'      => ShopRepsitory::getLatestShops() ?: collect(),
+                'latest_shops'      => ShopRepository::getLatestShops() ?: collect(),
                 'prodcats'          => CategoryRepository::getAllCategoriesWithProducts() ?: collect(),
                 'showcaseProducts'  => $showcaseProducts,
                 'allproducts'       => $featuredProducts ?: collect(),
@@ -93,7 +93,7 @@ class PageController extends Controller
 
         $categories = CategoryRepository::getAllParentCategories();
 
-        $latest_shops =  ShopRepsitory::getLatestShops();
+        $latest_shops =  ShopRepository::getLatestShops();
 
         return view('pages.shops', compact('products', 'categories', 'latest_shops'));
     }

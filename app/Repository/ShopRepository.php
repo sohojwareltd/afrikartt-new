@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Models\Shop;
 use Illuminate\Support\Facades\Cache;
 
-class ShopRepsitory
+class ShopRepository
 {
     protected $relations = [
         'products:id,name,shop_id,slug,images,views,image,sale_price,price,post_code,status',
