@@ -36,10 +36,14 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Placeholder;
 
 use Filament\Support\Enums\FontWeight;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use App\Models\ProductAttribureValue;
+use App\Models\Attribute;
+use App\Models\Sku;
 
 class ProductResource extends Resource
 {
@@ -202,6 +206,236 @@ class ProductResource extends Resource
                                                 //     ->collapsed()
                                                 //     ->collapsible(),
                                             ]),
+                                    ]),
+                            ]),
+
+                        Tabs\Tab::make('Attributes')
+                            ->icon('heroicon-o-tag')
+                            ->schema([
+                                Forms\Components\Section::make('Product Attributes')
+                                    ->description('Define attributes and values for this product. SKUs will be automatically generated from all combinations.')
+                                    ->schema([
+                                        Forms\Components\Repeater::make('attributeValues')
+                                            ->relationship('attributeValues')
+                                            ->label('Attribute Values')
+                                            ->mutateRelationshipDataBeforeFillUsing(function (array $data): array {
+                                                // When loading data, map 'value' to 'text_value' or 'image_value' based on type
+                                                if (isset($data['type']) && isset($data['value'])) {
+                                                    if ($data['type'] === 'text') {
+                                                        $data['text_value'] = $data['value'];
+                                                    } elseif ($data['type'] === 'image') {
+                                                        $data['image_value'] = $data['value'];
+                                                    }
+                                                }
+                                                return $data;
+                                            })
+                                            ->mutateRelationshipDataBeforeSaveUsing(function (array $data): array {
+                                                // Before saving, ensure 'value' is set from the appropriate field
+                                                if (isset($data['type'])) {
+                                                    if ($data['type'] === 'text' && isset($data['text_value'])) {
+                                                        $data['value'] = $data['text_value'];
+                                                    } elseif ($data['type'] === 'image' && isset($data['image_value'])) {
+                                                        // For image, the image_value might be processed by FileUpload
+                                                        // So check both image_value and value
+                                                        $data['value'] = $data['image_value'] ?? $data['value'] ?? null;
+                                                    }
+                                                }
+                                                // Clean up temporary fields
+                                                unset($data['text_value'], $data['image_value']);
+                                                return $data;
+                                            })
+                                            ->schema([
+                                                Forms\Components\Select::make('attribute_id')
+                                                    ->label('Attribute')
+                                                    ->relationship('attribute', 'name')
+                                                    ->searchable()
+                                                    ->preload()
+                                                    ->required()
+                                                    ->createOptionForm([
+                                                        Forms\Components\TextInput::make('name')
+                                                            ->required()
+                                                            ->maxLength(255)
+                                                            ->unique(Attribute::class, 'name')
+                                                            ->placeholder('Enter attribute name (e.g., Color, Size)'),
+                                                    ])
+                                                    ->helperText('Select or create an attribute (e.g., Color, Size, Material)')
+                                                    ->columnSpan(2),
+
+                                                Forms\Components\Select::make('type')
+                                                    ->label('Value Type')
+                                                    ->options([
+                                                        'text' => 'Text',
+                                                        'image' => 'Image',
+                                                    ])
+                                                    ->default('text')
+                                                    ->required()
+                                                    ->live()
+                                                    ->afterStateUpdated(function (callable $set, $state, callable $get) {
+                                                        // When type changes, ensure the correct field gets the value
+                                                        $currentValue = $get('value');
+                                                        if ($state === 'text') {
+                                                            // If switching to text and we have a value, keep it for text input
+                                                            if (!empty($currentValue) && is_string($currentValue)) {
+                                                                $set('value', $currentValue);
+                                                            }
+                                                        } elseif ($state === 'image') {
+                                                            // If switching to image and we have a value, keep it for file upload
+                                                            if (!empty($currentValue) && is_string($currentValue)) {
+                                                                $set('value', $currentValue);
+                                                            }
+                                                        }
+                                                    })
+                                                    ->columnSpan(1)
+                                                    ->helperText('Choose text or image value'),
+
+                                                // Hidden field to store the actual value that gets saved to database
+                                                Forms\Components\Hidden::make('value')
+                                                    ->dehydrated(),
+
+                                                Forms\Components\TextInput::make('text_value')
+                                                    ->label('Value')
+                                                    ->required(fn (callable $get) => $get('type') === 'text')
+                                                    ->visible(fn (callable $get) => $get('type') === 'text')
+                                                    ->live(onBlur: true)
+                                                    ->afterStateUpdated(function (callable $set, $state, callable $get) {
+                                                        // Update the hidden value field when text changes
+                                                        if ($get('type') === 'text') {
+                                                            $set('value', $state ?? '');
+                                                        }
+                                                    })
+                                                    ->placeholder('Enter value (e.g., Red, Small, Large)')
+                                                    ->columnSpanFull()
+                                                    ->helperText('Enter the attribute value (e.g., Red for Color, Small for Size)'),
+
+                                                Forms\Components\FileUpload::make('image_value')
+                                                    ->label('Value (Image)')
+                                                    ->image()
+                                                    ->directory('attribute-values')
+                                                    ->disk('public')
+                                                    ->imagePreviewHeight('80')
+                                                    ->visible(fn (callable $get) => $get('type') === 'image')
+                                                    ->required(fn (callable $get) => $get('type') === 'image')
+                                                    ->maxFiles(1)
+                                                    ->live()
+                                                    ->afterStateUpdated(function (callable $set, $state, callable $get) {
+                                                        // Update the hidden value field when image changes
+                                                        if ($get('type') === 'image') {
+                                                            $finalValue = null;
+                                                            if (is_array($state) && !empty($state)) {
+                                                                $firstItem = isset($state[0]) ? $state[0] : (reset($state) ?: null);
+                                                                if (is_array($firstItem)) {
+                                                                    $finalValue = $firstItem['path'] ?? $firstItem['name'] ?? $firstItem['url'] ?? null;
+                                                                } elseif (is_string($firstItem)) {
+                                                                    $finalValue = $firstItem;
+                                                                }
+                                                            } elseif (is_string($state) && !empty($state)) {
+                                                                $finalValue = $state;
+                                                            }
+                                                            if ($finalValue !== null) {
+                                                                $set('value', $finalValue);
+                                                            }
+                                                        }
+                                                    })
+                                                    ->dehydrateStateUsing(function ($state, callable $get) {
+                                                        // Process file upload and return file path string
+                                                        if ($get('type') !== 'image') {
+                                                            return null;
+                                                        }
+                                                        
+                                                        if (empty($state)) {
+                                                            return null;
+                                                        }
+                                                        
+                                                        if (!is_array($state)) {
+                                                            return is_string($state) && !empty($state) ? $state : null;
+                                                        }
+                                                        
+                                                        $firstItem = isset($state[0]) ? $state[0] : (reset($state) ?: null);
+                                                        if ($firstItem === null || $firstItem === false) {
+                                                            return null;
+                                                        }
+                                                        
+                                                        if (is_array($firstItem)) {
+                                                            return $firstItem['path'] ?? $firstItem['name'] ?? $firstItem['url'] ?? null;
+                                                        }
+                                                        
+                                                        return is_string($firstItem) && !empty($firstItem) ? $firstItem : null;
+                                                    })
+                                                    ->columnSpanFull()
+                                                    ->helperText('Upload an image for this attribute value'),
+                                            ])
+                                            ->addActionLabel('Add Attribute Value')
+                                            ->reorderableWithButtons()
+                                            ->collapsible()
+                                            ->itemLabel(function (array $state): ?string {
+                                                try {
+                                                    $attributeName = '';
+                                                    if (!empty($state['attribute_id'] ?? null)) {
+                                                        $attribute = Attribute::find($state['attribute_id']);
+                                                        $attributeName = $attribute?->name ?? '';
+                                                    }
+                                                    
+                                                    $type = $state['type'] ?? 'text';
+                                                    // Get value from the correct field or from the main value field
+                                                    $value = $state['value'] ?? ($type === 'text' ? ($state['text_value'] ?? null) : ($state['image_value'] ?? null));
+                                                    
+                                                    // Handle value based on type and format
+                                                    if ($type === 'image') {
+                                                        // FileUpload can return array or string
+                                                        if (is_array($value) && !empty($value)) {
+                                                            // Handle array - safely get first item
+                                                            $firstItem = reset($value);
+                                                            if ($firstItem === false) {
+                                                                $value = 'Image';
+                                                            } elseif (is_string($firstItem)) {
+                                                                $value = basename($firstItem);
+                                                            } elseif (is_array($firstItem)) {
+                                                                $value = basename($firstItem['name'] ?? $firstItem['path'] ?? 'Image');
+                                                            } else {
+                                                                $value = 'Image';
+                                                            }
+                                                        } elseif (is_string($value) && !empty($value)) {
+                                                            // Already a string path
+                                                            $value = basename($value);
+                                                        } else {
+                                                            $value = 'Image';
+                                                        }
+                                                    } else {
+                                                        // Text value - ensure it's a string
+                                                        if (is_array($value)) {
+                                                            $filtered = array_filter($value, fn($v) => !empty($v));
+                                                            $value = !empty($filtered) ? implode(', ', $filtered) : 'New Value';
+                                                        } else {
+                                                            $value = is_string($value) && !empty($value) 
+                                                                ? $value 
+                                                                : 'New Value';
+                                                        }
+                                                    }
+                                                    
+                                                    return $attributeName ? "{$attributeName}: {$value}" : $value;
+                                                } catch (\Exception $e) {
+                                                    // Fallback if anything goes wrong
+                                                    return 'Attribute Value';
+                                                }
+                                            })
+                                            ->defaultItems(0)
+                                            ->columnSpanFull()
+                                            ->helperText('Add attribute values. Each combination of values (grouped by attribute) will create a SKU.'),
+
+                                        Forms\Components\Placeholder::make('attributes_info')
+                                            ->label('')
+                                            ->content(new \Illuminate\Support\HtmlString('
+                                                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                                                    <p class="text-sm text-blue-800 dark:text-blue-200 font-medium mb-2">💡 How it works:</p>
+                                                    <ul class="text-sm text-blue-700 dark:text-blue-300 list-disc list-inside space-y-1">
+                                                        <li>Add multiple attribute values (e.g., Color: Red, Color: Blue, Size: Small, Size: Large)</li>
+                                                        <li>Values with the same attribute will be grouped together</li>
+                                                        <li>All combinations will automatically generate SKUs when you save</li>
+                                                        <li>Example: Color (Red, Blue) × Size (S, M) = 4 SKUs (Red-S, Red-M, Blue-S, Blue-M)</li>
+                                                    </ul>
+                                                </div>
+                                            '))
+                                            ->columnSpanFull(),
                                     ]),
                             ]),
 
@@ -468,145 +702,153 @@ class ProductResource extends Resource
 
                         Tabs\Tab::make('Variations')
                             ->icon('heroicon-o-squares-plus')
-                            ->visible(fn(callable $get) => $get('is_variable_product'))
                             ->schema([
-                                Forms\Components\Section::make('Product Variants')
-                                    ->description('Create and manage individual product variants with specific attributes and pricing.')
+                                Forms\Components\Section::make('Product Variations (SKUs)')
+                                    ->description('Manage individual product variations. SKUs are automatically generated from attribute combinations.')
                                     ->schema([
-                                        Forms\Components\Repeater::make('variations')
+                                        Forms\Components\Placeholder::make('skus_info')
                                             ->label('')
+                                            ->content(function ($record) {
+                                                if (!$record) {
+                                                    return new \Illuminate\Support\HtmlString('
+                                                        <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+                                                            <p class="text-sm text-yellow-800 dark:text-yellow-200">⚠️ Please define attributes first in the Attributes tab, then save the product to generate SKUs.</p>
+                                                        </div>
+                                                    ');
+                                                }
+                                                
+                                                $skuCount = $record->skus()->count();
+                                                if ($skuCount === 0) {
+                                                    return new \Illuminate\Support\HtmlString('
+                                                        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                                                            <p class="text-sm text-blue-800 dark:text-blue-200">💡 No SKUs found. Add attributes in the Attributes tab and save to generate SKUs automatically.</p>
+                                                        </div>
+                                                    ');
+                                                }
+                                                
+                                                return new \Illuminate\Support\HtmlString('
+                                                    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                                                        <p class="text-sm text-green-800 dark:text-green-200 font-medium">✓ ' . $skuCount . ' SKU(s) generated. You can edit prices, quantities, and titles below.</p>
+                                                    </div>
+                                                ');
+                                            })
+                                            ->visible(fn ($record) => $record !== null)
+                                            ->columnSpanFull(),
+
+                                        Forms\Components\Repeater::make('skus')
+                                            ->relationship('skus')
+                                            ->label('SKUs')
                                             ->schema([
-                                                Forms\Components\Section::make('Variant Details')
+                                                Forms\Components\Grid::make(3)
                                                     ->schema([
-                                                        Forms\Components\Grid::make(2)
-                                                            ->schema([
-                                                                TextInput::make('sku')
-                                                                    ->label('SKU')
-                                                                    ->required()
-                                                                    ->unique(ignoreRecord: true)
-                                                                    ->placeholder('Enter variant SKU')
-                                                                    ->columnSpan(1),
+                                                        TextInput::make('sku')
+                                                            ->label('SKU Code')
+                                                            ->required()
+                                                            ->unique(ignoreRecord: true)
+                                                            ->maxLength(255)
+                                                            ->columnSpan(1)
+                                                            ->helperText('Unique SKU identifier'),
 
-                                                                TextInput::make('barcode')
-                                                                    ->label('Barcode')
-                                                                    ->placeholder('Product barcode (UPC, EAN, etc.)')
-                                                                    ->columnSpan(1),
-                                                            ]),
+                                                        TextInput::make('title')
+                                                            ->label('Title')
+                                                            ->maxLength(255)
+                                                            ->columnSpan(2)
+                                                            ->helperText('Display title for this variation (e.g., "Red - Small")'),
+                                                    ]),
 
-                                                        Forms\Components\Fieldset::make('Attributes (e.g. color, size)')
-                                                            ->schema([
-                                                                Forms\Components\Repeater::make('attributes')
-                                                                    ->schema([
-                                                                        Forms\Components\Grid::make(2)
-                                                                            ->schema([
-                                                                                TextInput::make('attribute')
-                                                                                    ->label('Attribute')
-                                                                                    ->placeholder('e.g., Color, Size')
-                                                                                    ->required()
-                                                                                    ->columnSpan(1),
+                                                Forms\Components\Grid::make(4)
+                                                    ->schema([
+                                                        TextInput::make('price')
+                                                            ->label('Price')
+                                                            ->numeric()
+                                                            ->prefix('$')
+                                                            ->required()
+                                                            ->columnSpan(1)
+                                                            ->helperText('Selling price'),
 
-                                                                                TextInput::make('value')
-                                                                                    ->label('Value')
-                                                                                    ->placeholder('e.g., Red, Large')
-                                                                                    ->required()
-                                                                                    ->columnSpan(1),
-                                                                            ]),
-                                                                    ])
-                                                                    ->addActionLabel('Add row')
-                                                                    ->deleteAction(
-                                                                        fn($action) => $action->label('Remove')
-                                                                    )
-                                                                    ->defaultItems(1)
-                                                                    ->columns(1)
-                                                                    ->helperText('Specify attributes like color, size, etc.')
-                                                                    ->columnSpanFull(),
-                                                            ]),
+                                                        TextInput::make('compare_at_price')
+                                                            ->label('Compare at Price')
+                                                            ->numeric()
+                                                            ->prefix('$')
+                                                            ->nullable()
+                                                            ->columnSpan(1)
+                                                            ->helperText('Original price (for showing discount)'),
 
-                                                        Forms\Components\Fieldset::make('Pricing & Inventory')
-                                                            ->schema([
-                                                                Forms\Components\Grid::make(2)
-                                                                    ->schema([
-                                                                        Toggle::make('track_quantity')
-                                                                            ->label('Track Quantity')
-                                                                            ->helperText('Enable to track inventory quantity.')
-                                                                            ->default(true)
-                                                                            ->live()
-                                                                            ->columnSpan(2),
-                                                                    ]),
+                                                        TextInput::make('quantity')
+                                                            ->label('Quantity')
+                                                            ->numeric()
+                                                            ->default(0)
+                                                            ->minValue(0)
+                                                            ->required()
+                                                            ->columnSpan(1)
+                                                            ->helperText('Stock quantity'),
 
-                                                                Forms\Components\Grid::make(3)
-                                                                    ->schema([
-                                                                        TextInput::make('price')
-                                                                            ->label('Price')
-                                                                            ->numeric()
-                                                                            ->prefix('$')
-                                                                            ->required()
-                                                                            ->helperText('Current selling price.')
-                                                                            ->columnSpan(1),
-                                                                        TextInput::make('vendor_price')
-                                                                            ->label('Vendor Price')
-                                                                            ->numeric()
-                                                                            ->prefix('$')
-                                                                            ->helperText('price set by vendor')
-                                                                            ->columnSpan(1),
-                                                                        TextInput::make('compare_at_price')
-                                                                            ->label('Compare at Price')
-                                                                            ->numeric()
-                                                                            ->prefix('$')
-                                                                            ->helperText('Original price for showing discounts.')
-                                                                            ->columnSpan(1),
-
-                                                                        TextInput::make('cost_per_item')
-                                                                            ->label('Cost per Item')
-                                                                            ->numeric()
-                                                                            ->prefix('$')
-                                                                            ->helperText('Internal cost for profit calculation.')
-                                                                            ->columnSpan(1),
-                                                                    ]),
-
-                                                                TextInput::make('stock')
-                                                                    ->label('Stock')
-                                                                    ->numeric()
-                                                                    ->default(0)
-                                                                    ->visible(fn(callable $get) => $get('track_quantity'))
-                                                                    ->helperText('Available quantity in inventory.')
-                                                                    ->columnSpan(1),
-                                                            ]),
-
-
-                                                        Forms\Components\Fieldset::make('Variant Image')
-                                                            ->schema([
-                                                                FileUpload::make('variant_image')
-                                                                    ->label('')
-                                                                    ->image()
-                                                                    ->directory('variants')
-                                                                    ->imagePreviewHeight('150')
-                                                                    // ->visibility('public')
-                                                                    ->disk('public')
-                                                                    // ->maxSize(2048)
-                                                                    // ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/jpg', 'image/gif', 'image/svg+xml', 'image/avif'])
-                                                                    ->helperText('Image specific to this variant.')
-                                                                    ->columnSpanFull(),
-                                                            ]),
-                                                    ])
-                                                    ->collapsible()
-                                                    ->collapsed(false),
+                                                        Forms\Components\Placeholder::make('attributes_display')
+                                                            ->label('Attributes')
+                                                            ->content(function ($get, $record) {
+                                                                // In Repeater with relationship, $record is the SKU model
+                                                                if (!$record || !$record->exists) {
+                                                                    return new \Illuminate\Support\HtmlString(
+                                                                        '<div class="text-xs text-gray-500">Attributes will appear after saving</div>'
+                                                                    );
+                                                                }
+                                                                
+                                                                try {
+                                                                    // Eager load relationships
+                                                                    $record->loadMissing(['attributeValues.attribute']);
+                                                                    
+                                                                    $attributeValues = $record->attributeValues;
+                                                                    
+                                                                    if ($attributeValues->isEmpty()) {
+                                                                        return new \Illuminate\Support\HtmlString(
+                                                                            '<div class="text-xs text-gray-500">No attributes assigned</div>'
+                                                                        );
+                                                                    }
+                                                                    
+                                                                    // Build HTML for attributes
+                                                                    $html = '<div class="space-y-1.5">';
+                                                                    foreach ($attributeValues as $attrValue) {
+                                                                        $attrName = htmlspecialchars($attrValue->attribute->name ?? 'Unknown');
+                                                                        $html .= '<div class="flex items-center gap-2 text-sm">';
+                                                                        $html .= '<span class="font-medium text-gray-700 dark:text-gray-300">' . $attrName . ':</span>';
+                                                                        
+                                                                        if ($attrValue->type === 'image' && !empty($attrValue->value)) {
+                                                                            $imagePath = asset('storage/' . $attrValue->value);
+                                                                            $html .= '<img src="' . htmlspecialchars($imagePath) . '" ';
+                                                                            $html .= 'class="w-8 h-8 rounded object-cover border border-gray-200 dark:border-gray-700" ';
+                                                                            $html .= 'alt="' . htmlspecialchars($attrName) . '" loading="lazy">';
+                                                                        } else {
+                                                                            $value = htmlspecialchars($attrValue->value ?? '');
+                                                                            $html .= '<span class="text-gray-600 dark:text-gray-400">' . $value . '</span>';
+                                                                        }
+                                                                        
+                                                                        $html .= '</div>';
+                                                                    }
+                                                                    $html .= '</div>';
+                                                                    
+                                                                    return new \Illuminate\Support\HtmlString($html);
+                                                                } catch (\Exception $e) {
+                                                                    \Log::error('SKU attributes display error: ' . $e->getMessage());
+                                                                    return new \Illuminate\Support\HtmlString(
+                                                                        '<div class="text-xs text-red-500">Error loading attributes</div>'
+                                                                    );
+                                                                }
+                                                            })
+                                                            ->columnSpan(1),
+                                                    ]),
                                             ])
-                                            ->addActionLabel('Add Variant')
-                                            ->deleteAction(
-                                                fn($action) => $action->label('Remove Variant')
-                                            )
+                                            ->addActionLabel('Add SKU')
                                             ->reorderableWithButtons()
                                             ->collapsible()
-                                            ->itemLabel(
-                                                fn(array $state): ?string => ($state['sku'] ?? 'New Variant') .
-                                                    (isset($state['attributes'][0]['value']) ? ' - ' . $state['attributes'][0]['value'] : '')
+                                            ->itemLabel(fn (array $state): ?string => 
+                                                ($state['sku'] ?? 'New SKU') . 
+                                                ($state['title'] ? ' - ' . $state['title'] : '')
                                             )
-                                            ->defaultItems(1)
-                                            ->columnSpanFull(),
+                                            ->defaultItems(0)
+                                            ->columnSpanFull()
+                                            ->visible(fn ($record) => $record && $record->skus()->count() > 0)
+                                            ->helperText('Edit SKU details. Prices and quantities can be customized per variation.'),
                                     ]),
-
-
                             ]),
 
 
