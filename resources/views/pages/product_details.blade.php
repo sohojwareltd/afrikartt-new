@@ -122,9 +122,9 @@
         }
 
         /* @keyframes spin {
-                                                                                                                                from { transform: rotate(0deg); }
-                                                                                                                                to { transform: rotate(360deg); }
-                                                                                                                            } */
+                                                                                                                                                                                                                                                                    from { transform: rotate(0deg); }
+                                                                                                                                                                                                                                                                    to { transform: rotate(360deg); }
+                                                                                                                                                                                                                                                                } */
 
         .product-title {
             font-size: 0.9rem;
@@ -138,8 +138,8 @@
 
         @media (max-width: 576px) {
             /* .product-image {
-                                                            height: 180px;
-                                                        } */
+                                                                                                                                                                                                height: 180px;
+                                                                                                                                                                                            } */
 
             .product-content {
                 padding: 12px;
@@ -397,6 +397,96 @@
                 margin-bottom: 10px;
             }
         }
+
+
+
+
+
+        .variant-input-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .variant-input {
+            position: relative;
+        }
+
+        .variant__input--color-swatch,
+        .variant-input input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .color-swatch {
+            display: block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            box-shadow: 0 0 0 2px #f1f1f1;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .variant-input input[type="radio"]:checked+.color-swatch {
+            box-shadow: 0 0 0 3px #000;
+            transform: scale(1.05);
+        }
+
+        .color-swatch:hover {
+            box-shadow: 0 0 0 3px #666;
+            transform: scale(1.05);
+        }
+
+
+
+        .variant-input-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .variant-input {
+            position: relative;
+        }
+
+        .variant-input input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .size-swatch {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 55px;
+            height: 45px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            color: #333;
+            font-weight: 500;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .size-swatch:hover {
+            border-color: #000;
+            transform: scale(1.05);
+        }
+
+        .variant-input input[type="radio"]:checked+.size-swatch {
+            border-color: #000;
+            background-color: #000;
+            color: #fff;
+            transform: scale(1.05);
+        }
     </style>
 @endsection
 @section('canonical_url', route('product_details', $mainProduct->slug))
@@ -530,7 +620,7 @@
                                                         <h4 class="variations-title mb-3"
                                                             style="font-weight: 600; color: #2c3e50;">Available Variations
                                                         </h4>
-                                                        <div class="variations-container">
+                                                        {{-- <div class="variations-container">
                                                             @foreach ($variations as $index => $variation)
                                                                 @php
                                                                     $isOutOfStock =
@@ -553,7 +643,7 @@
                                                                     data-variation-image="{{ $variation->variant_image ? Storage::url($variation->variant_image) : '' }}"
                                                                     @if ($isOutOfStock) data-out-of-stock="true" @endif>
                                                                     <div class="row align-items-center">
-                                                                        {{-- Variation Image --}}
+                                                                        
                                                                         <div class="col-md-2 col-sm-3">
                                                                             @if ($variation->variant_image)
                                                                                 <img src="{{ Storage::url($variation->variant_image) }}"
@@ -569,10 +659,10 @@
                                                                             @endif
                                                                         </div>
 
-                                                                        {{-- Variation Details --}}
+                                                                        
                                                                         <div class="col-md-8 col-sm-6">
                                                                             <div class="row">
-                                                                                {{-- Attributes --}}
+                                                                                
                                                                                 <div class="col-md-4">
                                                                                     <h6 class="mb-2"
                                                                                         style="font-weight: 600; color: #495057;">
@@ -599,7 +689,7 @@
                                                                                     @endif
                                                                                 </div>
 
-                                                                                {{-- Pricing --}}
+                                                                                
                                                                                 <div class="col-md-4">
                                                                                     <h6 class="mb-2"
                                                                                         style="font-weight: 600; color: #495057;">
@@ -609,10 +699,7 @@
                                                                                             style="font-size: 1.1rem; font-weight: 700; color: #28a745;">
                                                                                             ${{ number_format($variation->price ?? 0, 2) }}
                                                                                         </div>
-                                                                                        @if (
-                                                                                            $variation->compare_at_price &&
-                                                                                                $variation->compare_at_price > 0 &&
-                                                                                                $variation->compare_at_price > $variation->price)
+                                                                                        @if ($variation->compare_at_price && $variation->compare_at_price > 0 && $variation->compare_at_price > $variation->price)
                                                                                             <div class="compare-price"
                                                                                                 style="font-size: 0.9rem; color: #6c757d; text-decoration: line-through;">
                                                                                                 ${{ number_format($variation->compare_at_price, 2) }}
@@ -628,7 +715,7 @@
                                                                                     </div>
                                                                                 </div>
 
-                                                                                {{-- Stock Information --}}
+                                                                               
                                                                                 <div class="col-md-4">
                                                                                     <h6 class="mb-2"
                                                                                         style="font-weight: 600; color: #495057;">
@@ -651,7 +738,7 @@
                                                                             </div>
                                                                         </div>
 
-                                                                        {{-- Selection Indicator --}}
+                                                                       
                                                                         <div class="col-md-2 col-sm-3 text-end">
                                                                             <div class="selection-indicator">
                                                                                 @if ($isOutOfStock)
@@ -666,7 +753,76 @@
                                                                     </div>
                                                                 </div>
                                                             @endforeach
+                                                        </div> --}}
+
+                                                        <label for=""
+                                                            class="form-label w-bold fs-4 mb-3 d-block">Color —
+                                                        </label>
+                                                        <div class="variant-input-wrap mb-4" data-swatch_style="round"
+                                                            data-center-text="true">
+                                                            <div class="variant-input">
+                                                                <input type="radio" id="color-1" name="Color"
+                                                                    value="Vintage Dark Denim / White" checked>
+                                                                <label for="color-1" class="color-swatch"
+                                                                    style="background-image: url('https://superlinewholesale.com/cdn/shop/files/black-yellow_50x50.png');"
+                                                                    title="Vintage Dark Denim / White">
+                                                                </label>
+                                                            </div>
+
+                                                            <div class="variant-input">
+                                                                <input type="radio" id="color-2" name="Color"
+                                                                    value="Black / Yellow">
+                                                                <label for="color-2" class="color-swatch"
+                                                                    style="background-image: url('https://superlinewholesale.com/cdn/shop/files/black-yellow_50x50.png');"
+                                                                    title="Black / Yellow">
+                                                                </label>
+                                                            </div>
+
+                                                            <div class="variant-input">
+                                                                <input type="radio" id="color-3" name="Color"
+                                                                    value="Red / White">
+                                                                <label for="color-3" class="color-swatch"
+                                                                    style="background-image: url('https://superlinewholesale.com/cdn/shop/files/red-white_50x50.png');"
+                                                                    title="Red / White">
+                                                                </label>
+                                                            </div>
                                                         </div>
+
+                                                        <div class="variant-input-wrap" data-center-text="true"
+                                                            data-swatch_style="square">
+                                                            <div class="variant-input">
+                                                                <input type="radio" id="size-s" name="Size"
+                                                                    value="S" checked>
+                                                                <label for="size-s" class="size-swatch">S</label>
+                                                            </div>
+
+                                                            <div class="variant-input">
+                                                                <input type="radio" id="size-m" name="Size"
+                                                                    value="M">
+                                                                <label for="size-m" class="size-swatch">M</label>
+                                                            </div>
+
+                                                            <div class="variant-input">
+                                                                <input type="radio" id="size-l" name="Size"
+                                                                    value="L">
+                                                                <label for="size-l" class="size-swatch">L</label>
+                                                            </div>
+
+                                                            <div class="variant-input">
+                                                                <input type="radio" id="size-xl" name="Size"
+                                                                    value="XL">
+                                                                <label for="size-xl" class="size-swatch">XL</label>
+                                                            </div>
+
+                                                            <div class="variant-input">
+                                                                <input type="radio" id="size-xxl" name="Size"
+                                                                    value="XXL">
+                                                                <label for="size-xxl" class="size-swatch">XXL</label>
+                                                            </div>
+                                                        </div>
+
+
+
                                                     </div>
                                                 @endif
                                             </div>

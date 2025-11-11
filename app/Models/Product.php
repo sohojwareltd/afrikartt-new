@@ -85,6 +85,10 @@ class Product extends Model
     {
         return $this->hasMany(Attribute::class);
     }
+    public function skus()
+    {
+        return $this->hasMany(Sku::class);
+    }
 
     public function subproducts()
     {
@@ -127,7 +131,7 @@ class Product extends Model
             })
             ->when(request()->has('shop'), function ($q) {
                 if (is_numeric(request()->shop)) {
-                    
+
                     return $q->whereHas('shop', function ($query) {
                         $query->where('shop_id', request()->shop);
                     });
