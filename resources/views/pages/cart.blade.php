@@ -476,12 +476,34 @@
                                                             <button class="remove-btn" title="Remove"
                                                                 onclick="window.location='{{ route('cart.destroy', $item->rowId) }}'"><i
                                                                     class="fas fa-trash"></i></button>
-                                                            <img src="{{ Storage::url($item->model->image) }}"
+                                                            @php
+                                                                $sku = null;
+                                                                $skuImage = $item->model->image;
+                                                                if (isset($item->options['sku_id']) && $item->options['sku_id']) {
+                                                                    $sku = \App\Models\Sku::with('attributeValues.attribute')->find($item->options['sku_id']);
+                                                                    if ($sku && $sku->image) {
+                                                                        $skuImage = $sku->image;
+                                                                    }
+                                                                }
+                                                            @endphp
+                                                            <img src="{{ Storage::url($skuImage) }}"
                                                                 alt="{{ $item->name }}" class="product-image">
                                                             <div class="product-details">
                                                                 <h3>{{ $item->name }}</h3>
-                                                                <p>{{ Str::limit(strip_tags($item->model->short_description), 40, '...') }}
-                                                                </p>
+                                                                @if ($sku)
+                                                                    <p class="text-sm text-muted mb-1">
+                                                                        @foreach ($sku->attributeValues as $attrValue)
+                                                                            <span class="badge bg-light text-dark me-1">
+                                                                                {{ $attrValue->attribute->name ?? 'Unknown' }}: {{ $attrValue->getDisplayName() }}
+                                                                            </span>
+                                                                        @endforeach
+                                                                    </p>
+                                                                    @if ($sku->sku)
+                                                                        <p class="text-xs text-muted mb-0">SKU: {{ $sku->sku }}</p>
+                                                                    @endif
+                                                                @else
+                                                                    <p>{{ Str::limit(strip_tags($item->model->short_description), 40, '...') }}</p>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </td>

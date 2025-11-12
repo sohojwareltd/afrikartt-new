@@ -4,6 +4,7 @@ namespace App\Services\Checkout;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Sku;
 use App\Models\Shop;
 use App\Models\User;
 use App\Services\Checkout\Data\ShippingAndBillingInformation;
@@ -137,29 +138,75 @@ class CheckoutService
 
             ]);
             foreach ($items as $item) {
-                $varient = null;
-                if (@$item->options['variation']) {
-                    $varient = $item->model->getVariationBySku($item->options['variation']);
+                $sku = null;
+                $variationData = null;
+                
+                // Get SKU from cart options
+                if (isset($item->options['sku_id']) && $item->options['sku_id']) {
+                    $sku = Sku::with('attributeValues.attribute')->find($item->options['sku_id']);
+                    
+                    if ($sku) {
+                        // Build variation data from SKU
+                        $variationData = [
+                            'sku_id' => $sku->id,
+                            'sku_code' => $sku->sku,
+                            'title' => $sku->title,
+                            'attributes' => $sku->attributeValues->map(function ($attrValue) {
+                                return [
+                                    'attribute' => $attrValue->attribute->name ?? 'Unknown',
+                                    'value' => $attrValue->getDisplayName(),
+                                    'type' => $attrValue->type,
+                                ];
+                            })->toArray(),
+                        ];
+                    }
                 }
+                
                 $shopOrder->products()->attach($item->model->id, [
                     'shop_id' => $shop->id,
                     'quantity' => $item->qty,
                     'product_id' => $item->model->id,
+                    'sku_id' => $sku ? $sku->id : null,
                     'price' => $item->price,
                     'total_price' => $item->price * $item->qty,
-                    'variation' => $varient ? json_encode($varient->toArray()) : null,
+                    'variation' => $variationData ? json_encode($variationData) : null,
                 ]);
             }
         }
 
         foreach ($this->cart::content() as $item) {
+            $sku = null;
+            $variationData = null;
+            
+            // Get SKU from cart options
+            if (isset($item->options['sku_id']) && $item->options['sku_id']) {
+                $sku = Sku::with('attributeValues.attribute')->find($item->options['sku_id']);
+                
+                if ($sku) {
+                    // Build variation data from SKU
+                    $variationData = [
+                        'sku_id' => $sku->id,
+                        'sku_code' => $sku->sku,
+                        'title' => $sku->title,
+                        'attributes' => $sku->attributeValues->map(function ($attrValue) {
+                            return [
+                                'attribute' => $attrValue->attribute->name ?? 'Unknown',
+                                'value' => $attrValue->getDisplayName(),
+                                'type' => $attrValue->type,
+                            ];
+                        })->toArray(),
+                    ];
+                }
+            }
+            
             $order->products()->attach($item->model->id, [
                 'shop_id' => $item->model->shop_id,
                 'quantity' => $item->qty,
                 'product_id' => $item->model->id,
+                'sku_id' => $sku ? $sku->id : null,
                 'price' => $item->price,
                 'total_price' => $item->price * $item->qty,
-                'variation' => $varient ? json_encode($varient->toArray()) : null,
+                'variation' => $variationData ? json_encode($variationData) : null,
             ]);
         }
 
@@ -173,6 +220,18 @@ class CheckoutService
     private function productHasStock()
     {
         foreach (Cart::Content() as $item) {
+            // Check SKU stock if item has SKU
+            if (isset($item->options['sku_id']) && $item->options['sku_id']) {
+                $sku = Sku::find($item->options['sku_id']);
+                if ($sku) {
+                    if ($sku->quantity < $item->qty) {
+                        throw new Exception('Variation "' . ($sku->title ?? $sku->sku) . '" of product "' . $item->model->name . '" has only ' . $sku->quantity . ' in stock');
+                    }
+                    continue;
+                }
+            }
+            
+            // Fallback to product stock for non-variable products
             $product = Product::find($item->model->id);
             if ($product->quantity < $item->qty) {
                 throw new Exception('Product ' . $product->name . ' has only ' . $product->quantity . ' in stock');

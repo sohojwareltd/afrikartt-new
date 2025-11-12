@@ -87,7 +87,15 @@ class Product extends Model
     }
     public function skus()
     {
-        return $this->hasMany(Sku::class);
+        return $this->hasMany(Sku::class, 'product_id');
+    }
+
+    /**
+     * Get the attribute values for this product.
+     */
+    public function attributeValues()
+    {
+        return $this->hasMany(ProductAttribureValue::class, 'product_id');
     }
 
     public function subproducts()

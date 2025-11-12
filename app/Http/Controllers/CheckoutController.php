@@ -213,24 +213,33 @@ class CheckoutController extends Controller
 
         // try {
         $order = (new CheckoutService())->createOrder();
+
+        // Clear cart and related session data after successful order creation
+        Cart::destroy();
+        Session::forget(['discount', 'discount_code', 'coupon_id']);
     }
 
     protected function decreaseQuantities()
     {
         foreach (Cart::getContent() as $item) {
-            $varient = null;
-            if (@$item->options['variation']) {
-                $varient = $item->model->getVariationBySku($item->options['variation']);
+            // Check if item has SKU
+            if (isset($item->options['sku_id']) && $item->options['sku_id']) {
+                $sku = \App\Models\Sku::find($item->options['sku_id']);
+                if ($sku) {
+                    // Decrement SKU quantity
+                    $sku->decrement('quantity', $item->qty);
+                    
+                    // Also update product total sales
+                    $product = Product::find($item->model->id);
+                    $product->increment('total_sale', $item->qty);
+                    continue;
+                }
             }
 
-            if ($varient) {
-                $varient->decreaseStock($item->qty);
-            } else {
-
-                $product = Product::find($item->model->id);
-                $product->increment('total_sale');
-                $product->update(['quantity' => $product->quantity - $item->qty]);
-            }
+            // Fallback to product quantity for non-variable products
+            $product = Product::find($item->model->id);
+            $product->increment('total_sale', $item->qty);
+            $product->decrement('quantity', $item->qty);
         }
     }
     protected function notification($user, $shop)

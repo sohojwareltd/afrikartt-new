@@ -224,7 +224,23 @@ class ProductResource extends Resource
                                                     if ($data['type'] === 'text') {
                                                         $data['text_value'] = $data['value'];
                                                     } elseif ($data['type'] === 'image') {
-                                                        $data['image_value'] = $data['value'];
+                                                        // Try to decode JSON for image type
+                                                        $value = $data['value'];
+                                                        if (is_string($value)) {
+                                                            $decoded = json_decode($value, true);
+                                                            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                                                                // It's JSON, extract name and image_path
+                                                                $data['image_name'] = $decoded['name'] ?? '';
+                                                                $data['image_value'] = $decoded['image_path'] ?? $value;
+                                                            } else {
+                                                                // Legacy format - just image path
+                                                                $data['image_name'] = pathinfo($value, PATHINFO_FILENAME);
+                                                                $data['image_value'] = $value;
+                                                            }
+                                                        } else {
+                                                            $data['image_value'] = $value;
+                                                            $data['image_name'] = '';
+                                                        }
                                                     }
                                                 }
                                                 return $data;
@@ -234,14 +250,39 @@ class ProductResource extends Resource
                                                 if (isset($data['type'])) {
                                                     if ($data['type'] === 'text' && isset($data['text_value'])) {
                                                         $data['value'] = $data['text_value'];
-                                                    } elseif ($data['type'] === 'image' && isset($data['image_value'])) {
-                                                        // For image, the image_value might be processed by FileUpload
-                                                        // So check both image_value and value
-                                                        $data['value'] = $data['image_value'] ?? $data['value'] ?? null;
+                                                    } elseif ($data['type'] === 'image') {
+                                                        // For image type, store as JSON with name and image_path
+                                                        $imagePath = $data['image_value'] ?? $data['value'] ?? null;
+                                                        $imageName = $data['image_name'] ?? '';
+                                                        
+                                                        // Get image path from various possible formats
+                                                        if (is_array($imagePath) && !empty($imagePath)) {
+                                                            $firstItem = isset($imagePath[0]) ? $imagePath[0] : (reset($imagePath) ?: null);
+                                                            if (is_array($firstItem)) {
+                                                                $imagePath = $firstItem['path'] ?? $firstItem['name'] ?? $firstItem['url'] ?? null;
+                                                            } elseif (is_string($firstItem)) {
+                                                                $imagePath = $firstItem;
+                                                            }
+                                                        }
+                                                        
+                                                        if ($imagePath) {
+                                                            // If no name provided, use filename as fallback
+                                                            if (empty($imageName) && is_string($imagePath)) {
+                                                                $imageName = pathinfo($imagePath, PATHINFO_FILENAME);
+                                                            }
+                                                            
+                                                            // Store as JSON
+                                                            $data['value'] = json_encode([
+                                                                'name' => $imageName,
+                                                                'image_path' => $imagePath
+                                                            ]);
+                                                        } else {
+                                                            $data['value'] = null;
+                                                        }
                                                     }
                                                 }
                                                 // Clean up temporary fields
-                                                unset($data['text_value'], $data['image_value']);
+                                                unset($data['text_value'], $data['image_value'], $data['image_name']);
                                                 return $data;
                                             })
                                             ->schema([
@@ -307,8 +348,17 @@ class ProductResource extends Resource
                                                     ->columnSpanFull()
                                                     ->helperText('Enter the attribute value (e.g., Red for Color, Small for Size)'),
 
+                                                Forms\Components\TextInput::make('image_name')
+                                                    ->label('Name')
+                                                    ->required(fn (callable $get) => $get('type') === 'image')
+                                                    ->visible(fn (callable $get) => $get('type') === 'image')
+                                                    ->placeholder('Enter a name for this image (e.g., Red, Blue, Pattern A)')
+                                                    ->live(onBlur: true)
+                                                    ->helperText('Enter a descriptive name for this image attribute value')
+                                                    ->columnSpan(1),
+
                                                 Forms\Components\FileUpload::make('image_value')
-                                                    ->label('Value (Image)')
+                                                    ->label('Image')
                                                     ->image()
                                                     ->directory('attribute-values')
                                                     ->disk('public')
@@ -318,21 +368,23 @@ class ProductResource extends Resource
                                                     ->maxFiles(1)
                                                     ->live()
                                                     ->afterStateUpdated(function (callable $set, $state, callable $get) {
-                                                        // Update the hidden value field when image changes
-                                                        if ($get('type') === 'image') {
-                                                            $finalValue = null;
+                                                        // When image is uploaded, auto-fill name if empty
+                                                        if ($get('type') === 'image' && empty($get('image_name'))) {
+                                                            $imagePath = null;
                                                             if (is_array($state) && !empty($state)) {
                                                                 $firstItem = isset($state[0]) ? $state[0] : (reset($state) ?: null);
                                                                 if (is_array($firstItem)) {
-                                                                    $finalValue = $firstItem['path'] ?? $firstItem['name'] ?? $firstItem['url'] ?? null;
+                                                                    $imagePath = $firstItem['path'] ?? $firstItem['name'] ?? $firstItem['url'] ?? null;
                                                                 } elseif (is_string($firstItem)) {
-                                                                    $finalValue = $firstItem;
+                                                                    $imagePath = $firstItem;
                                                                 }
                                                             } elseif (is_string($state) && !empty($state)) {
-                                                                $finalValue = $state;
+                                                                $imagePath = $state;
                                                             }
-                                                            if ($finalValue !== null) {
-                                                                $set('value', $finalValue);
+                                                            
+                                                            if ($imagePath && is_string($imagePath)) {
+                                                                // Auto-fill name from filename
+                                                                $set('image_name', pathinfo($imagePath, PATHINFO_FILENAME));
                                                             }
                                                         }
                                                     })
@@ -361,7 +413,7 @@ class ProductResource extends Resource
                                                         
                                                         return is_string($firstItem) && !empty($firstItem) ? $firstItem : null;
                                                     })
-                                                    ->columnSpanFull()
+                                                    ->columnSpan(1)
                                                     ->helperText('Upload an image for this attribute value'),
                                             ])
                                             ->addActionLabel('Add Attribute Value')
@@ -376,32 +428,40 @@ class ProductResource extends Resource
                                                     }
                                                     
                                                     $type = $state['type'] ?? 'text';
-                                                    // Get value from the correct field or from the main value field
-                                                    $value = $state['value'] ?? ($type === 'text' ? ($state['text_value'] ?? null) : ($state['image_value'] ?? null));
                                                     
-                                                    // Handle value based on type and format
+                                                    // Handle value based on type
                                                     if ($type === 'image') {
-                                                        // FileUpload can return array or string
-                                                        if (is_array($value) && !empty($value)) {
-                                                            // Handle array - safely get first item
-                                                            $firstItem = reset($value);
-                                                            if ($firstItem === false) {
-                                                                $value = 'Image';
-                                                            } elseif (is_string($firstItem)) {
-                                                                $value = basename($firstItem);
-                                                            } elseif (is_array($firstItem)) {
-                                                                $value = basename($firstItem['name'] ?? $firstItem['path'] ?? 'Image');
+                                                        // For image type, prefer image_name if available
+                                                        $value = $state['image_name'] ?? null;
+                                                        
+                                                        // If no name, try to get from value (JSON or legacy format)
+                                                        if (empty($value)) {
+                                                            $rawValue = $state['value'] ?? null;
+                                                            if (is_string($rawValue)) {
+                                                                $decoded = json_decode($rawValue, true);
+                                                                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded) && isset($decoded['name'])) {
+                                                                    $value = $decoded['name'];
+                                                                } else {
+                                                                    // Legacy format
+                                                                    $value = pathinfo($rawValue, PATHINFO_FILENAME);
+                                                                }
+                                                            } elseif (is_array($state['image_value'] ?? null)) {
+                                                                $imageValue = $state['image_value'];
+                                                                $firstItem = isset($imageValue[0]) ? $imageValue[0] : (reset($imageValue) ?: null);
+                                                                if (is_array($firstItem)) {
+                                                                    $value = basename($firstItem['name'] ?? $firstItem['path'] ?? 'Image');
+                                                                } elseif (is_string($firstItem)) {
+                                                                    $value = basename($firstItem);
+                                                                } else {
+                                                                    $value = 'Image';
+                                                                }
                                                             } else {
                                                                 $value = 'Image';
                                                             }
-                                                        } elseif (is_string($value) && !empty($value)) {
-                                                            // Already a string path
-                                                            $value = basename($value);
-                                                        } else {
-                                                            $value = 'Image';
                                                         }
                                                     } else {
-                                                        // Text value - ensure it's a string
+                                                        // Text value
+                                                        $value = $state['text_value'] ?? $state['value'] ?? 'New Value';
                                                         if (is_array($value)) {
                                                             $filtered = array_filter($value, fn($v) => !empty($v));
                                                             $value = !empty($filtered) ? implode(', ', $filtered) : 'New Value';
@@ -435,6 +495,23 @@ class ProductResource extends Resource
                                                     </ul>
                                                 </div>
                                             '))
+                                            ->columnSpanFull(),
+
+                                        Forms\Components\Actions::make([
+                                            Forms\Components\Actions\Action::make('generateSkus')
+                                                ->label('Generate SKUs Now')
+                                                ->icon('heroicon-o-arrow-path')
+                                                ->color('success')
+                                                ->requiresConfirmation()
+                                                ->modalHeading('Generate SKUs')
+                                                ->modalDescription('This will regenerate all SKUs from current attribute values. Continue?')
+                                                ->action(function ($livewire) {
+                                                    if (method_exists($livewire, 'regenerateSkus')) {
+                                                        $livewire->regenerateSkus();
+                                                    }
+                                                })
+                                                ->visible(fn ($record) => $record && $record->attributeValues()->count() > 0),
+                                        ])
                                             ->columnSpanFull(),
                                     ]),
                             ]),
@@ -738,7 +815,29 @@ class ProductResource extends Resource
                                         Forms\Components\Repeater::make('skus')
                                             ->relationship('skus')
                                             ->label('SKUs')
+                                            ->mutateRelationshipDataBeforeFillUsing(function (array $data): array {
+                                                // Load attribute values for this SKU
+                                                if (isset($data['id'])) {
+                                                    $sku = \App\Models\Sku::find($data['id']);
+                                                    if ($sku) {
+                                                        $data['attribute_value_ids'] = $sku->attributeValues->pluck('id')->toArray();
+                                                    }
+                                                }
+                                                return $data;
+                                            })
+                                            ->mutateRelationshipDataBeforeSaveUsing(function (array $data, $record): array {
+                                                // Mark as manual SKU
+                                                $data['is_manual'] = true;
+                                                
+                                                // Keep attribute_value_ids in form state
+                                                // We'll handle sync in afterSave hook
+                                                return $data;
+                                            })
                                             ->schema([
+                                                Forms\Components\Hidden::make('is_manual')
+                                                    ->default(true)
+                                                    ->dehydrated(),
+
                                                 Forms\Components\Grid::make(3)
                                                     ->schema([
                                                         TextInput::make('sku')
@@ -755,6 +854,20 @@ class ProductResource extends Resource
                                                             ->columnSpan(2)
                                                             ->helperText('Display title for this variation (e.g., "Red - Small")'),
                                                     ]),
+
+                                                Forms\Components\FileUpload::make('image')
+                                                    ->label('Variation Image')
+                                                    ->image()
+                                                    ->directory('sku-images')
+                                                    ->disk('public')
+                                                    ->imagePreviewHeight('150')
+                                                    ->imageCropAspectRatio('1:1')
+                                                    ->imageResizeTargetWidth('800')
+                                                    ->imageResizeTargetHeight('800')
+                                                    ->maxSize(5120)
+                                                    ->nullable()
+                                                    ->columnSpanFull()
+                                                    ->helperText('Upload a specific image for this variation. This will be displayed when the variation is selected.'),
 
                                                 Forms\Components\Grid::make(4)
                                                     ->schema([
@@ -783,58 +896,34 @@ class ProductResource extends Resource
                                                             ->columnSpan(1)
                                                             ->helperText('Stock quantity'),
 
-                                                        Forms\Components\Placeholder::make('attributes_display')
+                                                        Forms\Components\Select::make('attribute_value_ids')
                                                             ->label('Attributes')
-                                                            ->content(function ($get, $record) {
-                                                                // In Repeater with relationship, $record is the SKU model
-                                                                if (!$record || !$record->exists) {
-                                                                    return new \Illuminate\Support\HtmlString(
-                                                                        '<div class="text-xs text-gray-500">Attributes will appear after saving</div>'
-                                                                    );
+                                                            ->multiple()
+                                                            ->options(function ($get, $livewire) {
+                                                                // Get product ID from the record
+                                                                $productId = $livewire->record->id ?? null;
+                                                                if (!$productId) {
+                                                                    return [];
                                                                 }
                                                                 
-                                                                try {
-                                                                    // Eager load relationships
-                                                                    $record->loadMissing(['attributeValues.attribute']);
-                                                                    
-                                                                    $attributeValues = $record->attributeValues;
-                                                                    
-                                                                    if ($attributeValues->isEmpty()) {
-                                                                        return new \Illuminate\Support\HtmlString(
-                                                                            '<div class="text-xs text-gray-500">No attributes assigned</div>'
-                                                                        );
-                                                                    }
-                                                                    
-                                                                    // Build HTML for attributes
-                                                                    $html = '<div class="space-y-1.5">';
-                                                                    foreach ($attributeValues as $attrValue) {
-                                                                        $attrName = htmlspecialchars($attrValue->attribute->name ?? 'Unknown');
-                                                                        $html .= '<div class="flex items-center gap-2 text-sm">';
-                                                                        $html .= '<span class="font-medium text-gray-700 dark:text-gray-300">' . $attrName . ':</span>';
-                                                                        
-                                                                        if ($attrValue->type === 'image' && !empty($attrValue->value)) {
-                                                                            $imagePath = asset('storage/' . $attrValue->value);
-                                                                            $html .= '<img src="' . htmlspecialchars($imagePath) . '" ';
-                                                                            $html .= 'class="w-8 h-8 rounded object-cover border border-gray-200 dark:border-gray-700" ';
-                                                                            $html .= 'alt="' . htmlspecialchars($attrName) . '" loading="lazy">';
-                                                                        } else {
-                                                                            $value = htmlspecialchars($attrValue->value ?? '');
-                                                                            $html .= '<span class="text-gray-600 dark:text-gray-400">' . $value . '</span>';
-                                                                        }
-                                                                        
-                                                                        $html .= '</div>';
-                                                                    }
-                                                                    $html .= '</div>';
-                                                                    
-                                                                    return new \Illuminate\Support\HtmlString($html);
-                                                                } catch (\Exception $e) {
-                                                                    \Log::error('SKU attributes display error: ' . $e->getMessage());
-                                                                    return new \Illuminate\Support\HtmlString(
-                                                                        '<div class="text-xs text-red-500">Error loading attributes</div>'
-                                                                    );
+                                                                // Get all attribute values for this product
+                                                                $attributeValues = \App\Models\ProductAttribureValue::where('product_id', $productId)
+                                                                    ->with('attribute')
+                                                                    ->get();
+                                                                
+                                                                $options = [];
+                                                                foreach ($attributeValues as $attrValue) {
+                                                                    $label = ($attrValue->attribute->name ?? 'Unknown') . ': ' . $attrValue->getDisplayName();
+                                                                    $options[$attrValue->id] = $label;
                                                                 }
+                                                                
+                                                                return $options;
                                                             })
-                                                            ->columnSpan(1),
+                                                            ->searchable()
+                                                            ->preload()
+                                                            ->dehydrated() // Keep in form state
+                                                            ->columnSpan(1)
+                                                            ->helperText('Select attribute values for this SKU'),
                                                     ]),
                                             ])
                                             ->addActionLabel('Add SKU')

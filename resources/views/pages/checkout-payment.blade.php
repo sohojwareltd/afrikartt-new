@@ -858,16 +858,38 @@
                                 $items = $order->products;
                             @endphp
                             @foreach ($items as $item)
+                                @php
+                                    $sku = null;
+                                    $skuImage = $item->image;
+                                    $variationData = null;
+                                    if ($item->pivot->variation) {
+                                        $variationData = json_decode($item->pivot->variation, true);
+                                        if (isset($variationData['sku_id'])) {
+                                            $sku = \App\Models\Sku::with('attributeValues.attribute')->find($variationData['sku_id']);
+                                            if ($sku && $sku->image) {
+                                                $skuImage = $sku->image;
+                                            }
+                                        }
+                                    }
+                                @endphp
                                 <div class="d-flex align-items-center mb-5">
-                                    <img src="{{ Storage::url($item->image) }}" alt="{{ $item->name }}"
+                                    <img src="{{ Storage::url($skuImage) }}" alt="{{ $item->name }}"
                                         style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #eee;margin-right:12px;">
                                     <div class="flex-grow-1">
                                         <div class="fw-semibold" style="font-size:1rem;">{{ $item->name }}</div>
                                         <div class="text-muted small">
-                                            @if ($item->pivot->variation)
-                                                <span>Variation: {{ json_decode($item->pivot->variation)->sku }}</span>
+                                            @if ($sku)
+                                                @foreach ($sku->attributeValues as $attrValue)
+                                                    <span class="badge bg-light text-dark me-1" style="font-size: 0.7rem;">
+                                                        {{ $attrValue->attribute->name ?? 'Unknown' }}: {{ $attrValue->getDisplayName() }}
+                                                    </span>
+                                                @endforeach
+                                                @if ($sku->sku)
+                                                    <div class="mt-1" style="font-size: 0.7rem;">SKU: {{ $sku->sku }}</div>
+                                                @endif
+                                            @elseif ($variationData && isset($variationData['sku_code']))
+                                                <span>Variation: {{ $variationData['sku_code'] }}</span>
                                             @endif
-
                                             <span class="ms-2">Qty: {{ $item->pivot->quantity }}</span>
                                         </div>
                                     </div>

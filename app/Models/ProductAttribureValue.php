@@ -44,4 +44,52 @@ class ProductAttribureValue extends Model
     {
         return $this->belongsToMany(Sku::class, 'sku_attributes', 'product_attribute_value_id', 'sku_id');
     }
+
+    /**
+     * Get the display name for this attribute value.
+     * For image type, returns the name from JSON if available, otherwise filename.
+     * For text type, returns the value as-is.
+     */
+    public function getDisplayName(): string
+    {
+        if ($this->type === 'image') {
+            $value = $this->value;
+            
+            // Try to decode as JSON
+            if (is_string($value)) {
+                $decoded = json_decode($value, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded) && isset($decoded['name'])) {
+                    return $decoded['name'];
+                }
+            }
+            
+            // Fallback to filename for backward compatibility
+            return pathinfo($value, PATHINFO_FILENAME);
+        }
+        
+        return $this->value ?? '';
+    }
+
+    /**
+     * Get the image path for image type attributes.
+     */
+    public function getImagePath(): ?string
+    {
+        if ($this->type !== 'image') {
+            return null;
+        }
+        
+        $value = $this->value;
+        
+        // Try to decode as JSON
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded) && isset($decoded['image_path'])) {
+                return $decoded['image_path'];
+            }
+        }
+        
+        // Fallback to value itself for backward compatibility
+        return $value;
+    }
 }

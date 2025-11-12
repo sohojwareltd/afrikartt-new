@@ -22,8 +22,8 @@ class SkuGenerationService
         $attributeValues = $product->attributeValues()->with('attribute')->get();
 
         if ($attributeValues->isEmpty()) {
-            // Delete existing SKUs if no attribute values
-            $product->skus()->delete();
+            // Delete only auto-generated SKUs if no attribute values (preserve manual SKUs)
+            $product->skus()->where('is_manual', false)->delete();
             return [];
         }
 
@@ -45,13 +45,42 @@ class SkuGenerationService
         $createdSkuIds = [];
 
         DB::transaction(function () use ($product, $combinations, &$createdSkuIds) {
-            // Delete existing SKUs (cascade will delete sku_attributes)
-            $product->skus()->delete();
+            // Load existing SKUs with their attribute combinations
+            $existingSkus = $product->skus()->with('attributeValues')->get();
 
-            // Create SKU for each combination
+            $existingSkuMap = [];
+
+            foreach ($existingSkus as $existingSku) {
+                $attributeValueIds = $existingSku->attributeValues
+                    ->pluck('id')
+                    ->sort()
+                    ->values()
+                    ->all();
+
+                $key = $this->buildCombinationKey($attributeValueIds);
+                $existingSkuMap[$key] = $existingSku;
+            }
+
+            // Create missing combinations
             foreach ($combinations as $combination) {
+                sort($combination);
+                $key = $this->buildCombinationKey($combination);
+
+                if (isset($existingSkuMap[$key])) {
+                    // Combination already exists, skip creation and mark as processed
+                    unset($existingSkuMap[$key]);
+                    continue;
+                }
+
                 $sku = $this->createSku($product, $combination);
                 $createdSkuIds[] = $sku->id;
+            }
+
+            // Delete auto-generated SKUs that no longer have a matching combination
+            foreach ($existingSkuMap as $remainingSku) {
+                if (!$remainingSku->is_manual) {
+                    $remainingSku->delete();
+                }
             }
         });
 
@@ -130,7 +159,7 @@ class SkuGenerationService
         $defaultPrice = $product->sale_price ?? $product->price ?? 0;
         $defaultCompareAtPrice = $product->price ?? $defaultPrice;
 
-        // Create SKU
+        // Create SKU (auto-generated, not manual)
         $sku = Sku::create([
             'product_id' => $product->id,
             'sku' => $skuCode,
@@ -138,12 +167,28 @@ class SkuGenerationService
             'compare_at_price' => $defaultCompareAtPrice,
             'quantity' => 0,
             'title' => $title,
+            'is_manual' => false,
         ]);
 
         // Attach attribute values to SKU
         $sku->attributeValues()->attach($attributeValueIds);
 
         return $sku;
+    }
+
+    /**
+     * Build a unique key for a combination of attribute value IDs.
+     *
+     * @param array $attributeValueIds
+     * @return string
+     */
+    protected function buildCombinationKey(array $attributeValueIds): string
+    {
+        if (empty($attributeValueIds)) {
+            return 'base';
+        }
+
+        return implode('-', $attributeValueIds);
     }
 
     /**
@@ -159,11 +204,8 @@ class SkuGenerationService
         
         // Get values for SKU code (use slugified versions)
         $valueParts = $attributeValues->map(function ($attrValue) {
-            if ($attrValue->type === 'image') {
-                // For images, use a shortened filename or a hash
-                return Str::slug(pathinfo($attrValue->value, PATHINFO_FILENAME));
-            }
-            return Str::slug($attrValue->value);
+            // Use getDisplayName() which handles JSON for image type
+            return Str::slug($attrValue->getDisplayName());
         })->toArray();
 
         $skuCode = $baseSlug . '-' . implode('-', $valueParts);
@@ -188,10 +230,8 @@ class SkuGenerationService
     protected function generateTitle($attributeValues): string
     {
         $parts = $attributeValues->map(function ($attrValue) {
-            $value = $attrValue->type === 'image' 
-                ? pathinfo($attrValue->value, PATHINFO_FILENAME)
-                : $attrValue->value;
-            return $value;
+            // Use getDisplayName() which handles JSON for image type
+            return $attrValue->getDisplayName();
         })->toArray();
 
         return implode(' - ', $parts);

@@ -99,7 +99,9 @@ class PageController extends Controller
     }
     public function product_details($slug)
     {
-        $mainProduct = Product::where('slug', $slug)->firstOrFail();
+        $mainProduct = Product::where('slug', $slug)
+            ->with(['skus.attributeValues.attribute', 'attributeValues.attribute'])
+            ->firstOrFail();
         $related_products = Product::whereNull('parent_id')->whereHas('prodcats', function ($query) use ($mainProduct) {
             $query->whereIn('prodcats.id', $mainProduct->prodcats->pluck('id'));
         })->where('status', 1)->take(12)->get();

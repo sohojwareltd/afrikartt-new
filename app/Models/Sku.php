@@ -13,11 +13,14 @@ class Sku extends Model
         'compare_at_price',
         'quantity',
         'title',
+        'image',
+        'is_manual',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'compare_at_price' => 'decimal:2',
+        'is_manual' => 'boolean',
     ];
 
     /**
@@ -55,9 +58,7 @@ class Sku extends Model
             ->get()
             ->map(function ($attrValue) {
                 $attrName = $attrValue->attribute->name ?? '';
-                $value = $attrValue->type === 'image' 
-                    ? basename($attrValue->value) 
-                    : $attrValue->value;
+                $value = $attrValue->getDisplayName();
                 return "{$attrName}: {$value}";
             })
             ->implode(', ');
@@ -74,9 +75,14 @@ class Sku extends Model
             ->map(function ($attrValue) {
                 $attrName = $attrValue->attribute->name ?? '';
                 if ($attrValue->type === 'image') {
-                    $value = '<img src="' . asset('storage/' . $attrValue->value) . '" class="inline-block w-8 h-8 rounded" alt="' . htmlspecialchars($attrName) . '" />';
+                    $imagePath = $attrValue->getImagePath();
+                    $displayName = $attrValue->getDisplayName();
+                    $imageUrl = $imagePath ? asset('storage/' . $imagePath) : '';
+                    $value = $imageUrl 
+                        ? '<img src="' . $imageUrl . '" class="inline-block w-8 h-8 rounded" alt="' . htmlspecialchars($displayName) . '" title="' . htmlspecialchars($displayName) . '" />'
+                        : htmlspecialchars($displayName);
                 } else {
-                    $value = htmlspecialchars($attrValue->value);
+                    $value = htmlspecialchars($attrValue->getDisplayName());
                 }
                 return "<strong>{$attrName}:</strong> {$value}";
             })
