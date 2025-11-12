@@ -9,6 +9,7 @@ use App\Models\Attribute;
 use App\Models\FilamentProduct;
 use App\Models\Product;
 use App\Models\ShippingCategory;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Log;
 use Filament\Forms;
@@ -431,13 +432,15 @@ class ProductResource extends Resource
                                                             $decoded = json_decode($value, true);
                                                             if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
                                                                 $data['image_name'] = $decoded['name'] ?? '';
-                                                                $data['image_value'] = $decoded['image_path'] ?? $value;
+                                                                $data['image_value'] = isset($decoded['image_path']) && !empty($decoded['image_path'])
+                                                                    ? [$decoded['image_path']]
+                                                                    : [];
                                                             } else {
                                                                 $data['image_name'] = pathinfo($value, PATHINFO_FILENAME);
-                                                                $data['image_value'] = $value;
+                                                                $data['image_value'] = !empty($value) ? [$value] : [];
                                                             }
                                                         } else {
-                                                            $data['image_value'] = $value;
+                                                            $data['image_value'] = $value ? (is_array($value) ? $value : [$value]) : [];
                                                             $data['image_name'] = '';
                                                         }
                                                     }
@@ -449,6 +452,9 @@ class ProductResource extends Resource
                                                     if ($data['type'] === 'text' && isset($data['text_value'])) {
                                                         $data['value'] = $data['text_value'];
                                                     } elseif ($data['type'] === 'image') {
+                                                        if (isset($data['image_value']) && is_string($data['image_value'])) {
+                                                            $data['image_value'] = [$data['image_value']];
+                                                        }
                                                         $imagePath = $data['image_value'] ?? $data['value'] ?? null;
                                                         $imageName = $data['image_name'] ?? '';
                                                         
@@ -456,9 +462,21 @@ class ProductResource extends Resource
                                                             $firstItem = isset($imagePath[0]) ? $imagePath[0] : (reset($imagePath) ?: null);
                                                             if (is_array($firstItem)) {
                                                                 $imagePath = $firstItem['path'] ?? $firstItem['name'] ?? $firstItem['url'] ?? null;
+                                                            } elseif ($firstItem instanceof TemporaryUploadedFile) {
+                                                                $imagePath = $firstItem->store('attribute-values', 'public');
                                                             } elseif (is_string($firstItem)) {
                                                                 $imagePath = $firstItem;
                                                             }
+                                                        } elseif ($imagePath instanceof TemporaryUploadedFile) {
+                                                            $imagePath = $imagePath->store('attribute-values', 'public');
+                                                    } elseif (is_string($imagePath) && str_starts_with($imagePath, '{')) {
+                                                        $decoded = json_decode($imagePath, true);
+                                                        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                                                            $imagePath = $decoded['image_path'] ?? null;
+                                                            if (empty($imageName)) {
+                                                                $imageName = $decoded['name'] ?? '';
+                                                            }
+                                                        }
                                                         }
                                                         
                                                         if ($imagePath) {
@@ -543,42 +561,89 @@ class ProductResource extends Resource
                                                     ->maxFiles(1)
                                                     ->live()
                                                     ->afterStateUpdated(function (callable $set, $state, callable $get) {
-                                                        if ($get('type') === 'image' && empty($get('image_name'))) {
-                                                            $imagePath = null;
+                                                        if ($get('type') !== 'image') {
+                                                            return;
+                                                        }
+
+                                                        $storeTemporaryFile = function ($file) {
+                                                            if ($file instanceof TemporaryUploadedFile) {
+                                                                return $file->store('attribute-values', 'public');
+                                                            }
+
+                                                            return null;
+                                                        };
+
+                                                        $resolvePathFromState = function ($state) use ($storeTemporaryFile) {
+                                                            if ($state instanceof TemporaryUploadedFile) {
+                                                                return $storeTemporaryFile($state);
+                                                            }
+
+                                                            if (is_string($state) && !empty($state)) {
+                                                                return $state;
+                                                            }
+
                                                             if (is_array($state) && !empty($state)) {
                                                                 $firstItem = isset($state[0]) ? $state[0] : (reset($state) ?: null);
-                                                                if (is_array($firstItem)) {
-                                                                    $imagePath = $firstItem['path'] ?? $firstItem['name'] ?? $firstItem['url'] ?? null;
-                                                                } elseif (is_string($firstItem)) {
-                                                                    $imagePath = $firstItem;
+                                                                if ($firstItem instanceof TemporaryUploadedFile) {
+                                                                    return $storeTemporaryFile($firstItem);
                                                                 }
-                                                            } elseif (is_string($state) && !empty($state)) {
-                                                                $imagePath = $state;
+
+                                                                if (is_array($firstItem)) {
+                                                                    return $firstItem['path'] ?? $firstItem['name'] ?? $firstItem['url'] ?? null;
+                                                                }
+
+                                                                if (is_string($firstItem) && !empty($firstItem)) {
+                                                                    return $firstItem;
+                                                                }
                                                             }
-                                                            
-                                                            if ($imagePath && is_string($imagePath)) {
-                                                                $set('image_name', pathinfo($imagePath, PATHINFO_FILENAME));
-                                                            }
+
+                                                            return null;
+                                                        };
+
+                                                        $path = $resolvePathFromState($state);
+
+                                                        if (!$path) {
+                                                            return;
                                                         }
+
+                                                        $name = $get('image_name');
+                                                        if (empty($name)) {
+                                                            $name = pathinfo($path, PATHINFO_FILENAME);
+                                                            $set('image_name', $name);
+                                                        }
+
+                                                        $set('value', json_encode([
+                                                            'name' => $name,
+                                                            'image_path' => $path,
+                                                        ]));
+
+                                                        $set('image_value', [$path]);
                                                     })
                                                     ->dehydrateStateUsing(function ($state, callable $get) {
                                                         if ($get('type') !== 'image') {
                                                             return null;
                                                         }
+
                                                         if (empty($state)) {
                                                             return null;
                                                         }
-                                                        if (is_array($state) && !empty($state)) {
-                                                            $firstItem = isset($state[0]) ? $state[0] : (reset($state) ?: null);
-                                                            if (is_array($firstItem)) {
-                                                                return $firstItem['path'] ?? $firstItem['name'] ?? $firstItem['url'] ?? null;
-                                                            } elseif (is_string($firstItem)) {
-                                                                return $firstItem;
-                                                            }
-                                                        } elseif (is_string($state)) {
-                                                            return $state;
+
+                                                        $stateItems = is_array($state) ? $state : [$state];
+                                                        $firstItem = $stateItems[0] ?? null;
+
+                                                        if ($firstItem instanceof TemporaryUploadedFile) {
+                                                            return $firstItem->store('attribute-values', 'public');
                                                         }
-                                                        return null;
+
+                                                        if (is_array($firstItem)) {
+                                                            return $firstItem['path'] ?? $firstItem['name'] ?? $firstItem['url'] ?? null;
+                                                        }
+
+                                                        if (is_string($firstItem) && !empty($firstItem)) {
+                                                            return $firstItem;
+                                                        }
+
+                                                        return is_string($state) && !empty($state) ? $state : null;
                                                     })
                                                     ->columnSpan(1)
                                                     ->helperText('Upload an image for this attribute value'),
