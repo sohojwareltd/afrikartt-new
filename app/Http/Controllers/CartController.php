@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Coupon;
 use App\Models\Offer;
+use App\Models\Sku;
 use Illuminate\Http\Request;
 use Cart;
 use App\Models\Product;
@@ -16,10 +17,20 @@ class CartController extends Controller
 {
 	public function add(Request $request)
 	{
-		$this->cart($request);
+		$result = $this->cart($request);
+		
+		// If cart() returns a response (error), return it
+		if ($result instanceof \Illuminate\Http\JsonResponse) {
+			return $result;
+		}
+		
 		$this->validateCoupon();
+
+		if ($request->expectsJson()) {
+			return response()->json(['success' => 'Item has been added to cart!']);
+		}
+
 		return redirect()->back()->with('success_msg', 'Item has been added to cart!');
-		// return response()->json(['success' => 'Item has been added to cart']);
 	}
 	// public function update(Request $request)
 	// {
@@ -51,15 +62,26 @@ class CartController extends Controller
 	{
 		$rowId = $request->input('rowId');
 		$qty = $request->input('qty');
+		$newQty = $qty;
 
 		if ($request->action == 'increase') {
-			Cart::update($rowId, $qty + 1);
+			$newQty = $qty + 1;
 		} elseif ($request->action == 'decrease' && $qty > 1) {
-			Cart::update($rowId, $qty - 1);
+			$newQty = $qty - 1;
 		} else {
 			return back()->with('success_msg', 'Quantity cannot be less than 1!');
 		}
 
+		// Check SKU stock if item has SKU
+		$item = Cart::get($rowId);
+		if ($item && isset($item->options['sku_id']) && $item->options['sku_id']) {
+			$sku = Sku::find($item->options['sku_id']);
+			if ($sku && $sku->quantity < $newQty) {
+				return back()->withErrors('Insufficient stock. Only ' . $sku->quantity . ' item(s) available.');
+			}
+		}
+
+		Cart::update($rowId, $newQty);
 		$this->validateCoupon();
 
 		return back()->with('success_msg', 'Item has been updated!');
@@ -108,15 +130,27 @@ class CartController extends Controller
 
 	public function buynow(Request $request)
 	{
-		$this->cart($request);
+		$result = $this->cart($request);
+		
+		// If cart() returns a response (error), return it
+		if ($result instanceof \Illuminate\Http\JsonResponse) {
+			$errorData = json_decode($result->getContent(), true);
+			return redirect()->back()->withErrors($errorData['error'] ?? 'Failed to add item to cart.');
+		}
 
 		// Handle different buy intents
 		if (isset($request->add_to_cart)) {
+			if ($request->expectsJson()) {
+				return response()->json(['success' => 'Item has been added to cart!']);
+			}
 			return redirect()->back()->with('success_msg', 'Item has been added to cart!');
 		}
 
 		// If coming from guest modal, go to cart page
 		if ($request->input('buy_intent') === 'buy_now_guest') {
+			if ($request->expectsJson()) {
+				return response()->json(['success' => 'Item has been added to cart!']);
+			}
 			return redirect('/cart')->with('success_msg', 'Item has been added to cart!');
 		}
 
@@ -131,43 +165,84 @@ class CartController extends Controller
 
 		// For logged-in users, Buy Now should go to cart page
 		if ($request->input('buy_intent') === 'buy_now') {
+			if ($request->expectsJson()) {
+				return response()->json(['success' => 'Item has been added to cart!']);
+			}
 			return redirect('/cart')->with('success_msg', 'Item has been added to cart!');
 		}
 
 		// Default fallback
+		if ($request->expectsJson()) {
+			return response()->json(['success' => 'Item has been added to cart!']);
+		}
+
 		return redirect('/checkout')->with('success_msg', 'Item has been added to cart!');
 	}
 
 	private function cart($request)
 	{
-		$variation = null;
+		$product = Product::findOrFail($request->product_id);
+		$sku = null;
+		$price = null;
+		$skuCode = null;
+		$skuId = null;
 
-		if ($request->filled('selected_variant_sku')) {
-			$variation = Product::find($request->product_id)->getVariationBySku($request->selected_variant_sku);
+		// For variable products, SKU selection is required
+		if ($product->is_variable_product) {
+			if (!$request->filled('selected_variant_sku')) {
+				return response()->json(['error' => 'Please select a variation before adding to cart.'], 422);
+			}
+
+			// Find SKU by SKU code and product ID
+			$sku = Sku::where('product_id', $product->id)
+				->where('sku', $request->selected_variant_sku)
+				->with('attributeValues.attribute')
+				->first();
+
+			if (!$sku) {
+				return response()->json(['error' => 'Selected variation is not available.'], 404);
+			}
+
+			// Check if SKU has stock
+			if ($sku->quantity < $request->quantity) {
+				return response()->json([
+					'error' => 'Insufficient stock. Only ' . $sku->quantity . ' item(s) available.'
+				], 422);
+			}
+
+			$price = $sku->price;
+			$skuCode = $sku->sku;
+			$skuId = $sku->id;
+		} else {
+			// For non-variable products, use product price
+			$price = $product->getPrice();
 		}
 
-		$product = Product::find($request->product_id);
-		$price = $variation ? $variation->price : $product->getPrice();
-
-		if ($price == false) {
-			return response()->json(['error' => 'price not available'], 404);
+		if ($price === false || $price === null) {
+			return response()->json(['error' => 'Price not available'], 404);
 		}
 
-		Cart::add([
+		// Build product name with variation info
+		$productName = $product->name;
+		if ($sku && $sku->title) {
+			$productName .= ' - ' . $sku->title;
+		}
+
+        Cart::add([
 			'id'      => $product->id,
-			'name'    => $product->name,
+			'name'    => $productName,
 			'price'   => $price,
 			'qty'     => $request->quantity,
 			'weight'  => 0,
 			'options' => [
 				'offer'     => 'no_offer',
-				'variation' => $variation ? $variation->getSku() : null,
+				'sku_id'    => $skuId,
+				'sku_code'  => $skuCode,
+				'variation' => $skuCode, // Keep for backward compatibility
 			]
 		])->associate('App\Models\Product');
 
-
-
-		return response()->json(['success' => 'Product added to cart']);
+        return true;
 	}
 	public function validateCoupon()
 	{

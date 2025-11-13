@@ -124,4 +124,20 @@ class FilamentProduct extends Model
     {
         return $this->sale_price ?? $this->price;
     }
+
+    /**
+     * Get the attribute values for this product.
+     */
+    public function attributeValues()
+    {
+        return $this->hasMany(ProductAttribureValue::class, 'product_id');
+    }
+
+    /**
+     * Get the SKUs for this product.
+     */
+    public function skus()
+    {
+        return $this->hasMany(Sku::class, 'product_id');
+    }
 }

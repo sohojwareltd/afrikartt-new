@@ -506,11 +506,28 @@
             @if (Cart::count() > 0)
                 <div class="cart-items">
                     @foreach (Cart::content() as $product)
+                        @php
+                            $sku = null;
+                            $skuImage = $product->model->image;
+                            if (isset($product->options['sku_id']) && $product->options['sku_id']) {
+                                $sku = \App\Models\Sku::with('attributeValues.attribute')->find($product->options['sku_id']);
+                                if ($sku && $sku->image) {
+                                    $skuImage = $sku->image;
+                                }
+                            }
+                        @endphp
                         <div class="cart-item d-flex align-items-center mb-3 p-3 border rounded">
-                            <img src="{{ Storage::url($product->model->image) }}" alt="{{ $product->name }}"
+                            <img src="{{ Storage::url($skuImage) }}" alt="{{ $product->name }}"
                                 class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
                             <div class="flex-grow-1">
                                 <h6 class="mb-1">{{ $product->name }}</h6>
+                                @if ($sku)
+                                    <p class="mb-1 text-muted" style="font-size: 0.75rem;">
+                                        @foreach ($sku->attributeValues as $attrValue)
+                                            {{ $attrValue->attribute->name ?? 'Unknown' }}: {{ $attrValue->getDisplayName() }}@if (!$loop->last), @endif
+                                        @endforeach
+                                    </p>
+                                @endif
                                 <p class="mb-1 text-muted">Qty: {{ $product->qty }}</p>
                                 <p class="mb-0 fw-bold">${{ $product->price }}</p>
                             </div>

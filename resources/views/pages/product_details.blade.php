@@ -546,7 +546,8 @@
                                         <div class="single-product-scroll">
 
                                             <div class="single-product-cover">
-                                                <div class="single-slide zoom-image-hover" style="height: 500px">
+                                                <div class="single-slide zoom-image-hover" style="height: 500px"
+                                                    data-sku-default="true">
                                                     <img class="img-responsive"
                                                         style="object-fit: contain;
                                                 width: 100%;
@@ -566,11 +567,27 @@
                                                         </div>
                                                     @endforeach
                                                 @endif
+                                                @php
+                                                    $skuImages = $mainProduct->skus?->whereNotNull('image');
+                                                @endphp
+                                                @if ($skuImages && $skuImages->count() > 0)
+                                                    @foreach ($skuImages as $skuImage)
+                                                        <div class="single-slide zoom-image-hover"
+                                                            style="height: 500px" data-sku-id="{{ $skuImage->id }}">
+                                                            <img class="img-responsive"
+                                                                style="object-fit: cover;
+                                                width: 100%;
+                                                height: 100%;"
+                                                                src="{{ Storage::url($skuImage->image) }}"
+                                                                alt="{{ $skuImage->title ?? $skuImage->sku }}">
+                                                        </div>
+                                                    @endforeach
+                                                @endif
 
                                             </div>
 
                                             <div class="single-nav-thumb">
-                                                <div class="single-slide" style="">
+                                                <div class="single-slide" style="" data-sku-default="true">
                                                     <img class="img-responsive" style="object-fit: cover; height:100px"
                                                         src="{{ Storage::url($mainProduct->image) }}"
                                                         alt="{{ $mainProduct->name }} thumbnail">
@@ -584,8 +601,18 @@
                                                         </div>
                                                     @endforeach
                                                 @endif
-
+                                                @if ($skuImages && $skuImages->count() > 0)
+                                                    @foreach ($skuImages as $skuImage)
+                                                        <div class="single-slide" data-sku-id="{{ $skuImage->id }}">
+                                                            <img class="img-responsive" style="height:100px"
+                                                                src="{{ Storage::url($skuImage->image) }}"
+                                                                alt="{{ $skuImage->title ?? $skuImage->sku }}">
+                                                        </div>
+                                                    @endforeach
+                                                @endif
                                             </div>
+
+                                      
                                         </div>
                                     </div>
                                     <div class="single-pro-desc single-pro-desc-no-sidebar">
@@ -615,214 +642,81 @@
                                                 </div>
 
                                                 {{-- Product Variations Display --}}
-                                                @if ($mainProduct->is_variable_product && $variations && count($variations) > 0)
+                                                @if ($mainProduct->is_variable_product && $mainProduct->skus && $mainProduct->skus->count() > 0)
+                                                    @php
+                                                        // Group attribute values by attribute
+                                                        $attributesGrouped = $mainProduct->attributeValues->groupBy('attribute_id');
+                                                        $skusData = [];
+                                                        foreach ($mainProduct->skus as $sku) {
+                                                            $skuAttributes = [];
+                                                            foreach ($sku->attributeValues as $attrValue) {
+                                                                $skuAttributes[$attrValue->attribute->name ?? 'Unknown'] = [
+                                                                    'id' => $attrValue->id,
+                                                                    'value' => $attrValue->getDisplayName(),
+                                                                    'type' => $attrValue->type,
+                                                                    'image_path' => $attrValue->type === 'image' ? $attrValue->getImagePath() : null,
+                                                                ];
+                                                            }
+                                                            $skusData[] = [
+                                                                'id' => $sku->id,
+                                                                'sku' => $sku->sku,
+                                                                'price' => $sku->price,
+                                                                'compare_at_price' => $sku->compare_at_price,
+                                                                'quantity' => $sku->quantity,
+                                                                'title' => $sku->title,
+                                                                'image' => $sku->image ? Storage::url($sku->image) : null,
+                                                                'attributes' => $skuAttributes,
+                                                            ];
+                                                        }
+                                                    @endphp
                                                     <div class="product-variations-section mt-4 mb-4">
                                                         <h4 class="variations-title mb-3"
-                                                            style="font-weight: 600; color: #2c3e50;">Available Variations
+                                                            style="font-weight: 600; color: #2c3e50;">Select Options
                                                         </h4>
-                                                        {{-- <div class="variations-container">
-                                                            @foreach ($variations as $index => $variation)
-                                                                @php
-                                                                    $isOutOfStock =
-                                                                        $variation->track_quantity &&
-                                                                        $variation->stock <= 0;
-                                                                    $cardClasses =
-                                                                        'variation-card border rounded-lg p-3 mb-3';
-                                                                    if ($isOutOfStock) {
-                                                                        $cardClasses .= ' out-of-stock';
-                                                                    }
-                                                                @endphp
-                                                                <div class="{{ $cardClasses }}"
-                                                                    style="border: 1px solid #dee2e6; background: #f8f9fa; transition: all 0.3s ease;"
-                                                                    data-variation-index="{{ $index }}"
-                                                                    data-variation-sku="{{ $variation->sku ?? '' }}"
-                                                                    data-variation-price="{{ $variation->price ?? 0 }}"
-                                                                    data-variation-compare-price="{{ $variation->compare_at_price ?? 0 }}"
-                                                                    data-variation-stock="{{ $variation->stock ?? 0 }}"
-                                                                    data-variation-track-quantity="{{ $variation->track_quantity ?? false }}"
-                                                                    data-variation-image="{{ $variation->variant_image ? Storage::url($variation->variant_image) : '' }}"
-                                                                    @if ($isOutOfStock) data-out-of-stock="true" @endif>
-                                                                    <div class="row align-items-center">
-                                                                        
-                                                                        <div class="col-md-2 col-sm-3">
-                                                                            @if ($variation->variant_image)
-                                                                                <img src="{{ Storage::url($variation->variant_image) }}"
-                                                                                    alt="Variation {{ $index + 1 }}"
-                                                                                    class="img-fluid rounded variation-image"
-                                                                                    style="width: 80px; height: 80px; object-fit: cover;"
-                                                                                    data-variation-index="{{ $index }}">
-                                                                            @else
-                                                                                <div class="placeholder-img d-flex align-items-center justify-content-center rounded"
-                                                                                    style="width: 80px; height: 80px; background: #e9ecef; color: #6c757d;">
-                                                                                    <i class="fas fa-image"></i>
-                                                                                </div>
-                                                                            @endif
-                                                                        </div>
 
-                                                                        
-                                                                        <div class="col-md-8 col-sm-6">
-                                                                            <div class="row">
-                                                                                
-                                                                                <div class="col-md-4">
-                                                                                    <h6 class="mb-2"
-                                                                                        style="font-weight: 600; color: #495057;">
-                                                                                        Attributes</h6>
-                                                                                    @if ($variation->attributes && is_array($variation->attributes))
-                                                                                        <div class="attributes-list">
-                                                                                            @foreach ($variation->attributes as $attr)
-                                                                                                <div
-                                                                                                    class="attribute-item d-flex align-items-center mb-1">
-                                                                                                    <span
-                                                                                                        class="attribute-name me-2"
-                                                                                                        style="font-size: 0.85rem; color: #6c757d;">{{ $attr['attribute'] ?? 'N/A' }}:</span>
-                                                                                                    @if (isset($attr['value']) && str_starts_with($attr['value'], '#'))
-                                                                                                        <div class="color-swatch me-2"
-                                                                                                            style="width: 20px; height: 20px; background-color: {{ $attr['value'] }}; border: 1px solid #ccc; border-radius: 3px;">
-                                                                                                        </div>
-                                                                                                    @endif
-                                                                                                    <span
-                                                                                                        class="attribute-value"
-                                                                                                        style="font-size: 0.85rem; font-weight: 500;">{{ $attr['value'] ?? 'N/A' }}</span>
-                                                                                                </div>
-                                                                                            @endforeach
-                                                                                        </div>
-                                                                                    @endif
-                                                                                </div>
-
-                                                                                
-                                                                                <div class="col-md-4">
-                                                                                    <h6 class="mb-2"
-                                                                                        style="font-weight: 600; color: #495057;">
-                                                                                        Pricing</h6>
-                                                                                    <div class="price-info">
-                                                                                        <div class="current-price"
-                                                                                            style="font-size: 1.1rem; font-weight: 700; color: #28a745;">
-                                                                                            ${{ number_format($variation->price ?? 0, 2) }}
-                                                                                        </div>
-                                                                                        @if ($variation->compare_at_price && $variation->compare_at_price > 0 && $variation->compare_at_price > $variation->price)
-                                                                                            <div class="compare-price"
-                                                                                                style="font-size: 0.9rem; color: #6c757d; text-decoration: line-through;">
-                                                                                                ${{ number_format($variation->compare_at_price, 2) }}
-                                                                                            </div>
-                                                                                        @endif
-                                                                                        @if ($variation->cost_per_item && $variation->cost_per_item > 0)
-                                                                                            <div class="cost-price"
-                                                                                                style="font-size: 0.8rem; color: #6c757d;">
-                                                                                                Cost:
-                                                                                                ${{ number_format($variation->cost_per_item, 2) }}
-                                                                                            </div>
-                                                                                        @endif
-                                                                                    </div>
-                                                                                </div>
-
-                                                                               
-                                                                                <div class="col-md-4">
-                                                                                    <h6 class="mb-2"
-                                                                                        style="font-weight: 600; color: #495057;">
-                                                                                        Stock</h6>
-                                                                                    <div class="stock-info">
-                                                                                        <div class="stock-quantity">
-                                                                                            <span
-                                                                                                class="badge {{ $variation->getStockBadgeClass() }}">
-                                                                                                {{ $variation->getStockDisplayText() }}
-                                                                                            </span>
-                                                                                        </div>
-                                                                                        @if ($variation->sku)
-                                                                                            <div class="sku-info mt-1"
-                                                                                                style="font-size: 0.8rem; color: #6c757d;">
-                                                                                                SKU: {{ $variation->sku }}
-                                                                                            </div>
-                                                                                        @endif
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                       
-                                                                        <div class="col-md-2 col-sm-3 text-end">
-                                                                            <div class="selection-indicator">
-                                                                                @if ($isOutOfStock)
-                                                                                    <span class="badge bg-danger">Out of
-                                                                                        Stock</span>
-                                                                                @else
-                                                                                    <i class="fas fa-check-circle text-success"
-                                                                                        style="font-size: 1.2rem; opacity: 0;"></i>
-                                                                                @endif
-                                                                            </div>
-                                                                        </div>
+                                                        @foreach ($attributesGrouped as $attributeId => $attributeValues)
+                                                            @php
+                                                                $attribute = $attributeValues->first()->attribute;
+                                                                $attributeName = $attribute->name ?? 'Unknown';
+                                                                $isImageAttribute = $attributeValues->first()->type === 'image';
+                                                            @endphp
+                                                            <label for=""
+                                                                class="form-label w-bold fs-4 mb-3 d-block">{{ $attributeName }}
+                                                            </label>
+                                                            <div class="variant-input-wrap mb-4"
+                                                                data-attribute-name="{{ $attributeName }}"
+                                                                data-attribute-id="{{ $attributeId }}"
+                                                                data-swatch_style="{{ $isImageAttribute ? 'round' : 'square' }}"
+                                                                data-center-text="true">
+                                                                @foreach ($attributeValues as $index => $attrValue)
+                                                                    @php
+                                                                        $uniqueId = 'attr-' . $attributeId . '-' . $attrValue->id;
+                                                                        $displayName = $attrValue->getDisplayName();
+                                                                        $imagePath = $attrValue->type === 'image' ? $attrValue->getImagePath() : null;
+                                                                    @endphp
+                                                                    <div class="variant-input">
+                                                                        <input type="radio" id="{{ $uniqueId }}"
+                                                                            name="attribute[{{ $attributeName }}]"
+                                                                            value="{{ $attrValue->id }}"
+                                                                            data-attribute-value-id="{{ $attrValue->id }}"
+                                                                            @if ($index === 0) checked @endif>
+                                                                        @if ($isImageAttribute && $imagePath)
+                                                                            <label for="{{ $uniqueId }}" class="color-swatch"
+                                                                                style="background-image: url('{{ Storage::url($imagePath) }}');"
+                                                                                title="{{ $displayName }}">
+                                                                            </label>
+                                                                        @else
+                                                                            <label for="{{ $uniqueId }}" class="size-swatch">{{ $displayName }}</label>
+                                                                        @endif
                                                                     </div>
-                                                                </div>
-                                                            @endforeach
-                                                        </div> --}}
-
-                                                        <label for=""
-                                                            class="form-label w-bold fs-4 mb-3 d-block">Color —
-                                                        </label>
-                                                        <div class="variant-input-wrap mb-4" data-swatch_style="round"
-                                                            data-center-text="true">
-                                                            <div class="variant-input">
-                                                                <input type="radio" id="color-1" name="Color"
-                                                                    value="Vintage Dark Denim / White" checked>
-                                                                <label for="color-1" class="color-swatch"
-                                                                    style="background-image: url('https://superlinewholesale.com/cdn/shop/files/black-yellow_50x50.png');"
-                                                                    title="Vintage Dark Denim / White">
-                                                                </label>
+                                                                @endforeach
                                                             </div>
+                                                        @endforeach
 
-                                                            <div class="variant-input">
-                                                                <input type="radio" id="color-2" name="Color"
-                                                                    value="Black / Yellow">
-                                                                <label for="color-2" class="color-swatch"
-                                                                    style="background-image: url('https://superlinewholesale.com/cdn/shop/files/black-yellow_50x50.png');"
-                                                                    title="Black / Yellow">
-                                                                </label>
-                                                            </div>
-
-                                                            <div class="variant-input">
-                                                                <input type="radio" id="color-3" name="Color"
-                                                                    value="Red / White">
-                                                                <label for="color-3" class="color-swatch"
-                                                                    style="background-image: url('https://superlinewholesale.com/cdn/shop/files/red-white_50x50.png');"
-                                                                    title="Red / White">
-                                                                </label>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="variant-input-wrap" data-center-text="true"
-                                                            data-swatch_style="square">
-                                                            <div class="variant-input">
-                                                                <input type="radio" id="size-s" name="Size"
-                                                                    value="S" checked>
-                                                                <label for="size-s" class="size-swatch">S</label>
-                                                            </div>
-
-                                                            <div class="variant-input">
-                                                                <input type="radio" id="size-m" name="Size"
-                                                                    value="M">
-                                                                <label for="size-m" class="size-swatch">M</label>
-                                                            </div>
-
-                                                            <div class="variant-input">
-                                                                <input type="radio" id="size-l" name="Size"
-                                                                    value="L">
-                                                                <label for="size-l" class="size-swatch">L</label>
-                                                            </div>
-
-                                                            <div class="variant-input">
-                                                                <input type="radio" id="size-xl" name="Size"
-                                                                    value="XL">
-                                                                <label for="size-xl" class="size-swatch">XL</label>
-                                                            </div>
-
-                                                            <div class="variant-input">
-                                                                <input type="radio" id="size-xxl" name="Size"
-                                                                    value="XXL">
-                                                                <label for="size-xxl" class="size-swatch">XXL</label>
-                                                            </div>
-                                                        </div>
-
-
-
+                                                        {{-- Hidden input to store SKU data as JSON --}}
+                                                        <script type="application/json" id="skus-data">
+                                                            {!! json_encode($skusData) !!}
+                                                        </script>
                                                     </div>
                                                 @endif
                                             </div>
@@ -1211,12 +1105,12 @@
 
         // Product Variations Functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const variationCards = document.querySelectorAll('.variation-card');
+            // Load SKU data from JSON script tag
+            const skusDataScript = document.getElementById('skus-data');
+            const SKUS_DATA = skusDataScript ? JSON.parse(skusDataScript.textContent) : [];
+            
             const priceElement = document.querySelector('.new-price');
             const oldPriceElement = document.querySelector('.old-price');
-
-            console.log(oldPriceElement);
-
             const stockElement = document.getElementById('stock-display');
             const productSku = document.querySelector('.product-sku-info');
             const selectedSkuInput = document.getElementById('selected_variant_sku');
@@ -1226,6 +1120,9 @@
             const mainProductImage = document.querySelector('.single-product-cover .single-slide img');
             const selectedVariantInfo = document.getElementById('selected-variant-info');
             const selectedVariantDetails = document.getElementById('selected-variant-details');
+            
+            // Get all attribute radio inputs
+            const attributeInputs = document.querySelectorAll('input[name^="attribute["]');
 
             // Main product data from hidden element (avoids Blade variable conflicts)
             const mainDataEl = document.getElementById('main-product-data');
@@ -1250,141 +1147,261 @@
             const originalOldPrice = MAIN_PRODUCT.comparePrice;
             const originalStock = MAIN_PRODUCT.stock;
             const originalImage = MAIN_PRODUCT.image;
+            const originalSku = MAIN_PRODUCT.sku;
 
-            variationCards.forEach(function(card) {
-                card.addEventListener('click', function() {
-                    // Check if variation is out of stock
-                    if (this.dataset.outOfStock === 'true') {
-                        return; // Don't allow selection of out-of-stock variations
+            // Function to find matching SKU based on selected attribute values
+            function findMatchingSku() {
+                if (SKUS_DATA.length === 0) return null;
+                
+                // Get all selected attribute value IDs
+                const selectedAttributeValueIds = [];
+                attributeInputs.forEach(input => {
+                    if (input.checked) {
+                        selectedAttributeValueIds.push(parseInt(input.dataset.attributeValueId || input.value));
                     }
-
-                    // Remove active class from all cards
-                    variationCards.forEach(c => c.classList.remove('selected'));
-
-                    // Add active class to clicked card
-                    this.classList.add('selected');
-
-                    // Get variation data from data attributes
-                    const sku = this.dataset.variationSku;
-                    const price = parseFloat(this.dataset.variationPrice);
-                    const comparePrice = parseFloat(this.dataset.variationComparePrice);
-                    const stock = parseInt(this.dataset.variationStock);
-                    const trackQuantity = this.dataset.variationTrackQuantity === '1';
-
-                    const variantImage = this.dataset.variationImage;
-
-                    // Update price
-                    if (priceElement && price > 0) {
-                        priceElement.textContent = '$' + price.toFixed(2);
+                });
+                
+                if (selectedAttributeValueIds.length === 0) return null;
+                
+                // Find SKU that matches all selected attribute values
+                for (const sku of SKUS_DATA) {
+                    const skuAttributeValueIds = Object.values(sku.attributes).map(attr => attr.id);
+                    
+                    // Check if all selected attribute value IDs are in this SKU
+                    const allMatch = selectedAttributeValueIds.every(id => skuAttributeValueIds.includes(id));
+                    // Check if SKU has the same number of attributes (to avoid partial matches)
+                    const sameCount = skuAttributeValueIds.length === selectedAttributeValueIds.length;
+                    
+                    if (allMatch && sameCount) {
+                        return sku;
                     }
+                }
+                
+                return null;
+            }
 
+            const goToSkuSlideById = (skuId) => {
+                if (!window.jQuery) {
+                    return;
+                }
 
-                    // Update compare price
-                    if (oldPriceElement && comparePrice > 0 && comparePrice > price) {
-                        priceElement.textContent = '$' + price.toFixed(2);
-                        oldPriceElement.textContent = '$' + comparePrice.toFixed(2);
+                const $coverSlider = window.jQuery('.single-product-cover');
+                if (!$coverSlider.length || !$coverSlider.hasClass('slick-initialized')) {
+                    // Wait a bit for slick to initialize
+                    setTimeout(() => goToSkuSlideById(skuId), 100);
+                    return;
+                }
+
+                // Get all original slides (not cloned) in order
+                const $originalSlides = $coverSlider.find('.single-slide:not(.slick-cloned)');
+                let targetIndex = -1;
+                
+                if (skuId) {
+                    // Find the slide with matching SKU ID
+                    $originalSlides.each(function(index) {
+                        const $slide = window.jQuery(this);
+                        if ($slide.attr('data-sku-id') == skuId) {
+                            targetIndex = index;
+                            return false; // break
+                        }
+                    });
+                }
+
+                // If no SKU slide found or no SKU ID, go to default
+                if (targetIndex === -1) {
+                    $originalSlides.each(function(index) {
+                        const $slide = window.jQuery(this);
+                        if ($slide.attr('data-sku-default') === 'true') {
+                            targetIndex = index;
+                            return false; // break
+                        }
+                    });
+                    
+                    // Fallback to first slide if no default found
+                    if (targetIndex === -1) {
+                        targetIndex = 0;
+                    }
+                }
+
+                if (targetIndex >= 0) {
+                    try {
+                        $coverSlider.slick('slickGoTo', targetIndex, false);
+                    } catch (e) {
+                        console.warn('Error navigating slick slider:', e);
+                    }
+                }
+            };
+
+        function selectAttributesForSku(sku) {
+            if (!sku || !sku.attributes) {
+                return;
+            }
+
+            const attributeValues = Object.values(sku.attributes);
+
+            attributeValues.forEach(attr => {
+                const selector = 'input[data-attribute-value-id="' + attr.id + '"]';
+                const input = document.querySelector(selector);
+                if (input && !input.checked) {
+                    input.checked = true;
+                }
+            });
+
+            updateProductDisplay(sku);
+
+            @if (!Auth::check())
+                if (typeof updateGuestModalContent === 'function') {
+                    updateGuestModalContent();
+                }
+            @endif
+        }
+
+            // Function to update product display based on selected SKU
+            function updateProductDisplay(sku) {
+                if (!sku) {
+                    // Reset to original product data
+                    if (priceElement) priceElement.textContent = originalPrice;
+                    if (oldPriceElement && originalOldPrice) {
+                        oldPriceElement.textContent = originalOldPrice;
                         if (oldPriceElement.parentElement) {
                             oldPriceElement.parentElement.style.display = 'inline';
                         }
-                    } else {
-                        if (oldPriceElement && oldPriceElement.parentElement) {
-                            oldPriceElement.parentElement.style.display = 'none';
-                        }
+                    } else if (oldPriceElement && oldPriceElement.parentElement) {
+                        oldPriceElement.parentElement.style.display = 'none';
                     }
-
-                    // Update stock
                     if (stockElement) {
-                        if (trackQuantity == 1) {
-                            stockElement.textContent = stock;
-                        } else {
-                            stockElement.textContent = 'Unlimited';
-                        }
+                        stockElement.textContent = originalStock;
+                        stockElement.style.color = '#D81919E5';
                     }
-                    productSku.textContent = sku;
-
-                    // Update main product image if variant has image
-                    if (variantImage && mainProductImage) {
-                        mainProductImage.src = variantImage;
-                        mainProductImage.alt = 'Selected variant image';
+                    if (productSku) productSku.textContent = originalSku;
+                    if (selectedSkuInput) selectedSkuInput.value = '';
+                    if (mainProductImage) {
+                        mainProductImage.src = originalImage;
+                        mainProductImage.alt = MAIN_PRODUCT.name;
                     }
+                    if (buyNowBtn) buyNowBtn.disabled = true;
+                    if (selectedVariantInfo) selectedVariantInfo.style.display = 'none';
+                    goToSkuSlideById(null);
+                    return;
+                }
 
-                    // Update selected SKU
-                    if (selectedSkuInput) {
-                        selectedSkuInput.value = sku;
+                // Update price
+                if (priceElement && sku.price > 0) {
+                    priceElement.textContent = '$' + parseFloat(sku.price).toFixed(2);
+                }
+
+                // Update compare price
+                if (oldPriceElement && sku.compare_at_price && parseFloat(sku.compare_at_price) > 0 && parseFloat(sku.compare_at_price) > parseFloat(sku.price)) {
+                    oldPriceElement.textContent = '$' + parseFloat(sku.compare_at_price).toFixed(2);
+                    if (oldPriceElement.parentElement) {
+                        oldPriceElement.parentElement.style.display = 'inline';
                     }
-
-                    // Show selected variant info
-                    if (selectedVariantInfo && selectedVariantDetails) {
-                        const attributes = this.querySelectorAll('.attribute-value');
-                        const attributeText = Array.from(attributes).map(attr => attr.textContent
-                            .trim()).join(', ');
-                        selectedVariantDetails.textContent =
-                            `${attributeText} - $${price.toFixed(2)}`;
-                        selectedVariantInfo.style.display = 'block';
+                } else {
+                    if (oldPriceElement && oldPriceElement.parentElement) {
+                        oldPriceElement.parentElement.style.display = 'none';
                     }
+                }
 
-                    // Enable buy now button
-                    if (buyNowBtn) {
-                        buyNowBtn.disabled = false;
-                        buyNowBtn.textContent = 'Buy Now';
-                    }
+                // Update stock
+                if (stockElement) {
+                    stockElement.textContent = sku.quantity > 0 ? sku.quantity : 'Out of Stock';
+                    stockElement.style.color = sku.quantity > 0 ? '#28a745' : '#D81919E5';
+                }
 
-                    // Show selection indicator
-                    const selectionIndicator = this.querySelector('.selection-indicator i');
-                    if (selectionIndicator) {
-                        selectionIndicator.style.opacity = '1';
-                    }
+                // Update SKU
+                if (productSku) productSku.textContent = sku.sku;
+                if (selectedSkuInput) selectedSkuInput.value = sku.sku;
 
-                    // Add visual feedback
-                    this.style.transform = 'scale(0.98)';
-                    setTimeout(() => {
-                        this.style.transform = 'scale(1)';
-                    }, 150);
+                // Update main product image if SKU has an image
+                if (sku.image && mainProductImage) {
+                    mainProductImage.src = sku.image;
+                    mainProductImage.alt = 'Selected variation: ' + (sku.title || sku.sku);
+                } else if (mainProductImage) {
+                    // Reset to original image if no SKU image
+                    mainProductImage.src = originalImage;
+                    mainProductImage.alt = MAIN_PRODUCT.name;
+                }
 
-                    // Update guest modal content if it exists and user is not logged in
+                // Update variant info
+                if (selectedVariantInfo && selectedVariantDetails) {
+                    const attributeText = Object.values(sku.attributes).map(attr => attr.value).join(', ');
+                    selectedVariantDetails.textContent = `${attributeText} - $${parseFloat(sku.price).toFixed(2)}`;
+                    selectedVariantInfo.style.display = 'block';
+                }
+
+                // Enable/disable buy now button based on stock
+                if (buyNowBtn) {
+                    buyNowBtn.disabled = sku.quantity <= 0;
+                    buyNowBtn.textContent = sku.quantity <= 0 ? 'Out of Stock' : 'Buy Now';
+                }
+
+                goToSkuSlideById(sku.image ? sku.id : null);
+            }
+
+            // Listen for attribute changes
+            attributeInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    const matchingSku = findMatchingSku();
+                    updateProductDisplay(matchingSku);
+                    
+                    // Update guest modal content if user is not logged in
                     @if (!Auth::check())
                         updateGuestModalContent();
                     @endif
                 });
             });
 
-            // Add keyboard navigation support
-            variationCards.forEach(function(card) {
-                card.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        this.click();
-                    }
-                });
+            // Initialize with first SKU if available
+            if (SKUS_DATA.length > 0 && attributeInputs.length > 0) {
+                const matchingSku = findMatchingSku();
+                updateProductDisplay(matchingSku);
+            }
 
-                // Make cards focusable for accessibility
-                card.setAttribute('tabindex', '0');
-                card.setAttribute('role', 'button');
-                card.setAttribute('aria-label', 'Select variation');
-            });
+            if (window.jQuery) {
+                const $coverSlider = window.jQuery('.single-product-cover');
+                if ($coverSlider.length) {
+                    const applyInitialSlide = () => {
+                        // Small delay to ensure slick is fully ready
+                        setTimeout(() => {
+                            const initialSku = findMatchingSku();
+                            if (initialSku && initialSku.image) {
+                                goToSkuSlideById(initialSku.id);
+                            } else {
+                                goToSkuSlideById(null);
+                            }
+                        }, 200);
+                    };
+
+                    $coverSlider.on('init', applyInitialSlide);
+
+                    if ($coverSlider.hasClass('slick-initialized')) {
+                        applyInitialSlide();
+                    } else {
+                        // Also try after a delay in case the event doesn't fire
+                        setTimeout(applyInitialSlide, 500);
+                    }
+                }
+            }
 
             // Form validation - require variant selection for variable products
             const cartForm = document.getElementById('buy-now-form');
-            if (cartForm && {{ $mainProduct->is_variable_product ? 'true' : 'false' }}) {
+            if (cartForm && {{ $mainProduct->is_variable_product && $mainProduct->skus && $mainProduct->skus->count() > 0 ? 'true' : 'false' }}) {
                 cartForm.addEventListener('submit', function(e) {
-                    const selectedSku = selectedSkuInput.value;
+                    const selectedSku = selectedSkuInput ? selectedSkuInput.value : '';
                     if (!selectedSku) {
                         e.preventDefault();
-                        alert('Please select a variant before adding to cart.');
+                        alert('Please select all options before adding to cart.');
+                        return false;
+                    }
+                    
+                    // Check if selected SKU is out of stock
+                    const matchingSku = findMatchingSku();
+                    if (matchingSku && matchingSku.quantity <= 0) {
+                        e.preventDefault();
+                        alert('This variation is out of stock.');
                         return false;
                     }
                 });
-            }
-
-            if (buyNowBtn) {
-                let isVariable = {{ $mainProduct->is_variable_product ? 'true' : 'false' }};
-
-                if (isVariable) {
-                    buyNowBtn.disabled = true;
-                    buyNowBtn.textContent = 'BUY NOW';
-                } else {
-                    buyNowBtn.disabled = false;
-                }
             }
 
 
@@ -1443,19 +1460,25 @@
                     const signinBtn = document.getElementById('signin-buy-btn');
                     const signupBtn = document.getElementById('signup-buy-btn');
 
-                    const selectedCard = document.querySelector('.variation-card.selected');
+                    const matchingSku = findMatchingSku();
 
-                    if (selectedCard) {
-                        // Update with variant information
-                        const variantImg = selectedCard.dataset.variationImage;
-                        const variantSku = selectedCard.dataset.variationSku;
-                        const variantPrice = parseFloat(selectedCard.dataset.variationPrice);
-                        const variantComparePrice = parseFloat(selectedCard.dataset.variationComparePrice);
-                        const attributes = selectedCard.querySelectorAll('.attribute-value');
-                        const attributeText = Array.from(attributes).map(a => a.textContent.trim()).join(', ');
+                    if (matchingSku) {
+                        // Update with SKU information
+                        const attributeText = Object.values(matchingSku.attributes).map(attr => attr.value).join(', ');
+                        
+                        // Use SKU image if available, otherwise try to find image from attributes
+                        let variantImage = matchingSku.image || null;
+                        if (!variantImage) {
+                            for (const attr of Object.values(matchingSku.attributes)) {
+                                if (attr.type === 'image' && attr.image_path) {
+                                    variantImage = '{{ url("storage/") }}/' + attr.image_path;
+                                    break;
+                                }
+                            }
+                        }
 
                         // Update image
-                        modalImg.src = variantImg || MAIN_PRODUCT.image;
+                        modalImg.src = variantImage || MAIN_PRODUCT.image;
 
                         // Update variant text
                         if (attributeText) {
@@ -1466,14 +1489,14 @@
                         }
 
                         // Update SKU
-                        modalSku.textContent = 'SKU: ' + (variantSku || MAIN_PRODUCT.sku);
+                        modalSku.textContent = 'SKU: ' + matchingSku.sku;
 
                         // Update price
-                        modalPrice.textContent = '$' + variantPrice.toFixed(2);
+                        modalPrice.textContent = '$' + parseFloat(matchingSku.price).toFixed(2);
 
                         // Update compare price
-                        if (variantComparePrice > 0 && variantComparePrice > variantPrice) {
-                            modalComparePrice.textContent = '$' + variantComparePrice.toFixed(2);
+                        if (matchingSku.compare_at_price && parseFloat(matchingSku.compare_at_price) > 0 && parseFloat(matchingSku.compare_at_price) > parseFloat(matchingSku.price)) {
+                            modalComparePrice.textContent = '$' + parseFloat(matchingSku.compare_at_price).toFixed(2);
                             modalComparePrice.style.display = 'block';
                         } else {
                             modalComparePrice.style.display = 'none';
@@ -1532,8 +1555,15 @@
 
                     // Variant validation (since form.submit() bypasses handlers)
                     const selectedSku = selectedSkuInput ? selectedSkuInput.value : '';
-                    if ({{ $mainProduct->is_variable_product ? 'true' : 'false' }} && !selectedSku) {
-                        alert('Please select a variant before proceeding.');
+                    if ({{ $mainProduct->is_variable_product && $mainProduct->skus && $mainProduct->skus->count() > 0 ? 'true' : 'false' }} && !selectedSku) {
+                        alert('Please select all options before proceeding.');
+                        return;
+                    }
+                    
+                    // Check if selected SKU is out of stock
+                    const matchingSku = findMatchingSku();
+                    if (matchingSku && matchingSku.quantity <= 0) {
+                        alert('This variation is out of stock.');
                         return;
                     }
 
@@ -1564,6 +1594,25 @@
                     });
                 }
             @endif
+
+            document.addEventListener('click', function(event) {
+                const navSlide = event.target.closest('.single-nav-thumb .single-slide');
+                if (!navSlide) {
+                    return;
+                }
+
+                const skuId = navSlide.getAttribute('data-sku-id');
+                if (!skuId) {
+                    return;
+                }
+
+                const matchingSku = SKUS_DATA.find(sku => String(sku.id) === String(skuId));
+                if (matchingSku) {
+                    selectAttributesForSku(matchingSku);
+                } else {
+                    goToSkuSlideById(null);
+                }
+            });
         });
     </script>
 @endsection
