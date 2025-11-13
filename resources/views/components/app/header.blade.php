@@ -64,7 +64,7 @@
                 <div class="col-md">
                     <form action="{{ route('shops') }}" method="get">
                         <div class="input-group">
-                            <select class="form-select border-0 bg-black h-auto" name="category"
+                            {{-- <select class="form-select border-0 bg-black h-auto" name="category"
                                 style="max-width: 200px; color: var(--bg-light) !important;">
                                 <option value="" class="text-dark">All Categories</option>
                                 @foreach ($categories as $category)
@@ -84,7 +84,7 @@
                                         </option>
                                     @endif
                                 @endforeach
-                            </select>
+                            </select> --}}
 
                             <input type="text" class="form-control h-auto" name="search"
                                 placeholder="Search products..." value="{{ request('search') }}">
@@ -232,7 +232,7 @@
                     <div class="col-12">
                         <form action="{{ route('shops') }}" method="get">
                             <div class="input-group overflow-hidden shadow-sm">
-                                <select class="form-select border-start border-end h-auto" name="category"
+                                {{-- <select class="form-select border-start border-end h-auto" name="category"
                                     style="max-width: 130px;">
                                     <option value="" class="text-dark">All Categories</option>
                                     @foreach ($categories as $category)
@@ -252,7 +252,7 @@
                                             </option>
                                         @endif
                                     @endforeach
-                                </select>
+                                </select> --}}
 
                                 <input type="text" class="form-control border-0 h-auto" name="search"
                                     placeholder="Search products..." value="{{ request('search') }}">
@@ -330,6 +330,59 @@
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                     <li class="nav-item"><a class="nav-link" href="{{ route('homepage') }}">Home</a></li>
+
+                    {{-- Categories Mega Menu --}}
+                    <li class="nav-item mega-menu-wrapper position-relative">
+                        <a class="nav-link d-flex align-items-center" href="#" id="categoriesMenuToggle">
+                            Categories
+                            <i class="fas fa-chevron-down ms-2 mega-menu-icon"></i>
+                        </a>
+
+                        {{-- Mega Menu Dropdown --}}
+                        <div class="mega-menu" id="categoriesMegaMenu">
+                            <button class="mega-menu-close d-lg-none" aria-label="Close menu">
+                                <i class="fas fa-times"></i>
+                            </button>
+
+                            <div class="container-fluid">
+                                <div class="row g-4">
+                                    @foreach ($categories as $category)
+                                        <div class="col-lg-3 col-6 mega-menu-column">
+                                            @if ($category->childrens->count())
+                                                {{-- Parent with Children --}}
+                                                <h6 class="mega-menu-parent">
+                                                    <a href="{{ route('shops', ['category' => $category->slug]) }}">
+                                                        {{ $category->name }}
+                                                    </a>
+                                                </h6>
+                                                <ul class="mega-menu-list">
+                                                    @foreach ($category->childrens as $child)
+                                                        <li>
+                                                            <a
+                                                                href="{{ route('shops', ['category' => $child->slug]) }}">
+                                                                {{ $child->name }}
+                                                            </a>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            @else
+                                                {{-- Parent without Children --}}
+                                                <h6 class="mega-menu-parent">
+                                                    <a href="{{ route('shops', ['category' => $category->slug]) }}">
+                                                        {{ $category->name }}
+                                                    </a>
+                                                </h6>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Mobile Overlay Backdrop --}}
+                        <div class="mega-menu-backdrop d-lg-none" id="megaMenuBackdrop"></div>
+                    </li>
+
                     <li class="nav-item"><a class="nav-link" href="{{ route('shops') }}">Products</a></li>
                     <li class="nav-item"><a class="nav-link"
                             href="{{ route('shops', ['filter_products' => 'trending']) }}">Trending</a></li>
@@ -355,6 +408,49 @@
         <div class="offcanvas-body">
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="{{ route('homepage') }}">Home</a></li>
+
+                {{-- Categories Accordion --}}
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center justify-content-between" data-bs-toggle="collapse"
+                        href="#categoriesCollapse" role="button" aria-expanded="false"
+                        aria-controls="categoriesCollapse">
+                        Categories
+                        <i class="fas fa-chevron-down ms-2"></i>
+                    </a>
+                    <div class="collapse" id="categoriesCollapse">
+                        <div class="mobile-categories-wrapper">
+                            @foreach ($categories as $category)
+                                <div class="mobile-category-group">
+                                    @if ($category->childrens->count())
+                                        {{-- Parent with Children --}}
+                                        <h6 class="mobile-category-parent">
+                                            <a href="{{ route('shops', ['category' => $category->slug]) }}">
+                                                {{ $category->name }}
+                                            </a>
+                                        </h6>
+                                        <ul class="mobile-category-list">
+                                            @foreach ($category->childrens as $child)
+                                                <li>
+                                                    <a href="{{ route('shops', ['category' => $child->slug]) }}">
+                                                        {{ $child->name }}
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @else
+                                        {{-- Parent without Children --}}
+                                        <h6 class="mobile-category-parent">
+                                            <a href="{{ route('shops', ['category' => $category->slug]) }}">
+                                                {{ $category->name }}
+                                            </a>
+                                        </h6>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </li>
+
                 <li class="nav-item"><a class="nav-link" href="{{ route('shops') }}">Products</a></li>
                 <li class="nav-item"><a class="nav-link"
                         href="{{ route('shops', ['filter_products' => 'trending']) }}">Trending</a></li>
@@ -827,5 +923,403 @@
         .signup-btn i {
             font-size: 1rem;
         }
+
+        /* ============================================ */
+        /* MEGA MENU STYLES */
+        /* ============================================ */
+
+        /* Mega Menu Wrapper */
+        .mega-menu-wrapper {
+            position: static;
+        }
+
+        .mega-menu-icon {
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+
+        .mega-menu-wrapper:hover .mega-menu-icon,
+        .mega-menu-wrapper.active .mega-menu-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Mega Menu Container - Desktop */
+        .mega-menu {
+            display: none;
+            position: absolute;
+            left: 10%;
+            width: 900px !important;
+            background: #ffffff;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            padding: 40px 30px;
+            z-index: 1050;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            margin-top: 10px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .mega-menu-wrapper:hover .mega-menu {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mega-menu-wrapper.active .mega-menu {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mega Menu Close Button (Mobile Only) */
+        .mega-menu-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            cursor: pointer;
+            z-index: 10;
+            /* width: 40px; */
+            /* height: 40px; */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .mega-menu-close:hover {
+            background: var(--bg-light);
+            color: var(--accent-color);
+        }
+
+        /* Mega Menu Column */
+        .mega-menu-column {
+            margin-bottom: 20px;
+        }
+
+        /* Parent Category Title */
+        .mega-menu-parent {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mega-menu-parent a {
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .mega-menu-parent a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Child Categories List */
+        .mega-menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mega-menu-list li {
+            margin-bottom: 8px;
+        }
+
+        .mega-menu-list li a {
+            color: #000000;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: block;
+            /* padding: 5px 0; */
+            transition: all 0.2s ease;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .mega-menu-list li a:before {
+            content: '›';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .mega-menu-list li a:hover {
+            color: var(--accent-color);
+            padding-left: 20px;
+        }
+
+        .mega-menu-list li a:hover:before {
+            opacity: 1;
+        }
+
+        /* Mega Menu Backdrop (Mobile) */
+        .mega-menu-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mega-menu-backdrop.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Scrollbar Styling for Mega Menu */
+        .mega-menu::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .mega-menu::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .mega-menu::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 10px;
+        }
+
+        .mega-menu::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* ============================================ */
+        /* MOBILE OFFCANVAS CATEGORIES STYLES */
+        /* ============================================ */
+        .mobile-categories-wrapper {
+            padding: 15px 10px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            margin: 10px 10px 0px 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .mobile-category-group {
+            margin-bottom: 20px;
+        }
+
+        .mobile-category-parent {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mobile-category-parent a {
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .mobile-category-parent a:hover {
+            color: var(--accent-color);
+        }
+
+        .mobile-category-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mobile-category-list li {
+            margin-bottom: 8px;
+        }
+
+        .mobile-category-list li a {
+            color: #000000;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: block;
+            padding: 6px 0 6px 15px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .mobile-category-list li a:before {
+            content: '›';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .mobile-category-list li a:hover {
+            color: var(--accent-color);
+            padding-left: 20px;
+        }
+
+        .mobile-category-list li a:hover:before {
+            opacity: 1;
+        }
+
+        /* Scrollbar for Mobile Categories */
+        .mobile-categories-wrapper::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .mobile-categories-wrapper::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .mobile-categories-wrapper::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 10px;
+        }
+
+        .mobile-categories-wrapper::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Collapse Icon Animation */
+        .nav-link[data-bs-toggle="collapse"] i {
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link[data-bs-toggle="collapse"][aria-expanded="true"] i {
+            transform: rotate(180deg);
+        }
+
+        /* ============================================ */
+        /* MOBILE RESPONSIVE STYLES (< 992px) */
+        /* ============================================ */
+        @media (max-width: 991.98px) {
+            .mega-menu-wrapper {
+                position: relative;
+            }
+
+            .mega-menu {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 80vh;
+                max-height: 80vh;
+                border-radius: 0 0 20px 20px;
+                padding: 60px 20px 30px;
+                margin-top: 0;
+                z-index: 1050;
+                transform: translateY(-100%);
+            }
+
+            .mega-menu-wrapper.active .mega-menu {
+                transform: translateY(0);
+            }
+
+            /* 2-Column Grid on Mobile */
+            .mega-menu-column {
+                margin-bottom: 25px;
+            }
+
+            .mega-menu-parent {
+                font-size: 0.95rem;
+            }
+
+            .mega-menu-list li a {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Extra Small Devices */
+        @media (max-width: 575.98px) {
+            .mega-menu {
+                padding: 50px 15px 20px;
+            }
+
+            .mega-menu-parent {
+                font-size: 0.9rem;
+                margin-bottom: 10px;
+            }
+
+            .mega-menu-list li a {
+                font-size: 0.8rem;
+            }
+        }
     </style>
+
+    {{-- Mega Menu JavaScript --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const megaMenuWrapper = document.querySelector('.mega-menu-wrapper');
+            const megaMenu = document.getElementById('categoriesMegaMenu');
+            const megaMenuBackdrop = document.getElementById('megaMenuBackdrop');
+            const megaMenuClose = document.querySelector('.mega-menu-close');
+            const categoriesToggle = document.getElementById('categoriesMenuToggle');
+
+            // Mobile: Click to toggle
+            if (window.innerWidth < 992) {
+                categoriesToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    megaMenuWrapper.classList.toggle('active');
+                    megaMenuBackdrop.classList.toggle('active');
+                    document.body.style.overflow = megaMenuWrapper.classList.contains('active') ? 'hidden' :
+                        '';
+                });
+
+                // Close button
+                megaMenuClose.addEventListener('click', function() {
+                    megaMenuWrapper.classList.remove('active');
+                    megaMenuBackdrop.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+
+                // Close on backdrop click
+                megaMenuBackdrop.addEventListener('click', function() {
+                    megaMenuWrapper.classList.remove('active');
+                    megaMenuBackdrop.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            } else {
+                // Desktop: Hover behavior (handled by CSS)
+                // Optional: Click to navigate on desktop
+                categoriesToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                });
+            }
+
+            // Handle window resize
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function() {
+                    if (window.innerWidth >= 992) {
+                        megaMenuWrapper.classList.remove('active');
+                        megaMenuBackdrop.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                }, 250);
+            });
+        });
+    </script>
 </header>
