@@ -20,8 +20,7 @@
                 </div>
             </div> --}}
             <div class="">
-                <img src="{{ asset('assets/img/JBF-brands-top-strip_template.gif') }}" style="width: 100%;"
-                    alt="brands-top-strip">
+                <img src="{{ Settings::setting('site_nav_image') }}" style="width: 100%;" alt="brands-top-strip">
             </div>
         </div>
     </div>
@@ -510,21 +509,26 @@
                             $sku = null;
                             $skuImage = $product->model->image;
                             if (isset($product->options['sku_id']) && $product->options['sku_id']) {
-                                $sku = \App\Models\Sku::with('attributeValues.attribute')->find($product->options['sku_id']);
+                                $sku = \App\Models\Sku::with('attributeValues.attribute')->find(
+                                    $product->options['sku_id'],
+                                );
                                 if ($sku && $sku->image) {
                                     $skuImage = $sku->image;
                                 }
                             }
                         @endphp
                         <div class="cart-item d-flex align-items-center mb-3 p-3 border rounded">
-                            <img src="{{ Storage::url($skuImage) }}" alt="{{ $product->name }}"
-                                class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                            <img src="{{ Storage::url($skuImage) }}" alt="{{ $product->name }}" class="me-3"
+                                style="width: 60px; height: 60px; object-fit: cover;">
                             <div class="flex-grow-1">
                                 <h6 class="mb-1">{{ $product->name }}</h6>
                                 @if ($sku)
                                     <p class="mb-1 text-muted" style="font-size: 0.75rem;">
                                         @foreach ($sku->attributeValues as $attrValue)
-                                            {{ $attrValue->attribute->name ?? 'Unknown' }}: {{ $attrValue->getDisplayName() }}@if (!$loop->last), @endif
+                                            {{ $attrValue->attribute->name ?? 'Unknown' }}:
+                                            {{ $attrValue->getDisplayName() }}@if (!$loop->last)
+                                                ,
+                                            @endif
                                         @endforeach
                                     </p>
                                 @endif
@@ -817,7 +821,7 @@
         }
 
         .main-header .offcanvas-title {
-            color: var(--accent-color);
+            color: var(--text-green);
         }
 
         .main-header .btn-close:focus {
@@ -974,7 +978,7 @@
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.3s ease, transform 0.3s ease;
-            margin-top: 10px;
+            margin-top: 2px;
             max-height: 70vh;
             overflow-y: auto;
         }
@@ -1034,13 +1038,13 @@
         }
 
         .mega-menu-parent a {
-            color: var(--text-dark);
+            color: var(--text-green);
             text-decoration: none;
             transition: color 0.2s ease;
         }
 
         .mega-menu-parent a:hover {
-            color: var(--accent-color);
+            color: var(--text-green);
         }
 
         /* Child Categories List */

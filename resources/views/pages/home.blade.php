@@ -1152,6 +1152,10 @@
         .card-title {
             font-size: 1rem;
         }
+
+        .related-product-sec-title{
+            color: var(--text-green);
+        }
     </style>
     <livewire:styles />
 @endsection
@@ -1446,7 +1450,7 @@
 
     <x-banner.home-end-four-card-banner />
     <!-- Explore shop -->
-    @if ($allproducts->count() > 0)
+    {{-- @if ($allproducts->count() > 0)
         <section class="section ec-new-product">
             <div class="container">
                 <div class="row">
@@ -1497,7 +1501,7 @@
 
             </div>
         </section>
-    @endif
+    @endif --}}
 
     <!-- Product tab area end -->
     </main>

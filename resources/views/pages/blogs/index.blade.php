@@ -4,7 +4,7 @@
     <x-app.header />
 
     <div class="container py-5">
-        <h1 class="text-center mb-5 fw-bold">Latest Blogs</h1>
+        <h1 class="text-center mb-5 fw-bold" style="color: #5D6532">Latest Blogs</h1>
 
         @if ($blogs->count())
             <div class="row g-4">

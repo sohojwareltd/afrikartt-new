@@ -143,7 +143,7 @@
         .checkout-summary-title {
             font-size: 1.3rem;
             font-weight: 700;
-            color: var(--accent-color);
+            color: var(--text-green);
             margin-bottom: 1.2rem;
             letter-spacing: 0.5px;
         }
@@ -161,6 +161,10 @@
             margin-top: 1.2rem;
             font-size: 1.2rem;
             color: var(--text-dark);
+        }
+
+        .checkout-summary-total span {
+            color: var(--text-green) !important;
         }
 
         .checkout-btn {
@@ -465,7 +469,9 @@
                                     $sku = null;
                                     $skuImage = $item->model->image;
                                     if (isset($item->options['sku_id']) && $item->options['sku_id']) {
-                                        $sku = \App\Models\Sku::with('attributeValues.attribute')->find($item->options['sku_id']);
+                                        $sku = \App\Models\Sku::with('attributeValues.attribute')->find(
+                                            $item->options['sku_id'],
+                                        );
                                         if ($sku && $sku->image) {
                                             $skuImage = $sku->image;
                                         }
@@ -480,11 +486,13 @@
                                             @if ($sku)
                                                 @foreach ($sku->attributeValues as $attrValue)
                                                     <span class="badge bg-light text-dark me-1" style="font-size: 0.7rem;">
-                                                        {{ $attrValue->attribute->name ?? 'Unknown' }}: {{ $attrValue->getDisplayName() }}
+                                                        {{ $attrValue->attribute->name ?? 'Unknown' }}:
+                                                        {{ $attrValue->getDisplayName() }}
                                                     </span>
                                                 @endforeach
                                                 @if ($sku->sku)
-                                                    <div class="mt-1" style="font-size: 0.7rem;">SKU: {{ $sku->sku }}</div>
+                                                    <div class="mt-1" style="font-size: 0.7rem;">SKU: {{ $sku->sku }}
+                                                    </div>
                                                 @endif
                                             @elseif ($item->options && isset($item->options['variation']))
                                                 <span>Variation: {{ $item->options['variation'] }}</span>
@@ -541,7 +549,7 @@
                                     <!-- Step 2: Shipping -->
                                     <div class="tab-pane fade show active" id="step2" role="tabpanel"
                                         aria-labelledby="step2-tab">
-                                        <h4 class="fw-semibold mb-3">Shipping & Contact Info</h4>
+                                        <h4 class="fw-semibold mb-3" style="color: #5D6532">Shipping & Contact Info</h4>
                                         <div class="checkout-card mb-4 p-4 shadow-sm border-0 rounded-4"
                                             style="background: var(--bg-light); border: 1px solid var(--border-light);">
                                             <div class="row g-3 align-items-end">

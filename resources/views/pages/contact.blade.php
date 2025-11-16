@@ -144,7 +144,7 @@
                                     <i class="fas fa-headset" style="color: var(--contact-primary)"></i>
                                 </div>
                                 <div class="contact-info">
-                                    <h5>Need Immediate Help?</h5>
+                                    <h5 style="color: #5D6532">Need Immediate Help?</h5>
                                     <p class="text-dark">Our support team is standing by</p>
                                 </div>
                             </div>
@@ -164,7 +164,7 @@
                         <div class="contact-info-card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-comments card-icon"></i>
-                                <h4>Get in Touch</h4>
+                                <h4 style="color: #5D6532">Get in Touch</h4>
                             </div>
                             <div class="contact-methods">
                                 <div class="contact-method">
@@ -172,7 +172,7 @@
                                         <i class="fas fa-phone"></i>
                                     </div>
                                     <div class="method-content">
-                                        <h6>Customer Support</h6>
+                                        <h6 style="color: #5D6532">Customer Support</h6>
                                         <p>{{ Settings::setting('site_phone') }}</p>
                                         <small>Mon-Fri: 8AM-8PM EST</small>
                                     </div>
@@ -184,7 +184,7 @@
                         <div class="contact-info-card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-envelope-open card-icon"></i>
-                                <h4>Email Departments</h4>
+                                <h4 style="color: #5D6532">Email Departments</h4>
                             </div>
                             <div class="email-departments">
                                 <div class="email-item">
@@ -192,7 +192,7 @@
                                         <i class="fas fa-life-ring"></i>
                                     </div>
                                     <div class="email-content">
-                                        <strong>Customer Support</strong>
+                                        <strong style="color: #5D6532">Customer Support</strong>
                                         <a
                                             href="mailto:{{ Settings::setting('site_email') }}">{{ Settings::setting('site_email') }}</a>
                                     </div>
@@ -228,7 +228,7 @@
                         <div class="contact-info-card">
                             <div class="card-header">
                                 <i class="fas fa-users card-icon"></i>
-                                <h4>Join Our Community</h4>
+                                <h4 style="color: #5D6532">Join Our Community</h4>
                             </div>
                             <div class="social-community">
                                 <p class="community-description">Connect with artists and art lovers worldwide. Follow us
@@ -236,23 +236,23 @@
                                 <div class="social-grid">
                                     <a href="{{ Settings::setting('social_fb_link') }}" class="social-item facebook">
                                         <i class="fab fa-facebook-f"></i>
-                                        <span>Facebook</span>
+                                        <span style="color: #5D6532">Facebook</span>
                                         <small>15K followers</small>
                                     </a>
                                     <a href="{{ Settings::setting('social_inst_link') }}" class="social-item instagram">
                                         <i class="fab fa-instagram"></i>
-                                        <span>Instagram</span>
+                                        <span style="color: #5D6532">Instagram</span>
                                         <small>25K followers</small>
                                     </a>
                                     <a href="{{ Settings::setting('social_twitter_link') }}" class="social-item twitter">
                                         <i class="fab fa-twitter"></i>
-                                        <span>Twitter</span>
+                                        <span style="color: #5D6532">Twitter</span>
                                         <small>8K followers</small>
                                     </a>
                                     <a href="{{ Settings::setting('social_linkedin_link') }}"
                                         class="social-item linkedin">
                                         <i class="fab fa-linkedin-in"></i>
-                                        <span>LinkedIn</span>
+                                        <span style="color: #5D6532">LinkedIn</span>
                                         <small>5K followers</small>
                                     </a>
                                 </div>
@@ -270,7 +270,7 @@
                             <div class="section-icon mb-3" style="background: var(--contact-primary)">
                                 <i class="fas fa-lightbulb"></i>
                             </div>
-                            <h3>Helpful Resources</h3>
+                            <h3 style="color: #5D6532">Helpful Resources</h3>
                             <p class="section-subtitle">Quick access to common topics and self-service options</p>
                         </div>
                         <div class="row">
@@ -279,7 +279,7 @@
                                     <div class="resource-icon">
                                         <i class="fas fa-paint-brush"></i>
                                     </div>
-                                    <h5>Artist Guidelines</h5>
+                                    <h5 style="color: #5D6532">Artist Guidelines</h5>
                                     <p>Learn about our submission process, quality standards, and artist requirements.</p>
                                     <a href="{{ route('faqs') }}#artist-guidelines" class="resource-link">
                                         View Guidelines <i class="fas fa-arrow-right ms-1"></i>
@@ -291,7 +291,7 @@
                                     <div class="resource-icon">
                                         <i class="fas fa-shopping-cart"></i>
                                     </div>
-                                    <h5>Buying Guide</h5>
+                                    <h5 style="color: #5D6532">Buying Guide</h5>
                                     <p>Step-by-step instructions for purchasing artwork, payment options, and delivery.</p>
                                     <a href="{{ route('faqs') }}#buying-guide" class="resource-link">
                                         Learn More <i class="fas fa-arrow-right ms-1"></i>
@@ -303,7 +303,7 @@
                                     <div class="resource-icon">
                                         <i class="fas fa-shield-alt"></i>
                                     </div>
-                                    <h5>Authenticity</h5>
+                                    <h5 style="color: #5D6532">Authenticity</h5>
                                     <p>Understand our verification process and certificate of authenticity program.</p>
                                     <a href="{{ route('faqs') }}#authenticity" class="resource-link">
                                         Read More <i class="fas fa-arrow-right ms-1"></i>
@@ -315,7 +315,7 @@
                                     <div class="resource-icon">
                                         <i class="fas fa-globe-africa"></i>
                                     </div>
-                                    <h5>International Shipping</h5>
+                                    <h5 style="color: #5D6532">International Shipping</h5>
                                     <p>Information about worldwide delivery, customs, and international payment methods.</p>
                                     <a href="{{ route('faqs') }}#international" class="resource-link">
                                         View Details <i class="fas fa-arrow-right ms-1"></i>
@@ -513,7 +513,7 @@
         .form-title {
             font-size: 2rem;
             font-weight: 700;
-            color: var(--contact-dark);
+            color: var(--text-green);
             margin: 1.5rem 0 0.5rem;
         }
 
@@ -535,7 +535,7 @@
         .section-title {
             font-size: 1.2rem;
             font-weight: 600;
-            color: var(--contact-text);
+            color: var(--text-green);
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;

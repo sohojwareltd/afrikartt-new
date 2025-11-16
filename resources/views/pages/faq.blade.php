@@ -5,7 +5,7 @@
 @section('content')
     <x-app.header />
     <div class="container py-5">
-        <h1 class="mb-4 text-center">Frequently Asked Questions</h1>
+        <h1 class="mb-4 text-center" style="color: #5D6532">Frequently Asked Questions</h1>
 
         <div class="accordion" id="faqAccordion">
             @foreach ($faqs as $index => $faq)

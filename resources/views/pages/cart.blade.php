@@ -123,7 +123,7 @@
         .cart-table th {
             padding: 18px 8px 18px 0;
             font-weight: 600;
-            color: var(--text-primary);
+            color: var(--text-green);
             font-size: 1rem;
             border-bottom: 1px solid var(--border-light);
             background: none;
@@ -266,6 +266,9 @@
             font-size: 1.3rem;
             font-weight: 700;
             margin: 1.5rem 0 1.2rem 0;
+        }
+        .summary-total span {
+            color: var(--text-green);
         }
 
         .checkout-hero {
@@ -479,8 +482,13 @@
                                                             @php
                                                                 $sku = null;
                                                                 $skuImage = $item->model->image;
-                                                                if (isset($item->options['sku_id']) && $item->options['sku_id']) {
-                                                                    $sku = \App\Models\Sku::with('attributeValues.attribute')->find($item->options['sku_id']);
+                                                                if (
+                                                                    isset($item->options['sku_id']) &&
+                                                                    $item->options['sku_id']
+                                                                ) {
+                                                                    $sku = \App\Models\Sku::with(
+                                                                        'attributeValues.attribute',
+                                                                    )->find($item->options['sku_id']);
                                                                     if ($sku && $sku->image) {
                                                                         $skuImage = $sku->image;
                                                                     }
@@ -494,15 +502,18 @@
                                                                     <p class="text-sm text-muted mb-1">
                                                                         @foreach ($sku->attributeValues as $attrValue)
                                                                             <span class="badge bg-light text-dark me-1">
-                                                                                {{ $attrValue->attribute->name ?? 'Unknown' }}: {{ $attrValue->getDisplayName() }}
+                                                                                {{ $attrValue->attribute->name ?? 'Unknown' }}:
+                                                                                {{ $attrValue->getDisplayName() }}
                                                                             </span>
                                                                         @endforeach
                                                                     </p>
                                                                     @if ($sku->sku)
-                                                                        <p class="text-xs text-muted mb-0">SKU: {{ $sku->sku }}</p>
+                                                                        <p class="text-xs text-muted mb-0">SKU:
+                                                                            {{ $sku->sku }}</p>
                                                                     @endif
                                                                 @else
-                                                                    <p>{{ Str::limit(strip_tags($item->model->short_description), 40, '...') }}</p>
+                                                                    <p>{{ Str::limit(strip_tags($item->model->short_description), 40, '...') }}
+                                                                    </p>
                                                                 @endif
                                                             </div>
                                                         </div>
