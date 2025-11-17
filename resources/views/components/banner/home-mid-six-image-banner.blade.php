@@ -1,4 +1,4 @@
-<section class="container">
+<section class="">
     <div class="row g-3">
         <x-banner.home-mid-six-image-banner-one />
         <x-banner.home-mid-six-image-banner-two />

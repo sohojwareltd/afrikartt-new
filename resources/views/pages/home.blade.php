@@ -1153,7 +1153,7 @@
             font-size: 1rem;
         }
 
-        .related-product-sec-title{
+        .related-product-sec-title {
             color: var(--text-green);
         }
     </style>
