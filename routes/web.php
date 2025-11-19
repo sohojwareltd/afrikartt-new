@@ -99,6 +99,15 @@ Route::get('blog/{slug}', [PageController::class, 'blogDetails'])->name('blog.de
 Route::get('alteration', [PageController::class, 'alteration'])->name('alteration');
 Route::post('alteration', [PageController::class, 'alterationStore'])->name('alteration.store');
 
+Route::get('on-request', [PageController::class, 'onRequest'])->name('on_request');
+Route::post('on-request', [PageController::class, 'onRequestStore'])->name('on_request.store');
+
+Route::get('wholesale', [PageController::class, 'wholesale'])->name('wholesale');
+Route::post('wholesale', [PageController::class, 'wholesaleStore'])->name('wholesale_store');
+
+Route::get('customized', [PageController::class, 'customized'])->name('customized');
+Route::post('customized', [PageController::class, 'customizedStore'])->name('customized.store');
+
 
 
 

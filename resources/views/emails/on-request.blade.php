@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Alteration Request</title>
+    <title>New Custom Request</title>
     <style>
         * {
             margin: 0;
@@ -161,6 +161,20 @@
             vertical-align: middle;
         }
 
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(246, 139, 30, 0.1) 0%, rgba(246, 139, 30, 0.05) 100%);
+            border: 2px solid #f68b1e;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .highlight-box strong {
+            color: #f68b1e;
+            display: block;
+            margin-bottom: 5px;
+        }
+
         @media only screen and (max-width: 600px) {
             body {
                 padding: 10px;
@@ -197,8 +211,8 @@
     <div class="email-container">
         <!-- Header -->
         <div class="email-header">
-            <h1>🧵 New Alteration Request</h1>
-            <p>A customer has submitted an alteration service request</p>
+            <h1>🎨 New Custom Request</h1>
+            <p>A customer has submitted a custom product/service request</p>
         </div>
 
         <!-- Body -->
@@ -209,37 +223,37 @@
                 <div class="info-grid">
                     <div class="info-row">
                         <div class="info-label">Full Name:</div>
-                        <div class="info-value"><strong>{{ $alteration->name }}</strong></div>
+                        <div class="info-value"><strong>{{ $request->name }}</strong></div>
                     </div>
                     <div class="info-row">
                         <div class="info-label">Email:</div>
                         <div class="info-value">
-                            <a href="mailto:{{ $alteration->email }}"
-                                style="color: #f68b1e; text-decoration: none;">{{ $alteration->email }}</a>
+                            <a href="mailto:{{ $request->email }}"
+                                style="color: #f68b1e; text-decoration: none;">{{ $request->email }}</a>
                         </div>
                     </div>
                     <div class="info-row">
                         <div class="info-label">Phone:</div>
                         <div class="info-value">
-                            <a href="tel:{{ $alteration->phone }}"
-                                style="color: #f68b1e; text-decoration: none;">{{ $alteration->phone }}</a>
+                            <a href="tel:{{ $request->phone }}"
+                                style="color: #f68b1e; text-decoration: none;">{{ $request->phone }}</a>
                         </div>
                     </div>
                     <div class="info-row">
                         <div class="info-label">Request Date:</div>
-                        <div class="info-value">{{ $alteration->created_at->format('F d, Y \a\t h:i A') }}</div>
+                        <div class="info-value">{{ $request->created_at->format('F d, Y \a\t h:i A') }}</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Alteration Details -->
+            <!-- Request Details -->
             <div class="info-section">
-                <h2>✂️ Alteration Details</h2>
+                <h2>📋 Request Details</h2>
                 <div class="info-grid">
                     <div class="info-row">
-                        <div class="info-label">Alteration Type:</div>
+                        <div class="info-label">Request Type:</div>
                         <div class="info-value">
-                            <span class="type-badge">{{ str_replace('_', ' ', $alteration->type) }}</span>
+                            <span class="type-badge">{{ str_replace('_', ' ', $request->type) }}</span>
                         </div>
                     </div>
                 </div>
@@ -247,13 +261,13 @@
                 <div style="margin-top: 15px;">
                     <strong style="color: #555555; display: block; margin-bottom: 8px;">Detailed Description:</strong>
                     <div class="description-box">
-                        {{ $alteration->description }}
+                        {{ $request->description }}
                     </div>
                 </div>
             </div>
 
             <!-- Attachment Notice -->
-            @if ($alteration->attachment)
+            @if ($request->attachment)
                 <div class="attachment-notice">
                     <strong>📎 Attachment Included:</strong> This request includes an image or document attachment.
                     Please
@@ -261,10 +275,17 @@
                 </div>
             @endif
 
+            <!-- Priority Notice -->
+            <div class="highlight-box">
+                <strong>⚡ Action Required</strong>
+                <p style="margin: 0; color: #333;">Please review this custom request and respond to the customer within
+                    24-48 hours with pricing and availability information.</p>
+            </div>
+
             <!-- Action Button -->
             {{-- <div style="text-align: center; margin-top: 30px;">
-                <a href="{{ url('/admin/resources/alterations/' . $alteration->id) }}" class="action-button">
-                    View in Admin Panel
+                <a href="{{ url('/admin/resources/alterations/' . $request->id) }}" class="action-button">
+                    View Full Request in Admin Panel
                 </a>
             </div> --}}
         </div>
@@ -272,9 +293,9 @@
         <!-- Footer -->
         <div class="email-footer">
             <p><strong>{{ config('app.name', 'Afrikartt') }}</strong></p>
-            <p>Please respond to this customer within 24 hours</p>
+            <p>Custom Request Management System</p>
             <p style="margin-top: 15px; font-size: 12px;">
-                This is an automated notification from your alteration request system.
+                This is an automated notification from your custom request system.
             </p>
         </div>
     </div>

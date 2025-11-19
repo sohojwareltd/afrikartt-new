@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('type')->nullable();
+            $table->string('quantity')->nullable();
             $table->text('description')->nullable();
             $table->string('attachment')->nullable();
             $table->timestamps();

@@ -382,22 +382,22 @@
                                         </h6>
                                         <ul class="mega-menu-list">
                                             <li>
-                                                <a href="">
+                                                <a href="{{ route('alteration') }}">
                                                     Alteration
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="">
+                                                <a href="{{ route('on_request') }}">
                                                     On Request
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="">
+                                                <a href="{{ route('wholesale') }}">
                                                     Wholesale
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="">
+                                                <a href="{{ route('customized') }}">
                                                     Customized
                                                 </a>
                                             </li>

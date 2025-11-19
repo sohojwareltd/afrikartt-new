@@ -13,6 +13,7 @@ class Alteration extends Model
         'email',
         'phone',
         'type',
+        'quantity',
         'description',
         'attachment',
     ];
