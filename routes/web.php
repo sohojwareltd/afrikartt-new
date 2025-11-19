@@ -96,6 +96,9 @@ Route::get('/location-search', [PageController::class, 'locationSearchQuery'])->
 Route::get('blogs', [PageController::class, 'blogs'])->name('blogs');
 Route::get('blog/{slug}', [PageController::class, 'blogDetails'])->name('blog.details');
 
+Route::get('alteration', [PageController::class, 'alteration'])->name('alteration');
+Route::post('alteration', [PageController::class, 'alterationStore'])->name('alteration.store');
+
 
 
 

@@ -349,7 +349,7 @@
                                         <div class="col-lg-3 col-6 mega-menu-column">
                                             @if ($category->childrens->count())
                                                 {{-- Parent with Children --}}
-                                                <h6 class="mega-menu-parent">
+                                                <h6 class="mega-menu-parent text-center">
                                                     <a href="{{ route('shops', ['category' => $category->slug]) }}">
                                                         {{ $category->name }}
                                                     </a>
@@ -366,7 +366,7 @@
                                                 </ul>
                                             @else
                                                 {{-- Parent without Children --}}
-                                                <h6 class="mega-menu-parent">
+                                                <h6 class="mega-menu-parent text-center">
                                                     <a href="{{ route('shops', ['category' => $category->slug]) }}">
                                                         {{ $category->name }}
                                                     </a>
@@ -374,6 +374,35 @@
                                             @endif
                                         </div>
                                     @endforeach
+                                    <div class="col-md-3 col-6 mega-menu-column">
+                                        <h6 class="mega-menu-parent text-center">
+                                            <a href="#">
+                                                Services
+                                            </a>
+                                        </h6>
+                                        <ul class="mega-menu-list">
+                                            <li>
+                                                <a href="">
+                                                    Alteration
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="">
+                                                    On Request
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="">
+                                                    Wholesale
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="">
+                                                    Customized
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>

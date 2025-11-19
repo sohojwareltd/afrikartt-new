@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AlterationRequestMail;
 use App\Mail\ContactMessageMail;
 use App\Models\Address;
+use App\Models\Alteration;
 use App\Models\Email;
 use App\Models\Order;
 use App\Models\Page;
@@ -753,5 +755,40 @@ class PageController extends Controller
             ->get();
 
         return view('pages.blogs.details', compact('blog', 'relatedBlogs'));
+    }
+
+    public function alteration()
+    {
+        return view('pages.alteration');
+    }
+
+    public function alterationStore(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'type' => 'required|string|max:255',
+            'description' => 'required|string',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+        ]);
+
+        // File upload
+        $attachmentPath = null;
+
+        if ($request->hasFile('attachment')) {
+            $attachmentPath = $request->file('attachment')->store('alteration-attachments', 'public');
+        }
+        // Create alteration request using request->only()
+        $alteration = Alteration::create(
+            $request->only(['name', 'email', 'phone', 'type', 'description']) + [
+                'attachment' => $attachmentPath
+            ]
+        );
+
+        // Send notification email to admin (optional)
+        Mail::to(config('mail.from.address'))->send(new AlterationRequestMail($alteration));
+
+        return redirect()->back()->with('success', 'Your alteration request has been submitted successfully! We will contact you within 24 hours.');
     }
 }
