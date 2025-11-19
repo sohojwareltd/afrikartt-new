@@ -36,7 +36,8 @@
                                                 <i class="fas fa-lightbulb fa-3x text-primary"></i>
                                             </div>
                                             <h5 class="fw-bold">Custom Solutions</h5>
-                                            <p class="text-muted small mb-0">Bring your unique ideas to life with tailored products
+                                            <p class="text-muted small mb-0">Bring your unique ideas to life with tailored
+                                                products
                                             </p>
                                         </div>
                                     </div>
