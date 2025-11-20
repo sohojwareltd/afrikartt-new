@@ -18,7 +18,7 @@ class AttributeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
 
-    protected static ?string $navigationGroup = 'Product Management';
+    protected static ?string $navigationGroup = 'Inventory';
 
     protected static ?int $navigationSort = 4;
 

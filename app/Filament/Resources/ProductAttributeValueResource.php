@@ -19,7 +19,7 @@ class ProductAttributeValueResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-swatch';
 
-    protected static ?string $navigationGroup = 'Product Management';
+    protected static ?string $navigationGroup = 'Inventory';
 
     protected static ?int $navigationSort = 5;
 
