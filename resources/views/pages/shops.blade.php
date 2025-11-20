@@ -4,6 +4,7 @@
     // Check if any filters are active
     $hasActiveFilters =
         request('category') ||
+        request('brand') ||
         request('ratings') ||
         request('priceMin') ||
         request('priceMax') ||
@@ -109,6 +110,27 @@
                                     @endforeach
                                 </ul>
                             </div>
+
+                            <!-- Brand Filter -->
+                            <div class="filter-section">
+                                <h3 class="filter-section-title">
+                                    <i class="fas fa-certificate"></i>
+                                    Brands
+                                </h3>
+                                <ul class="category-list">
+                                    @foreach ($brands as $brand)
+                                        <li class="category-item">
+                                            <a href="javascript:void(0)"
+                                                class="category-link {{ request('brand') == $brand->id ? 'active' : '' }}"
+                                                onclick='updateSearchParams("brand","{{ $brand->id }}","{{ $route }}")'>
+                                                <span>{{ $brand->name }}</span>
+                                                <span class="category-badge">{{ $brand->products_count }}</span>
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+
                             <!-- Rating Filter -->
                             <div class="filter-section">
                                 <h3 class="filter-section-title">
@@ -312,6 +334,26 @@
                                         onclick='updateSearchParams("category","{{ $category->slug }}","{{ $route }}")'>
                                         <span>{{ $category->name }}</span>
                                         <span class="category-badge">{{ $category->products->count() }}</span>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+
+                    <!-- Brand Filter -->
+                    <div class="filter-section">
+                        <h3 class="filter-section-title">
+                            <i class="fas fa-certificate"></i>
+                            Brands
+                        </h3>
+                        <ul class="category-list">
+                            @foreach ($brands as $brand)
+                                <li class="category-item">
+                                    <a href="javascript:void(0)"
+                                        class="category-link {{ request('brand') == $brand->id ? 'active' : '' }}"
+                                        onclick='updateSearchParams("brand","{{ $brand->id }}","{{ $route }}")'>
+                                        <span>{{ $brand->name }}</span>
+                                        <span class="category-badge">{{ $brand->products_count }}</span>
                                     </a>
                                 </li>
                             @endforeach

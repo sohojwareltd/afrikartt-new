@@ -43,6 +43,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use App\Models\ProductAttribureValue;
 use App\Models\Attribute;
+use App\Models\Brand;
 use App\Models\Sku;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
@@ -117,7 +118,25 @@ class ProductResource extends Resource
                                                     ->maxLength(255)
                                                     ->placeholder('Enter keywords separated by commas')
                                                     ->helperText('Add keywords to improve product searchability. Separate multiple keywords with commas.')
-                                                    ->columnSpan(3)
+                                                    ->columnSpan(2),
+
+                                                Select::make('brand_id')
+                                                    ->label('Brand')
+                                                    ->options(Brand::pluck('name', 'id'))
+                                                    ->searchable()
+                                                    ->required()
+                                                    ->getSearchResultsUsing(
+                                                        fn(string $search): array =>
+                                                        Brand::where('name', 'like', "%{$search}%")
+                                                            ->limit(50)
+                                                            ->pluck('name', 'id')
+                                                            ->toArray()
+                                                    )
+                                                    ->getOptionLabelUsing(
+                                                        fn($value): ?string =>
+                                                        Brand::find($value)?->name
+                                                    )
+
                                             ]),
                                     ]),
                             ]),
@@ -260,7 +279,7 @@ class ProductResource extends Resource
                                                         }
                                                         $imagePath = $data['image_value'] ?? $data['value'] ?? null;
                                                         $imageName = $data['image_name'] ?? '';
-                                                        
+
                                                         // Get image path from various possible formats
                                                         if (is_array($imagePath) && !empty($imagePath)) {
                                                             $firstItem = isset($imagePath[0]) ? $imagePath[0] : (reset($imagePath) ?: null);
@@ -273,22 +292,22 @@ class ProductResource extends Resource
                                                             }
                                                         } elseif ($imagePath instanceof TemporaryUploadedFile) {
                                                             $imagePath = $imagePath->store('attribute-values', 'public');
-                                                    } elseif (is_string($imagePath) && str_starts_with($imagePath, '{')) {
-                                                        $decoded = json_decode($imagePath, true);
-                                                        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                                                            $imagePath = $decoded['image_path'] ?? null;
-                                                            if (empty($imageName)) {
-                                                                $imageName = $decoded['name'] ?? '';
+                                                        } elseif (is_string($imagePath) && str_starts_with($imagePath, '{')) {
+                                                            $decoded = json_decode($imagePath, true);
+                                                            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                                                                $imagePath = $decoded['image_path'] ?? null;
+                                                                if (empty($imageName)) {
+                                                                    $imageName = $decoded['name'] ?? '';
+                                                                }
                                                             }
                                                         }
-                                                        }
-                                                        
+
                                                         if ($imagePath) {
                                                             // If no name provided, use filename as fallback
                                                             if (empty($imageName) && is_string($imagePath)) {
                                                                 $imageName = pathinfo($imagePath, PATHINFO_FILENAME);
                                                             }
-                                                            
+
                                                             // Store as JSON
                                                             $data['value'] = json_encode([
                                                                 'name' => $imageName,
@@ -353,8 +372,8 @@ class ProductResource extends Resource
 
                                                 Forms\Components\TextInput::make('text_value')
                                                     ->label('Value')
-                                                    ->required(fn (callable $get) => $get('type') === 'text')
-                                                    ->visible(fn (callable $get) => $get('type') === 'text')
+                                                    ->required(fn(callable $get) => $get('type') === 'text')
+                                                    ->visible(fn(callable $get) => $get('type') === 'text')
                                                     ->live(onBlur: true)
                                                     ->afterStateUpdated(function (callable $set, $state, callable $get) {
                                                         // Update the hidden value field when text changes
@@ -368,8 +387,8 @@ class ProductResource extends Resource
 
                                                 Forms\Components\TextInput::make('image_name')
                                                     ->label('Name')
-                                                    ->required(fn (callable $get) => $get('type') === 'image')
-                                                    ->visible(fn (callable $get) => $get('type') === 'image')
+                                                    ->required(fn(callable $get) => $get('type') === 'image')
+                                                    ->visible(fn(callable $get) => $get('type') === 'image')
                                                     ->placeholder('Enter a name for this image (e.g., Red, Blue, Pattern A)')
                                                     ->live(onBlur: true)
                                                     ->helperText('Enter a descriptive name for this image attribute value')
@@ -381,8 +400,8 @@ class ProductResource extends Resource
                                                     ->directory('attribute-values')
                                                     ->disk('public')
                                                     ->imagePreviewHeight('80')
-                                                    ->visible(fn (callable $get) => $get('type') === 'image')
-                                                    ->required(fn (callable $get) => $get('type') === 'image')
+                                                    ->visible(fn(callable $get) => $get('type') === 'image')
+                                                    ->required(fn(callable $get) => $get('type') === 'image')
                                                     ->maxFiles(1)
                                                     ->live()
                                                     ->afterStateUpdated(function (callable $set, $state, callable $get) {
@@ -484,14 +503,14 @@ class ProductResource extends Resource
                                                         $attribute = Attribute::find($state['attribute_id']);
                                                         $attributeName = $attribute?->name ?? '';
                                                     }
-                                                    
+
                                                     $type = $state['type'] ?? 'text';
-                                                    
+
                                                     // Handle value based on type
                                                     if ($type === 'image') {
                                                         // For image type, prefer image_name if available
                                                         $value = $state['image_name'] ?? null;
-                                                        
+
                                                         // If no name, try to get from value (JSON or legacy format)
                                                         if (empty($value)) {
                                                             $rawValue = $state['value'] ?? null;
@@ -524,12 +543,12 @@ class ProductResource extends Resource
                                                             $filtered = array_filter($value, fn($v) => !empty($v));
                                                             $value = !empty($filtered) ? implode(', ', $filtered) : 'New Value';
                                                         } else {
-                                                            $value = is_string($value) && !empty($value) 
-                                                                ? $value 
+                                                            $value = is_string($value) && !empty($value)
+                                                                ? $value
                                                                 : 'New Value';
                                                         }
                                                     }
-                                                    
+
                                                     return $attributeName ? "{$attributeName}: {$value}" : $value;
                                                 } catch (\Exception $e) {
                                                     // Fallback if anything goes wrong
@@ -568,7 +587,7 @@ class ProductResource extends Resource
                                                         $livewire->regenerateSkus();
                                                     }
                                                 })
-                                                ->visible(fn ($record) => $record && $record->attributeValues()->count() > 0),
+                                                ->visible(fn($record) => $record && $record->attributeValues()->count() > 0),
                                         ])
                                             ->columnSpanFull(),
                                     ]),
@@ -851,7 +870,7 @@ class ProductResource extends Resource
                                                         </div>
                                                     ');
                                                 }
-                                                
+
                                                 $skuCount = $record->skus()->count();
                                                 if ($skuCount === 0) {
                                                     return new \Illuminate\Support\HtmlString('
@@ -860,14 +879,14 @@ class ProductResource extends Resource
                                                         </div>
                                                     ');
                                                 }
-                                                
+
                                                 return new \Illuminate\Support\HtmlString('
                                                     <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
                                                         <p class="text-sm text-green-800 dark:text-green-200 font-medium">✓ ' . $skuCount . ' SKU(s) generated. You can edit prices, quantities, and titles below.</p>
                                                     </div>
                                                 ');
                                             })
-                                            ->visible(fn ($record) => $record !== null)
+                                            ->visible(fn($record) => $record !== null)
                                             ->columnSpanFull(),
 
                                         Forms\Components\Repeater::make('skus')
@@ -886,7 +905,7 @@ class ProductResource extends Resource
                                             ->mutateRelationshipDataBeforeSaveUsing(function (array $data, $record): array {
                                                 // Mark as manual SKU
                                                 $data['is_manual'] = true;
-                                                
+
                                                 // Keep attribute_value_ids in form state
                                                 // We'll handle sync in afterSave hook
                                                 return $data;
@@ -963,18 +982,18 @@ class ProductResource extends Resource
                                                                 if (!$productId) {
                                                                     return [];
                                                                 }
-                                                                
+
                                                                 // Get all attribute values for this product
                                                                 $attributeValues = \App\Models\ProductAttribureValue::where('product_id', $productId)
                                                                     ->with('attribute')
                                                                     ->get();
-                                                                
+
                                                                 $options = [];
                                                                 foreach ($attributeValues as $attrValue) {
                                                                     $label = ($attrValue->attribute->name ?? 'Unknown') . ': ' . $attrValue->getDisplayName();
                                                                     $options[$attrValue->id] = $label;
                                                                 }
-                                                                
+
                                                                 return $options;
                                                             })
                                                             ->searchable()
@@ -987,13 +1006,13 @@ class ProductResource extends Resource
                                             ->addActionLabel('Add SKU')
                                             ->reorderableWithButtons()
                                             ->collapsible()
-                                            ->itemLabel(fn (array $state): ?string => 
-                                                ($state['sku'] ?? 'New SKU') . 
-                                                ($state['title'] ? ' - ' . $state['title'] : '')
+                                            ->itemLabel(
+                                                fn(array $state): ?string => ($state['sku'] ?? 'New SKU') .
+                                                    ($state['title'] ? ' - ' . $state['title'] : '')
                                             )
                                             ->defaultItems(0)
                                             ->columnSpanFull()
-                                            ->visible(fn ($record) => $record && $record->skus()->count() > 0)
+                                            ->visible(fn($record) => $record && $record->skus()->count() > 0)
                                             ->helperText('Edit SKU details. Prices and quantities can be customized per variation.'),
                                     ]),
                             ]),

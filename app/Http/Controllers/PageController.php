@@ -101,7 +101,13 @@ class PageController extends Controller
 
         $latest_shops =  ShopRepsitory::getLatestShops();
 
-        return view('pages.shops', compact('products', 'categories', 'latest_shops'));
+        $brands = \App\Models\Brand::where('status', true)
+            ->withCount('products')
+            ->having('products_count', '>', 0)
+            ->orderBy('name')
+            ->get();
+
+        return view('pages.shops', compact('products', 'categories', 'latest_shops', 'brands'));
     }
     public function product_details($slug)
     {
