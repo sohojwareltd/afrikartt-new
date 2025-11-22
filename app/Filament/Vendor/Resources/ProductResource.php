@@ -148,7 +148,7 @@ class ProductResource extends Resource
                                                     ->label('Brand')
                                                     ->options(Brand::pluck('name', 'id'))
                                                     ->searchable()
-                                                    ->required()
+                                                    // ->required()
                                                     ->getSearchResultsUsing(
                                                         fn(string $search): array =>
                                                         Brand::where('name', 'like', "%{$search}%")
