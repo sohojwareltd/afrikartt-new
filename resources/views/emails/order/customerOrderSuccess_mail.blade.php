@@ -13,7 +13,7 @@
         style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
         <!-- Header -->
         <tr>
-            <td style="background: #DE991B; color: white; padding: 30px; text-align: center;">
+            <td style="background: #f68b1e;; color: white; padding: 30px; text-align: center;">
                 <table width="100%" cellpadding="0" cellspacing="0" border="0">
                     <tr>
                         <td style="text-align: center; padding-bottom: 20px;">
@@ -94,7 +94,7 @@
                                     <td style="padding: 8px 0; font-size: 14px; color: #666;">Order Status</td>
                                     <td style="padding: 8px 0; text-align: right;">
                                         <span
-                                            style="background: #DE991B; color: white; padding: 6px 12px; border-radius: 15px; font-size: 12px; font-weight: 600;">
+                                            style="background: #f68b1e;; color: white; padding: 6px 12px; border-radius: 15px; font-size: 12px; font-weight: 600;">
                                             {{ ucfirst($order->status == 1 ? 'paid' : 'Pending') }}
                                         </span>
                                     </td>
@@ -252,10 +252,10 @@
                                 @endif
                                 <tr>
                                     <td
-                                        style="padding: 12px 0; font-size: 16px; font-weight: 700; color: #333; border-top: 2px solid #DE991B;">
+                                        style="padding: 12px 0; font-size: 16px; font-weight: 700; color: #333; border-top: 2px solid #f68b1e;;">
                                         Total</td>
                                     <td
-                                        style="padding: 12px 0; text-align: right; font-size: 16px; font-weight: 700; color: #DE991B; border-top: 2px solid #DE991B;">
+                                        style="padding: 12px 0; text-align: right; font-size: 16px; font-weight: 700; color: #f68b1e;; border-top: 2px solid #f68b1e;;">
                                         ${{ number_format($order->total ?? 0, 2) }}
                                     </td>
                                 </tr>
@@ -361,7 +361,7 @@
                                 <tr>
                                     <td style="text-align: center; padding: 5px;">
                                         <a href="mailto:{{ $order->shop->email ?? 'info@royalit.com' }}"
-                                            style="color: #DE991B; text-decoration: none; font-size: 13px; font-weight: 600;">📧
+                                            style="color: #f68b1e;; text-decoration: none; font-size: 13px; font-weight: 600;">📧
                                             Email Support</a>
                                     </td>
 
