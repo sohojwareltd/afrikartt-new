@@ -112,6 +112,7 @@ class CheckoutController extends Controller
             // Post-commit actions
             $shipping = json_decode($order->shipping, true);
             $rates = $eashShip->getRates($shipping, $order->products);
+            dd($rates);
 
             Log::info('=========================================');
             Log::info('=========================================');
