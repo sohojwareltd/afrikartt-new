@@ -227,8 +227,8 @@ class CheckoutController extends Controller
         $order = (new CheckoutService())->createOrder();
 
         // Clear cart and related session data after successful order creation
-        Cart::destroy();
-        Session::forget(['discount', 'discount_code', 'coupon_id']);
+        // Cart::destroy();
+        // Session::forget(['discount', 'discount_code', 'coupon_id']);
     }
 
     protected function decreaseQuantities()
@@ -331,8 +331,8 @@ class CheckoutController extends Controller
             Session::forget('discount');
             Session::forget('discount_code');
             Session::forget('coupon_id');
-            Cart::destroy();
         }
+        Cart::destroy();
 
         return redirect('/thankyou')->with('thank', 'Order Created successfully!');
     }
