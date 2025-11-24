@@ -271,7 +271,7 @@
 
         <!-- Footer -->
         <div class="email-footer">
-            <p><strong>{{ config('app.name', 'Afrikartt') }}</strong></p>
+            <p><strong>{{ config('app.name', 'Royalit') }}</strong></p>
             <p>Please respond to this customer within 24 hours</p>
             <p style="margin-top: 15px; font-size: 12px;">
                 This is an automated notification from your alteration request system.

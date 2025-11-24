@@ -327,7 +327,7 @@
                                             <div style="height: 1px; background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%); margin: 15px 0;"></div>
                                             
                                             <p style="margin: 0; color: #ffffff; font-size: 12px; line-height: 18px; font-weight: 500; opacity: 0.8;">
-                                                &copy; {{ date('Y') }} {{ Settings::setting('site_name', 'Afrikart') }} | All rights reserved
+                                                &copy; {{ date('Y') }} {{ Settings::setting('site_name', 'Royalit') }} | All rights reserved
                                             </p>
                                         </div>
                                         

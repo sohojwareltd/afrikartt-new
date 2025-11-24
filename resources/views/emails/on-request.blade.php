@@ -292,7 +292,7 @@
 
         <!-- Footer -->
         <div class="email-footer">
-            <p><strong>{{ config('app.name', 'Afrikartt') }}</strong></p>
+            <p><strong>{{ config('app.name', 'Royalit') }}</strong></p>
             <p>Custom Request Management System</p>
             <p style="margin-top: 15px; font-size: 12px;">
                 This is an automated notification from your custom request system.

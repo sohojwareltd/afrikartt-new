@@ -112,7 +112,7 @@ class CheckoutController extends Controller
             // Post-commit actions
             $shipping = json_decode($order->shipping, true);
             $rates = $eashShip->getRates($shipping, $order->products);
- 
+
             Log::info('=========================================');
             Log::info('=========================================');
             Log::info('EashShipProvider getRates response');
@@ -120,7 +120,7 @@ class CheckoutController extends Controller
             Log::info('EashShipProvider getRates response end');
             Log::info('=========================================');
             Log::info('=========================================');
-            
+
             if (isset($rates['rates']) == false) {
                 throw new \Exception('Shipping method not available for the selected country and state');
             }
@@ -152,16 +152,27 @@ class CheckoutController extends Controller
 
     public function confirmOrder(Order $order, Request $request)
     {
+        $shipping = json_decode($order->shipping, true);
+        
+        if ($shipping['country_code'] === 'US' && $order->subtotal >= 75) {
+            $shippingAmount = 0;
+        } else {
+            $shippingAmount = $request->selected_shipping_amount;
+        }
+
+
+
+        // $free = SohojFacade::freeShippingInfo();
+
+
         $order->update([
             'shipping_method' => $request->selected_shipping_service,
-            'shipping_total' => $request->selected_shipping_amount,
-            'total' => $order->subtotal + $request->selected_shipping_amount - $order->discount,
+            'shipping_total' => $shippingAmount,
+            'total' => ($order->subtotal + $shippingAmount) - $order->discount,
             'payment_method' => $request->payment_method,
         ]);
+        // dd($order);
 
-
-
-        $shipping = json_decode($order->shipping, true);
         $payment = new PaymentService(Order::find($order->id));
         $url = $payment->getPaymentRedirectUrl();
 
@@ -176,6 +187,7 @@ class CheckoutController extends Controller
                 Mail::to(Settings::setting('admin_email'))->send(new AdminOrderPlacedMail($order, $childOrder));
             }
         }
+
         return redirect($url);
     }
 
@@ -228,7 +240,7 @@ class CheckoutController extends Controller
                 if ($sku) {
                     // Decrement SKU quantity
                     $sku->decrement('quantity', $item->qty);
-                    
+
                     // Also update product total sales
                     $product = Product::find($item->model->id);
                     $product->increment('total_sale', $item->qty);
