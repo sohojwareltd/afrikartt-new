@@ -1,5 +1,5 @@
 @php
- 
+
     $averageRating = Sohoj::average_rating($product->ratings);
     $ratingCount = $product->ratings->count();
     $currentPrice = $product->sale_price ?? $product->price;
@@ -8,7 +8,7 @@
     $discountPercentage = $hasDiscount ? round((($originalPrice - $currentPrice) / $originalPrice) * 100) : 0;
     $fullStars = floor($averageRating);
     $hasHalfStar = $averageRating - $fullStars >= 0.5;
-    
+
     $showMultipleCategories = $showMultipleCategories ?? true;
 @endphp
 
@@ -17,11 +17,8 @@
         {{-- Product Image Section --}}
         <div class="product-image-wrapper">
             <div class="product-image">
-                <img src="{{ Storage::url($product->image) }}" 
-                     alt="{{ $product->name }}" 
-                     class="product-img" 
-                     style="width: 100%; height: 100%; object-fit: cover;"
-                     >
+                <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}" class="product-img"
+                    style="width: 100%; height: 100%; object-fit: cover;">
 
                 {{-- Product Actions Overlay --}}
                 <div class="product-overlay">
@@ -48,7 +45,8 @@
                         @else
                             <a href="{{ route('wishlist.remove', ['productId' => $product->id]) }}"
                                 class="action-btn compare-btn" title="Remove from Wishlist"
-                                aria-label="Remove {{ $product->name }} from wishlist"><i class="fas fa-heart text-success"></i></a>
+                                aria-label="Remove {{ $product->name }} from wishlist"><i
+                                    class="fas fa-heart text-success"></i></a>
                         @endif
                     </div>
                 </div>
@@ -65,7 +63,7 @@
         {{-- Product Content Section --}}
         <div class="product-content">
             {{-- Product Category --}}
-            <div class="product-category">
+            {{-- <div class="product-category">
                 @if ($showMultipleCategories && $product->prodcats->count() > 0)
                     @foreach ($product->prodcats as $categoryName)
                         <span>{{ $categoryName->name }}</span>
@@ -73,7 +71,7 @@
                 @else
                     <span>{{ $product->category->name ?? 'General' }}</span>
                 @endif
-            </div>
+            </div> --}}
 
             {{-- Product Title --}}
             <h3 class="product-title">
@@ -84,7 +82,7 @@
             </h3>
 
             {{-- Product Rating --}}
-            <div class="product-rating" aria-label="Rating: {{ $averageRating }} out of 5 stars">
+            {{-- <div class="product-rating" aria-label="Rating: {{ $averageRating }} out of 5 stars">
                 <div class="stars" role="img" aria-label="Rating: {{ $averageRating }} stars">
                     @for ($i = 1; $i <= 5; $i++)
                         @if ($i <= $fullStars)
@@ -97,18 +95,19 @@
                     @endfor
                 </div>
                 <span class="rating-count">({{ $ratingCount }})</span>
-            </div>
+            </div> --}}
 
             {{-- Product Price --}}
             <div class="product-price">
                 @if ($hasDiscount)
-                    <span class="original-price" style="color: red !important; font-weight: 600; font-size: large;" aria-label="Original price">{{ Sohoj::price($originalPrice) }}</span>
+                    <span class="original-price" style="color: red !important; font-weight: 600; font-size: large;"
+                        aria-label="Original price">{{ Sohoj::price($originalPrice) }}</span>
                 @endif
                 <span class="current-price" aria-label="Current price">{{ Sohoj::price($currentPrice) }}</span>
             </div>
 
             {{-- Add to Cart Button --}}
-            <form action="{{ route('cart.store') }}" method="POST" class="add-to-cart-form">
+            {{-- <form action="{{ route('cart.store') }}" method="POST" class="add-to-cart-form">
                 @csrf
                 <input type="hidden" name="quantity" value="1">
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
@@ -118,8 +117,8 @@
                     <i class="fas fa-shopping-cart me-2" aria-hidden="true"></i>
                     <span class="btn-text">Add to Cart</span>
                 </button>
-            </form>
+            </form> --}}
 
         </div>
     </div>
-</div> 
+</div>

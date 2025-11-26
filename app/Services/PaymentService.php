@@ -44,7 +44,6 @@ class PaymentService
             // if (empty($shopOrder->p) || empty($shopOrder->quantity)) {
             //     continue;
             // }
-
             $lineItems[] = [
                 'price_data' => [
                     'currency' => 'usd',
@@ -92,6 +91,20 @@ class PaymentService
                         'description' => 'Shipping cost',
                     ],
                     'unit_amount' => floatval($shippingTotal * 100),
+                ],
+                'quantity' => 1,
+            ];
+        }
+        if ($this->order->state_tax) {
+            $stateTax = floatval($this->order->state_tax);
+            $lineItems[] = [
+                'price_data' => [
+                    'currency' => 'usd',
+                    'product_data' => [
+                        'name' => 'Tax',
+                        'description' => 'Tax',
+                    ],
+                    'unit_amount' => floatval($stateTax * 100),
                 ],
                 'quantity' => 1,
             ];

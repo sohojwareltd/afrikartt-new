@@ -439,12 +439,102 @@
                 padding: 1rem !important;
             }
         }
+
+
+        #guestCheckoutModal .modal-content {
+            border: none;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        #guestCheckoutModal .modal-header {
+            background: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+            padding: 14px 18px;
+        }
+
+        #guestCheckoutModal .modal-title {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        #guestCheckoutModal .modal-body {
+            padding: 18px;
+        }
+
+        #guestCheckoutModal .modal-footer {
+            border-top: 1px solid #e9ecef;
+            padding: 14px 18px 18px 18px;
+        }
+
+        .btn-guest-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #000;
+        }
+
+        .btn-guest-warning:hover {
+            background-color: #ffb400;
+            border-color: #ffb400;
+        }
     </style>
 @endsection
 
 @section('content')
 
+ 
     <x-app.header />
+
+    @guest
+        <!-- Guest Authentication Modal -->
+        <div class="modal" id="guestCheckoutModal" tabindex="-1" aria-labelledby="guestCheckoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5 d-flex align-items-center gap-2" id="guestCheckoutModalLabel">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 640 640">
+                                <path fill="#FFD43B"
+                                    d="M256 144C256 108.7 284.7 80 320 80C355.3 80 384 108.7 384 144L384 192L256 192L256 144zM208 192L144 192C117.5 192 96 213.5 96 240L96 448C96 501 139 544 192 544L448 544C501 544 544 501 544 448L544 240C544 213.5 522.5 192 496 192L432 192L432 144C432 82.1 381.9 32 320 32C258.1 32 208 82.1 208 144L208 192zM232 240C245.3 240 256 250.7 256 264C256 277.3 245.3 288 232 288C218.7 288 208 277.3 208 264C208 250.7 218.7 240 232 240zM384 264C384 250.7 394.7 240 408 240C421.3 240 432 250.7 432 264C432 277.3 421.3 288 408 288C394.7 288 384 277.3 384 264z" />
+                            </svg>
+                            Complete your purchase
+                        </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted mb-4">To proceed with checkout, please choose one of the following options:</p>
+                    </div>
+                    <div class="modal-footer d-flex flex-column align-items-stretch gap-2">
+                        <a href="{{ route('login') }}?redirect={{ urlencode(route('checkout')) }}"
+                            class="btn btn-burgundy w-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" style="margin-right: 8px;"
+                                viewBox="0 0 640 640">
+                                <path fill="white"
+                                    d="M409 337C418.4 327.6 418.4 312.4 409 303.1L265 159C258.1 152.1 247.8 150.1 238.8 153.8C229.8 157.5 224 166.3 224 176L224 256L112 256C85.5 256 64 277.5 64 304L64 336C64 362.5 85.5 384 112 384L224 384L224 464C224 473.7 229.8 482.5 238.8 486.2C247.8 489.9 258.1 487.9 265 481L409 337zM416 480C398.3 480 384 494.3 384 512C384 529.7 398.3 544 416 544L480 544C533 544 576 501 576 448L576 192C576 139 533 96 480 96L416 96C398.3 96 384 110.3 384 128C384 145.7 398.3 160 416 160L480 160C497.7 160 512 174.3 512 192L512 448C512 465.7 497.7 480 480 480L416 480z" />
+                            </svg>
+                            Sign in and Buy
+                        </a>
+                        <a href="{{ route('register') }}?redirect={{ urlencode(route('checkout')) }}"
+                            class="btn btn-outline-dark w-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 448 512">
+                                <path fill="currentColor"
+                                    d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm89.6 32h-11.8c-22.2 10.3-46.9 16-73.8 16s-51.6-5.7-73.8-16h-11.8C62.1 288 0 350.1 0 426.4V464c0 26.5 21.5 48 48 48H400c26.5 0 48-21.5 48-48v-37.6C448 350.1 385.9 288 313.6 288z" />
+                            </svg>
+                            <span class="ms-2">Sign up and Buy</span>
+                        </a>
+
+                        <button type="button" class="btn btn-guest-warning w-100" id="guest-checkout-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 384 512">
+                                <path fill="currentColor"
+                                    d="M361 215c3.4-8.6 .7-18.4-6.6-24.2l-70.6-57.6 21.8-89.4c2.2-9.1-.8-18.7-7.7-24.9s-16.7-8.4-25.5-5.1l-88.3 34.5L95.7 14c-8.8-3.4-18.7-1.6-25.5 5.1s-9.9 15.8-7.7 24.9l21.8 89.4L13.6 190.8C6.3 196.6 3.6 206.4 7 215s12.1 14 21.6 14H142l27 80H215l27-80H339.4c9.5 0 17.9-5.4 21.6-14zM192 384c-44.2 0-80 35.8-80 80h48c0-17.7 14.3-32 32-32s32 14.3 32 32h48c0-44.2-35.8-80-80-80z" />
+                            </svg>
+                            <span class="ms-2">Buy as Guest</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endguest
     <div class="checkout-main-bg py-4">
 
         <div class="container">
@@ -485,13 +575,15 @@
                                         <div class="text-muted small">
                                             @if ($sku)
                                                 @foreach ($sku->attributeValues as $attrValue)
-                                                    <span class="badge bg-light text-dark me-1" style="font-size: 0.7rem;">
+                                                    <span class="badge bg-light text-dark me-1"
+                                                        style="font-size: 0.7rem;">
                                                         {{ $attrValue->attribute->name ?? 'Unknown' }}:
                                                         {{ $attrValue->getDisplayName() }}
                                                     </span>
                                                 @endforeach
                                                 @if ($sku->sku)
-                                                    <div class="mt-1" style="font-size: 0.7rem;">SKU: {{ $sku->sku }}
+                                                    <div class="mt-1" style="font-size: 0.7rem;">SKU:
+                                                        {{ $sku->sku }}
                                                     </div>
                                                 @endif
                                             @elseif ($item->options && isset($item->options['variation']))
@@ -549,7 +641,7 @@
                                     <!-- Step 2: Shipping -->
                                     <div class="tab-pane fade show active" id="step2" role="tabpanel"
                                         aria-labelledby="step2-tab">
-                                        <h4 class="fw-semibold mb-3" style="color: #5D6532">Shipping & Contact Info</h4>
+                                        <h4 class="fw-semibold mb-3">Shipping & Contact Info</h4>
                                         <div class="checkout-card mb-4 p-4 shadow-sm border-0 rounded-4"
                                             style="background: var(--bg-light); border: 1px solid var(--border-light);">
                                             <div class="row g-3 align-items-end">
@@ -614,10 +706,6 @@
 
                                                 </div>
 
-
-
-
-
                                                 <div class="col-md-6 mt-2">
                                                     <label for="country" class="form-label">Country</label>
                                                     <select class="form-control" id="country" name="country">
@@ -626,7 +714,7 @@
                                                 </div>
                                                 <div class="col-md-6 mt-2">
                                                     <label for="state" class="form-label">State</label>
-                                                    <select class="form-control" id="state" name="state">
+                                                    <select class="form-control" id="state" name="state" disabled>
                                                         <option value="">Select State</option>
                                                     </select>
                                                     @error('state')
@@ -636,9 +724,10 @@
                                                 </div>
                                                 <div class="col-md-6 mt-2">
                                                     <label for="city" class="form-label">City</label>
-                                                    <select class="form-control" id="city" name="city">
-                                                        <option value="">Select City</option>
-                                                    </select>
+                                                    <input type="text" class="form-control" id="city"
+                                                        name="city"
+                                                        value="{{ old('city', Auth()->user() ? Auth()->user()->city : '') }}"
+                                                        placeholder="City">
                                                     @error('city')
                                                         <span class="text-danger small position-absolute"
                                                             style="top:100%;left:0;">{{ $message }}</span>
@@ -658,9 +747,9 @@
                                                 </div>
 
                                             </div>
-                                            <button type="submit" class="btn mt-5 text-light"
-                                                style="background-color: var(--accent-color); border-radius:3px"
-                                                id="continue-to-payment" disabled>Continue to Payment</button>
+                                            <button type="submit" class="btn  mt-5" id="continue-to-payment"
+                                                style="background: var(--accent-color); color: var(--text-light);"
+                                                disabled>Continue to Payment</button>
                                         </div>
 
 
@@ -710,6 +799,7 @@
 
                 </div>
             </div>
+           
             <!-- New Product Content -->
 
         </div>
@@ -718,12 +808,8 @@
     </div>
 
 
-
-
-
-
-
 @endsection
+
 @section('js')
     <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places"></script>
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
@@ -775,7 +861,6 @@
         });
     </script>
 
-
     <script>
         document.addEventListener('DOMContentLoaded', async function() {
             const addressInput = document.getElementById('address_1');
@@ -783,8 +868,8 @@
             const longitudeInput = document.getElementById('longitude');
             const stateCodeInput = document.getElementById('state_code');
             const countryCodeInput = document.getElementById('country_code');
-            const citySelect = document.getElementById('city');
-            const stateSelect = document.getElementById('state');
+            const cityInput = document.getElementById('city'); // Changed to input
+            const stateInput = document.getElementById('state'); // Changed to input
             const countrySelect = document.getElementById('country');
             const continueBtn = document.getElementById('continue-to-payment');
 
@@ -817,22 +902,11 @@
                 return p;
             }
 
-            // Initialize Choices.js for searchable selects
-            const countryChoices = new Choices(countrySelect, {
-                searchEnabled: true,
-                shouldSort: true,
-                itemSelectText: ''
-            });
-            const stateChoices = new Choices(stateSelect, {
-                searchEnabled: true,
-                shouldSort: true,
-                itemSelectText: ''
-            });
-            const cityChoices = new Choices(citySelect, {
-                searchEnabled: true,
-                shouldSort: true,
-                itemSelectText: ''
-            });
+            const stateSelect = document.getElementById('state');
+
+            // Disable state select initially
+            stateSelect.disabled = true;
+
             const postalCodeInput = document.getElementById('post_code');
 
             function isFilled(el) {
@@ -841,14 +915,7 @@
 
             function isSelectFilled(el) {
                 if (!el) return false;
-                // Check both the native select value and Choices.js instance
-                if (el.value && String(el.value).trim() !== '') return true;
-                // Check if it's a Choices.js select and has a selected value
-                if (el.choices && el.choices._store && el.choices._store.activeItems && el.choices._store
-                    .activeItems.length > 0) {
-                    return true;
-                }
-                return false;
+                return el.value && String(el.value).trim() !== '';
             }
 
             // Coalesce frequent enable/disable calls to a single frame
@@ -877,7 +944,7 @@
                     isFilled(document.getElementById('address_1')) &&
                     isSelectFilled(countrySelect) &&
                     isSelectFilled(stateSelect) &&
-                    isSelectFilled(citySelect) &&
+                    isFilled(cityInput) &&
                     isFilled(document.getElementById('post_code'));
 
                 continueBtn.disabled = pending || !requiredOk;
@@ -892,7 +959,7 @@
                         address_1: isFilled(document.getElementById('address_1')),
                         country: isSelectFilled(countrySelect),
                         state: isSelectFilled(stateSelect),
-                        city: isSelectFilled(citySelect),
+                        city: isFilled(cityInput),
                         post_code: isFilled(document.getElementById('post_code')),
                         requiredOk: requiredOk,
                         disabled: continueBtn.disabled
@@ -938,114 +1005,18 @@
                 if (stateCodeInput) stateCodeInput.value = adminAreaShort;
                 if (countryCodeInput) countryCodeInput.value = countryShort;
 
-                // Resolve to your dataset's IDs and names
-                try {
-                    let resolvedCountry = null;
-                    const countryLong = getComponent(place.address_components, 'country',
-                        'long_name');
-                    const countryRequests = [];
-                    if (countryShort) countryRequests.push(cachedFetchJson(
-                        `/api/geo/resolve/country?needle=${encodeURIComponent(countryShort)}`
-                    ));
-                    if (countryLong) countryRequests.push(cachedFetchJson(
-                        `/api/geo/resolve/country?needle=${encodeURIComponent(countryLong)}`
-                    ));
-                    for (const req of countryRequests) {
-                        try {
-                            const r = await req;
-                            if (r && r.id) {
-                                resolvedCountry = r;
-                                break;
-                            }
-                        } catch (_) {
-                            /* ignore */
-                        }
-                    }
+                // Set city input directly
+                // if (cityInput && locality) {
+                //     cityInput.value = locality;
+                // }
 
-                    if (resolvedCountry && resolvedCountry.id) {
-                        // Select the country by ID
-                        ensureChoice(countrySelect, resolvedCountry.id, resolvedCountry.name ||
-                            resolvedCountry.iso2 || resolvedCountry.code || countryShort);
-
-                        // Load the correct states list for this country, then set state
-                        try {
-                            const statesMap = await cachedFetchJson(
-                                `/json/states/${encodeURIComponent(resolvedCountry.id)}`);
-                            populateSelect(stateSelect, statesMap, 'Select State');
-                        } catch (e) {
-                            /* ignore */
-                        }
-
-                        // Resolve state within this country using short or long code
-                        const stateNeedlePrimary = adminAreaShort || adminAreaLong;
-                        if (stateNeedlePrimary) {
-                            let resolvedState = null;
-                            const stateRequests = [
-                                cachedFetchJson(
-                                    `/api/geo/resolve/state?country=${encodeURIComponent(resolvedCountry.id)}&needle=${encodeURIComponent(stateNeedlePrimary)}`
-                                )
-                            ];
-                            if (adminAreaLong && adminAreaLong !== stateNeedlePrimary) {
-                                stateRequests.push(cachedFetchJson(
-                                    `/api/geo/resolve/state?country=${encodeURIComponent(resolvedCountry.id)}&needle=${encodeURIComponent(adminAreaLong)}`
-                                ));
-                            }
-                            for (const req of stateRequests) {
-                                try {
-                                    const r = await req;
-                                    if (r && r.id) {
-                                        resolvedState = r;
-                                        break;
-                                    }
-                                } catch (_) {
-                                    /* ignore */
-                                }
-                            }
-                            if (resolvedState && resolvedState.id) {
-                                ensureChoice(stateSelect, resolvedState.id, resolvedState.name ||
-                                    stateNeedlePrimary);
-                            } else {
-                                // Fallback search
-                                try {
-                                    const found = await cachedFetchJson(
-                                        `/api/geo/search/state?country=${encodeURIComponent(resolvedCountry.id)}&q=${encodeURIComponent(stateNeedlePrimary)}`
-                                    );
-                                    const firstId = Object.keys(found)[0];
-                                    const firstName = firstId ? found[firstId] : null;
-                                    if (firstId) {
-                                        ensureChoice(stateSelect, firstId, firstName ||
-                                            stateNeedlePrimary);
-                                    } else {
-                                        ensureChoice(stateSelect, stateNeedlePrimary,
-                                            stateNeedlePrimary);
-                                    }
-                                } catch (_) {
-                                    ensureChoice(stateSelect, stateNeedlePrimary,
-                                        stateNeedlePrimary);
-                                }
-                            }
-                        }
-                    } else {
-                        // Country fallback to short code
-                        if (countryShort) ensureChoice(countrySelect, countryShort, countryShort);
-                        const stateLabel = adminAreaLong || adminAreaShort;
-                        if (stateLabel) ensureChoice(stateSelect, stateLabel, stateLabel);
-                    }
-
-                    if (citySelect && locality) ensureChoice(citySelect, locality, locality);
-                } catch (e) {
-                    // On any error, fallback to string labels
-                    if (countryShort) ensureChoice(countrySelect, countryShort, countryShort);
-                    const stateLabel = adminAreaLong || adminAreaShort;
-                    if (stateLabel) ensureChoice(stateSelect, stateLabel, stateLabel);
-                    if (citySelect && locality) ensureChoice(citySelect, locality, locality);
-                }
+                // Country and state should be manually selected from dropdowns
 
                 if (place.geometry) {
                     const lat = place.geometry.location.lat();
                     const lng = place.geometry.location.lng();
-                    latitudeInput.value = lat;
-                    longitudeInput.value = lng;
+                    if (latitudeInput) latitudeInput.value = lat;
+                    if (longitudeInput) longitudeInput.value = lng;
                 }
                 // finalize state after async operations
                 scheduleUpdateContinueState(false);
@@ -1058,72 +1029,29 @@
                 }
             });
 
-            // Helpers
-            function clearOptions(selectEl, placeholder = 'Select') {
-                const instance = selectEl === countrySelect ? countryChoices : selectEl === stateSelect ?
-                    stateChoices : cityChoices;
-                instance.clearStore();
-                instance.setChoices([{
-                    value: '',
-                    label: placeholder,
-                    selected: true
-                }], 'value', 'label', true);
-            }
 
-            function setSelected(selectEl, label) {
-                const instance = selectEl === countrySelect ? countryChoices : selectEl === stateSelect ?
-                    stateChoices : cityChoices;
-                const found = instance._store.choices.find(c => c.label === label);
-                if (found) instance.setChoiceByValue(found.value);
-            }
-
-            // Ensure an option exists in the Choices select; add and select if missing
-            function ensureChoice(selectEl, value, label) {
-                const instance = selectEl === countrySelect ? countryChoices : selectEl === stateSelect ?
-                    stateChoices : cityChoices;
-                const valueStr = String(value);
-                let hasOption = false;
-                for (let i = 0; i < selectEl.options.length; i++) {
-                    if (String(selectEl.options[i].value) === valueStr) {
-                        hasOption = true;
-                        break;
-                    }
-                }
-                if (!hasOption) {
-                    const opt = document.createElement('option');
-                    opt.value = valueStr;
-                    opt.text = label || valueStr;
-                    selectEl.appendChild(opt);
-                    // Append without resetting existing to avoid full re-render cost
-                    instance.setChoices([{
-                        value: valueStr,
-                        label: label || valueStr
-                    }], 'value', 'label', false);
-                }
-                instance.setChoiceByValue(valueStr);
-                // Trigger coalesced continue button state update
-                scheduleUpdateContinueState(false);
-            }
 
             async function fetchJson(url) {
                 return cachedFetchJson(url);
             }
 
             function populateSelect(selectEl, data, placeholder) {
-                const instance = selectEl === countrySelect ? countryChoices : selectEl === stateSelect ?
-                    stateChoices : cityChoices;
-                const choices = [{
-                    value: '',
-                    label: placeholder,
-                    selected: true
-                }];
+                // Clear existing options
+                selectEl.innerHTML = '';
+
+                // Add placeholder option
+                const placeholderOption = document.createElement('option');
+                placeholderOption.value = '';
+                placeholderOption.textContent = placeholder;
+                selectEl.appendChild(placeholderOption);
+
+                // Add data options
                 for (const [id, name] of Object.entries(data)) {
-                    choices.push({
-                        value: id,
-                        label: name
-                    });
+                    const option = document.createElement('option');
+                    option.value = id;
+                    option.textContent = name;
+                    selectEl.appendChild(option);
                 }
-                instance.setChoices(choices, 'value', 'label', true);
             }
 
             // Load countries
@@ -1131,60 +1059,47 @@
                 const countries = await fetchJson('/api/geo/countries');
                 populateSelect(countrySelect, countries, 'Select Country');
             } catch (e) {
-                /* ignore */
+                console.error('Failed to load countries:', e);
             }
 
-            // On country change -> load states
+            // Load states when country changes
             countrySelect.addEventListener('change', async function() {
-                scheduleUpdateContinueState(true);
                 const countryId = this.value;
-                clearOptions(stateSelect, 'Select State');
-                clearOptions(citySelect, 'Select City');
-                if (!countryId) return;
-                try {
-                    const states = await fetchJson('/api/geo/states/' + encodeURIComponent(
-                        countryId));
-                    populateSelect(stateSelect, states, 'Select State');
-                } catch (e) {
-                    /* ignore */
-                }
-                scheduleUpdateContinueState(false);
-            });
 
-            // On state change -> load cities
-            stateSelect.addEventListener('change', async function() {
-                scheduleUpdateContinueState(true);
-                const stateId = this.value;
-                const countryId = countrySelect.value;
-                clearOptions(citySelect, 'Select City');
-                if (!countryId || !stateId) return;
-                try {
-                    const cities = await fetchJson('/api/geo/cities/' + encodeURIComponent(
-                        countryId) + '/' + encodeURIComponent(stateId));
-                    populateSelect(citySelect, cities, 'Select City');
-                } catch (e) {
-                    /* ignore */
-                }
-                scheduleUpdateContinueState(false);
-            });
+                // Clear state select and reset
+                stateSelect.innerHTML = '<option value="">Select State</option>';
+                stateSelect.value = '';
 
-            // Reactively validate inputs and selects
-            ['first_name', 'last_name', 'email', 'phone', 'address_1', 'post_code'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.addEventListener('input', () => updateContinueState(false));
-            });
+                if (countryId) {
+                    // Disable state select while loading
+                    stateSelect.disabled = true;
 
-            // Add event listeners for Choices.js select elements
-            [countrySelect, stateSelect, citySelect].forEach(el => {
-                if (el) {
-                    el.addEventListener('change', () => updateContinueState(false));
-                    // Also listen for Choices.js specific events
-                    if (el.choices) {
-                        el.choices.passedElement.element.addEventListener('change', () =>
-                            updateContinueState(false));
+                    try {
+                        const states = await fetchJson(`/api/geo/states/${countryId}`);
+                        populateSelect(stateSelect, states, 'Select State');
+                        // Enable state select after loading
+                        stateSelect.disabled = false;
+                    } catch (e) {
+                        console.error('Failed to load states:', e);
+                        stateSelect.disabled = false;
                     }
+                } else {
+                    // Keep state disabled if no country selected
+                    stateSelect.disabled = true;
                 }
-            });
+
+                updateContinueState(false);
+            }); // Reactively validate inputs and selects
+            ['first_name', 'last_name', 'email', 'phone', 'address_1', 'post_code', 'city'].forEach(
+                id => {
+                    const el = document.getElementById(id);
+                    if (el) el.addEventListener('input', () => updateContinueState(false));
+                });
+
+            // Add event listener for state select (country already has listener above)
+            if (stateSelect) {
+                stateSelect.addEventListener('change', () => updateContinueState(false));
+            }
 
             // Initial evaluation
             updateContinueState(false);
@@ -1192,51 +1107,86 @@
     </script>
 
     <script>
+        // Free shipping logic
         document.addEventListener('DOMContentLoaded', function() {
-            const step2 = new bootstrap.Tab(document.getElementById('step2-tab'));
-            const step3 = new bootstrap.Tab(document.getElementById('step3-tab'));
+            const countrySelect = document.getElementById('country');
+            const shippingMessage = document.getElementById('shipping-message');
+            const shippingDisplay = document.getElementById('shipping-display');
 
-            const progressBar = document.getElementById('checkoutProgressBar');
-            const stepCircles = [
-                document.querySelector('.step-circle.step2'),
-                document.querySelector('.step-circle.step3')
-            ];
+            // Get the order subtotal from your backend
+            const orderSubtotal = {{ Cart::subtotal() }};
+            const freeShippingThreshold ={{ Settings::setting('free_shipping_amount', 75) }}; // $75 threshold for free shipping
 
-            function updateProgress(stepIdx) {
-                const percent = [50, 100][stepIdx];
-                progressBar.style.width = percent + '%';
-                progressBar.setAttribute('aria-valuenow', stepIdx + 1);
-                // Mark completed steps
-                stepCircles.forEach((el, idx) => {
-                    if (idx < stepIdx) {
-                        el.classList.add('completed');
-                        el.innerHTML = '';
+            function updateShippingDisplay() {
+                const selectedCountry = countrySelect.value;
+
+                if (selectedCountry) {
+                    // Get selected country name from dropdown
+                    const selectedOption = countrySelect.options[countrySelect.selectedIndex];
+                    const countryName = selectedOption ? selectedOption.textContent : '';
+
+                    // Check if it's United States (by name)
+                    if (countryName === 'United States') {
+                        if (orderSubtotal >= freeShippingThreshold) {
+                            // Eligible for free shipping
+                            shippingMessage.innerHTML = '<span class="text-success">Free Shipping</span>';
+                            shippingDisplay.classList.remove('border-danger');
+                            shippingDisplay.classList.add('border-success');
+                        } else {
+                            // Not eligible for free shipping
+                            const amountNeeded = freeShippingThreshold - orderSubtotal;
+                            shippingMessage.innerHTML =
+                                `<small class="text-danger">Add $${amountNeeded.toFixed(2)} more for free shipping</small>`;
+                            shippingDisplay.classList.remove('border-success');
+                            shippingDisplay.classList.add('border-danger');
+                        }
                     } else {
-                        el.classList.remove('completed');
-                        el.innerHTML = (idx + 1).toString();
+                        // For non-US countries
+                        shippingMessage.innerHTML =
+                            '<small class="text-muted">Shipping calculated at next step</small>';
+                        shippingDisplay.classList.remove('border-success', 'border-danger');
                     }
-                });
+                } else {
+                    // No country selected
+                    shippingMessage.innerHTML =
+                        '<small class="text-muted">Select a country to calculate shipping</small>';
+                    shippingDisplay.classList.remove('border-success', 'border-danger');
+                }
             }
 
-            // Initial state
-            updateProgress(0);
+            // Add event listener for country changes
+            countrySelect.addEventListener('change', updateShippingDisplay);
 
-            document.getElementById('toStep3').addEventListener('click', function() {
-                step3.show();
-                updateProgress(1);
-            });
-            document.getElementById('backToStep2').addEventListener('click', function() {
-                step2.show();
-                updateProgress(0);
-            });
-
-            // Also update on nav click (if user clicks step directly)
-            [step2, step3].forEach((tab, idx) => {
-                document.getElementById('step' + (idx + 2) + '-tab').addEventListener('shown.bs.tab',
-                    function() {
-                        updateProgress(idx);
-                    });
-            });
+            // Initial update
+            updateShippingDisplay();
         });
     </script>
+
+    @guest
+        <script>
+            // Auto-open guest checkout modal
+            document.addEventListener('DOMContentLoaded', function() {
+                // Only show modal if not guest checkout
+                const urlParams = new URLSearchParams(window.location.search);
+                if (!urlParams.has('guest')) {
+                    const guestModal = new bootstrap.Modal(document.getElementById('guestCheckoutModal'));
+                    guestModal.show();
+                }
+
+                // Handle guest checkout button
+                const guestBtn = document.getElementById('guest-checkout-btn');
+                if (guestBtn) {
+                    guestBtn.addEventListener('click', function() {
+                        // Close modal
+                        const modalEl = document.getElementById('guestCheckoutModal');
+                        const modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) modal.hide();
+
+                        // Add guest parameter to URL
+                        window.location.href = '{{ route('checkout') }}?guest=1';
+                    });
+                }
+            });
+        </script>
+    @endguest
 @endsection

@@ -10,11 +10,14 @@ use App\Mail\CustomerOrderSuccessMail;
 use App\Mail\VendorOrderPlacedMail;
 use App\Mail\VendorOrderSuccessMail;
 use App\Models\Address;
+use App\Models\Country;
 use App\Models\Coupon;
 use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\Product;
+use App\Models\Shipping;
+use App\Models\StateRate;
 use App\Services\Checkout\CheckoutService;
 use App\Services\Checkout\Data\ShippingAndBillingInformation;
 use App\Services\PaymentService;
@@ -35,10 +38,14 @@ class CheckoutController extends Controller
 
     public function shippingAndBillingInformationPage()
     {
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'You need to login first to proceed to checkout.');
+        }
         return view('pages.checkout');
     }
     public function storeBillingAndShippingInformation(Request $request)
     {
+
         $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
@@ -55,34 +62,16 @@ class CheckoutController extends Controller
         try {
             DB::beginTransaction();
 
-            $geo = new CountryStateCity();
-            $country = $geo->countryDetails($request->country);
-
-            if (is_numeric($request->state)) {
-                $state   = $geo->stateDetails($request->country, $request->state);
-            } else {
-                $state = [
-                    'name' => $request->state,
-                ];
-            }
-            if (is_numeric($request->city)) {
-                $city    = $geo->cityDetails($request->country, $request->state, $request->city);
-            } else {
-                $city = [
-                    'name' => $request->city,
-                ];
-            }
+            // Get country details from database
+            $country = Country::find($request->country);
             if (!$country) {
-                DB::rollBack();
-                return back()->withErrors(['country' => 'Selected country is invalid or unavailable.'])->withInput();
+                throw new \Exception('Invalid country selected');
             }
-            if (!$state) {
-                DB::rollBack();
-                return back()->withErrors(['state' => 'Selected state is invalid or unavailable for the chosen country.'])->withInput();
-            }
-            if (!$city) {
-                DB::rollBack();
-                return back()->withErrors(['city' => 'Selected city is invalid or unavailable for the chosen state.'])->withInput();
+
+            // Get state details from database
+            $stateRate = StateRate::find($request->state);
+            if (!$stateRate) {
+                throw new \Exception('Invalid state selected');
             }
 
             $shippingAndBillingInformation = new ShippingAndBillingInformation(
@@ -90,40 +79,22 @@ class CheckoutController extends Controller
                 lastName: $request->last_name,
                 email: $request->email,
                 address_line: $request->address_1,
-                latitude: $city['latitude'] ?? null,
-                longitude: $city['longitude'] ?? null,
-                city: $city['name'] ?? ($request->city ?? ''),
-                state: $request->state,
-                state_code: isset($state['iso2']) && strlen($state['iso2']) < 2 ? ($state['iso3166_2'] ?? $state['iso2']) : ($state['iso2'] ?? ''),
-                state_name: $state['name'] ?? '',
+                latitude: null,
+                longitude: null,
+                city: $request->city ?? '',
+                state: $stateRate->state,
+                state_code: $stateRate->id,
+                state_name: $stateRate->state,
                 post_code: $request->post_code,
                 phone: $request->phone,
-                country_code: $country['iso2'] ?? '',
-                country_name: $country['name'] ?? ''
-
+                country_code: $country->code,
+                country_name: $country->name
             );
 
             $checkoutService = new CheckoutService($shippingAndBillingInformation);
             $order = $checkoutService->createOrder();
 
-            $eashShip = new EashShipProvider();
 
-
-            // Post-commit actions
-            $shipping = json_decode($order->shipping, true);
-            $rates = $eashShip->getRates($shipping, $order->products);
-
-            Log::info('=========================================');
-            Log::info('=========================================');
-            Log::info('EashShipProvider getRates response');
-            Log::info(json_encode($rates));
-            Log::info('EashShipProvider getRates response end');
-            Log::info('=========================================');
-            Log::info('=========================================');
-
-            if (isset($rates['rates']) == false) {
-                throw new \Exception('Shipping method not available for the selected country and state');
-            }
             DB::commit();
 
             return redirect()->route('checkout.paymentPage', $order);
@@ -137,30 +108,53 @@ class CheckoutController extends Controller
 
     public function paymentPage(Order $order)
     {
-
-
         $shipping = json_decode($order->shipping, true);
+        $packages = $order->products;
 
-        $packages =  $order->products;
+        // Get state rate based on state_code (which stores state_rate_id)
+        $stateRate = null;
+        if (isset($shipping['state_code'])) {
+            $stateRate = StateRate::find($shipping['state_code']);
+        }
 
-        $eashShip = new EashShipProvider();
-        $rates = $eashShip->getRates($shipping, $packages);
+        // Fallback to Shipping table if state rate not found
+        $shippingRate = $stateRate ?? Shipping::where('country_code', $shipping['country_code'])->first();
 
+        if (!$shippingRate) {
+            $shippingRate = Shipping::where('default', 1)->first();
+        }
 
-        return view('pages.checkout-payment', ['order' => $order, 'rates' => $rates]);
+        return view('pages.checkout-payment', [
+            'order' => $order,
+            'shippingRate' => $shippingRate,
+            'packages' => $packages,
+        ]);
     }
 
     public function confirmOrder(Order $order, Request $request)
     {
         $shipping = json_decode($order->shipping, true);
-        
-        if ($shipping['country_code'] === 'US' && $order->subtotal >= 75) {
+        // Check if country code is USA (using code from Country table)
+        if (in_array($shipping['country_code'], ['US', 'USA']) && $order->subtotal >= 75) {
             $shippingAmount = 0;
         } else {
             $shippingAmount = $request->selected_shipping_amount;
         }
 
+        $stateRate = null;
+        if (isset($shipping['state_code'])) {
+            $stateRate = StateRate::find($shipping['state_code']);
+        }
 
+        // Fallback to Shipping table if state rate not found
+        $shippingRate = $stateRate ?? Shipping::where('country_code', $shipping['country_code'])->first();
+        
+        if (!$shippingRate) {
+            $shippingRate = Shipping::where('default', 1)->first();
+        }
+
+        $state_tax = $shippingRate->tax ?? ($shippingRate->tax ?? 0);
+        $tax = ($order->subtotal * ($state_tax / 100));
 
         // $free = SohojFacade::freeShippingInfo();
 
@@ -168,7 +162,8 @@ class CheckoutController extends Controller
         $order->update([
             'shipping_method' => $request->selected_shipping_service,
             'shipping_total' => $shippingAmount,
-            'total' => ($order->subtotal + $shippingAmount) - $order->discount,
+            'state_tax' => $tax,
+            'total' => ($order->subtotal + $shippingAmount + $tax) - $order->discount,
             'payment_method' => $request->payment_method,
         ]);
         // dd($order);

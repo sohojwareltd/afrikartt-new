@@ -79,6 +79,7 @@ Route::get('header-announcements', [AuthController::class, 'headerAnnouncements'
 
 // Country / State / City endpoints
 Route::get('geo/countries', [ApiCheckoutController::class, 'countries']);
+Route::get('geo/resolve/country', [ApiCheckoutController::class, 'resolveCountry']);
 Route::get('geo/states/{country}', [ApiCheckoutController::class, 'states']);
 Route::get('geo/cities/{country}/{state}', [ApiCheckoutController::class, 'cities']);
 
