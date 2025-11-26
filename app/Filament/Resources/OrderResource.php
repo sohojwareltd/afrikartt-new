@@ -139,12 +139,12 @@ class OrderResource extends Resource
                     ->searchable()
                     ->icon('heroicon-o-user')
                     ->toggleable(),
-                TextColumn::make('shop.name')
-                    ->label('Shop')
-                    ->sortable()
-                    ->searchable()
-                    ->icon('heroicon-o-building-storefront')
-                    ->toggleable(),
+                // TextColumn::make('shop.name')
+                //     ->label('Shop')
+                //     ->sortable()
+                //     ->searchable()
+                //     ->icon('heroicon-o-building-storefront')
+                //     ->toggleable(),
                 BadgeColumn::make('status')
                     ->label('Status')
                     ->formatStateUsing(fn($state) => match ($state) {
@@ -247,6 +247,11 @@ class OrderResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->whereNull('parent_id');
     }
 
     public static function getPages(): array

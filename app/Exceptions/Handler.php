@@ -44,18 +44,23 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $exception) {
-            try {
-                if ($this->shouldReport($exception) && env('APP_ENV') === 'production') {
-                    Mail::send('emails.errors', ['exception' => $exception], function ($message) {
-                        $message->to('reovilsayed@gmail.com')
-                            ->cc(['asalaminsikder787@gmail.com', 'rahmanabdur64870@gmail.com'])
-                            ->subject('Error in royalit');
-                    });
-                }
-            } catch (Throwable $e) {
-                // Handle errors while sending the email
-            }
+        $this->reportable(function (Throwable $e) {
+            //
         });
+    }
+    public function report(Throwable $exception)
+    {
+        if ($this->shouldReport($exception)) {
+            if (env('APP_ENV') == 'production') {
+                // Remove the return statement - it's blocking
+                Mail::send('emails.errors', ['exception' => $exception], function ($message) {
+                    foreach (['sohojwareltd@gmail.com'] as $email) {
+                        $message->to($email)->subject('Error in Royalit E-commerce System');
+                    }
+                });
+            }
+        }
+
+        parent::report($exception);
     }
 }

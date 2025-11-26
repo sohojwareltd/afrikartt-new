@@ -212,6 +212,7 @@ select {
 
 .related-product-sec-title {
     font-size: 24px;
+    color: var(--text-green) !important;
     border-left: 5px solid var(--primary-color);
     padding-left: 5px;
 }
@@ -339,7 +340,7 @@ select {
 .filter-title {
     font-size: 1rem;
     font-weight: 700;
-    color: var(--text-dark);
+    color: var(--text-green);
     margin: 0;
 }
 
@@ -375,7 +376,7 @@ select {
 .filter-section-title {
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--text-dark);
+    color: var(--text-green);
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
@@ -383,7 +384,7 @@ select {
 }
 
 .filter-section-title i {
-    color: var(--primary-color);
+    color: var(--text-green);
 }
 
 /* Price Range Styling */
@@ -573,7 +574,7 @@ select {
 .search-results {
     font-size: 1.2rem;
     font-weight: 700;
-    color: var(--text-dark);
+    color: var(--text-green);
 }
 
 .search-term {

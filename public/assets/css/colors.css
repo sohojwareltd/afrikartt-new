@@ -38,6 +38,7 @@
     --text-muted: #8a8a8a;
     --text-light: #ffffff;
     --text-dark: var(--charcoal-gray);
+    --text-green: #5D6532;
 
     /* Background Colors */
     --bg-primary: var(--cream-white);

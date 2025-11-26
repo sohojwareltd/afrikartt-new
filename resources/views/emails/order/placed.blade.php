@@ -25,11 +25,11 @@
                         <p style="font-size: 12px;margin:0px"> Order No: {{ $order->id }}</p>
                     </td>
                     <td style="text-align: right">
-                        <h6 style="font-size: 16px;margin:0px">Royalit E-commerce</h6>
+                        <h6 style="font-size: 16px;margin:0px"> Royalit E-commerce</h6>
                         <br>
                         <p style="font-size: 12px;margin:0px">New York, USA</p>
                         {{-- <p>+1 (518) 653-8997</p> --}}
-                        <p style="font-size: 12px;margin:0px"> Info@Royalit.com</p>
+                        <p style="font-size: 12px;margin:0px"> {{ Settings::setting('site_email') }}</p>
                     </td>
         </tr>
     </table>
@@ -51,7 +51,9 @@
                     @foreach ($order->childs as $item)
                         <tr>
                             <td>
-                                <img src="{{ Storage::url($item->product->image) }}" alt="" width="100">
+                                @if ($item->product->image)
+                                    <img src="{{ Storage::url($item->product->image) }}" alt="" width="100">
+                                @endif
                             </td>
 
                             <td align="top">
@@ -77,7 +79,9 @@
                 @else
                     <tr>
                         <td>
-                            <img src="{{ Storage::url($order->product->image) }}" alt="" width="100">
+                            @if ($order->product->image)
+                                <img src="{{ Storage::url($order->product->image) }}" alt="" width="100">
+                            @endif
                         </td>
 
                         <td align="top">

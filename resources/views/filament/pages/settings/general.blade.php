@@ -16,6 +16,90 @@
         placeholder="Enter site description">{{ old('site_description', $settings['site_description'] ?? '') }}</textarea>
 </x-filament-forms::field-wrapper>
 
+{{-- nav image --}}
+
+<x-filament-forms::field-wrapper label="Navbar Image" statePath="site_nav_image" hint="Logo for newsletter footer">
+
+    <div x-data="{ navPreview: null, isDragOver: false }" @dragover.prevent="isDragOver = true" @dragleave.prevent="isDragOver = false"
+        @drop.prevent="isDragOver = false; handleFileDrop($event, 'site_nav_image')">
+
+        <div class="relative">
+            <input type="file" name="site_nav_image" id="site_nav_image" accept="image/*"
+                @change="navPreview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
+                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+
+            <div :class="isDragOver ? 'border-primary-400 bg-primary-50 dark:bg-primary-900/20' :
+                'border-gray-300 dark:border-gray-600'"
+                class="relative border-2 border-dashed rounded-xl p-6 text-center transition-all duration-200
+                bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700
+                hover:border-primary-400 dark:hover:border-primary-500">
+
+                <div class="flex flex-col items-center space-y-3">
+                    <div class="p-3 bg-primary-100 dark:bg-primary-900 rounded-full">
+                        <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+
+                    <div>
+                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
+                            <span class="text-primary-600 dark:text-primary-400">Upload Navbar Logo</span>
+                        </p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            PNG, JPG, SVG up to 5MB
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Preview --}}
+        <div x-show="navPreview" x-cloak
+            class="mt-3 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+            <div class="flex items-center space-x-4">
+                <img :src="navPreview" alt="Navbar Logo Preview"
+                    class="w-20 h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600" />
+
+                <div class="flex-1">
+                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Navbar Logo Preview</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">New logo will be uploaded</p>
+                </div>
+
+                <button type="button" @click="navPreview = null; document.getElementById('site_nav_image').value = ''"
+                    class="p-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        {{-- Current Logo --}}
+        @if (isset($settings['site_nav_image']) && $settings['site_nav_image'])
+            <div x-show="!navPreview"
+                class="mt-3 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+
+                <div class="flex items-center space-x-4">
+                    <img src="{{ asset('storage/' . $settings['site_nav_image']) }}" alt="Current Navbar Logo"
+                        class="w-20 h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600" />
+
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Current Navbar Logo</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                            {{ basename($settings['site_nav_image']) }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+    </div>
+</x-filament-forms::field-wrapper>
+
+
 {{-- Site Logo --}}
 <x-filament-forms::field-wrapper label="Site Logo" statePath="site_logo" hint="Upload your site logo (PNG, JPG, SVG)">
     <div x-data="{ logoPreview: null, isDragOver: false }" @dragover.prevent="isDragOver = true" @dragleave.prevent="isDragOver = false"
@@ -121,8 +205,8 @@
 
                 <div class="flex flex-col items-center space-y-3">
                     <div class="p-3 bg-primary-100 dark:bg-primary-900 rounded-full">
-                        <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
+                        <svg class="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>

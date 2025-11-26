@@ -142,7 +142,7 @@
         .checkout-summary-title {
             font-size: 1.3rem;
             font-weight: 700;
-            color: var(--accent-color);
+            color: var(--text-green);
             margin-bottom: 1.2rem;
             letter-spacing: 0.5px;
         }
@@ -160,6 +160,10 @@
             margin-top: 1.2rem;
             font-size: 1.2rem;
             color: var(--text-dark);
+        }
+
+        .checkout-summary-total span {
+            color: var(--text-green);
         }
 
         .checkout-btn {
@@ -312,7 +316,7 @@
         }
 
         .payment-card-option input[type="radio"]:checked~.payment-card-content .payment-title {
-            color: var(--accent-color);
+            color: var(--text-green);
         }
 
         /* Optional: checkmark in the top-right corner of the selected card */
@@ -378,7 +382,7 @@
         .payment-title {
             font-size: 1.15rem;
             font-weight: 700;
-            color: var(--text-dark);
+            color: var(--text-green);
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -515,7 +519,7 @@
         .shipping-company-name {
             font-size: 1.1rem;
             font-weight: 600;
-            color: var(--text-dark);
+            color: var(--text-green);
             margin: 0;
         }
 
@@ -551,7 +555,7 @@
         .cost-amount {
             font-size: 1.2rem;
             font-weight: 700;
-            color: var(--accent-color);
+            color: var(--text-green);
             background: rgba(var(--accent-color-rgb), 0.1);
             padding: 0.5rem 1rem;
             border-radius: 8px;
@@ -599,7 +603,7 @@
         }
 
         .shipping-option-card:has(.shipping-radio-input:checked) .shipping-company-name {
-            color: var(--accent-color);
+            color: var(--text-green);
         }
 
         /* Error state */
@@ -865,7 +869,9 @@
                                     if ($item->pivot->variation) {
                                         $variationData = json_decode($item->pivot->variation, true);
                                         if (isset($variationData['sku_id'])) {
-                                            $sku = \App\Models\Sku::with('attributeValues.attribute')->find($variationData['sku_id']);
+                                            $sku = \App\Models\Sku::with('attributeValues.attribute')->find(
+                                                $variationData['sku_id'],
+                                            );
                                             if ($sku && $sku->image) {
                                                 $skuImage = $sku->image;
                                             }
@@ -881,11 +887,13 @@
                                             @if ($sku)
                                                 @foreach ($sku->attributeValues as $attrValue)
                                                     <span class="badge bg-light text-dark me-1" style="font-size: 0.7rem;">
-                                                        {{ $attrValue->attribute->name ?? 'Unknown' }}: {{ $attrValue->getDisplayName() }}
+                                                        {{ $attrValue->attribute->name ?? 'Unknown' }}:
+                                                        {{ $attrValue->getDisplayName() }}
                                                     </span>
                                                 @endforeach
                                                 @if ($sku->sku)
-                                                    <div class="mt-1" style="font-size: 0.7rem;">SKU: {{ $sku->sku }}</div>
+                                                    <div class="mt-1" style="font-size: 0.7rem;">SKU: {{ $sku->sku }}
+                                                    </div>
                                                 @endif
                                             @elseif ($variationData && isset($variationData['sku_code']))
                                                 <span>Variation: {{ $variationData['sku_code'] }}</span>
@@ -934,13 +942,14 @@
                                     <!-- Step 2: Shipping -->
                                     <div class="tab-pane fade show active" id="step2" role="tabpanel"
                                         aria-labelledby="step2-tab">
-                                        <h4 class="fw-semibold mb-3">Select Shipping Rate</h4>
+                                        <h4 class="fw-semibold mb-3" style="color: #5D6532 !important">Select Shipping Rate
+                                        </h4>
 
                                         <div class="mt-3">
                                             @if (!empty($rates))
                                                 <div class="shipping-rates-container">
                                                     <div class="shipping-header mb-3">
-                                                        <h5 class="mb-1">
+                                                        <h5 class="mb-1" style="color: #5D6532">
                                                             <i class="fas fa-truck me-2 text-primary"></i>
                                                             Available Shipping Options
                                                         </h5>
@@ -1040,7 +1049,8 @@
                                             @endif
                                         </div>
 
-                                        <h4 class="fw-semibold mb-4 mt-4">Select Payment Method</h4>
+                                        <h4 class="fw-semibold mb-4 mt-4" style="color: #5D6532">Select Payment Method
+                                        </h4>
 
                                         <div class="payment-methods">
                                             <label class="payment-card-option">

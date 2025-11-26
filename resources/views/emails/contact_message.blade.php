@@ -528,7 +528,7 @@
                 <div class="footer-links">
                     <a href="{{ route('homepage') }}" class="footer-link">Visit Website</a>
                     <a href="{{ route('faqs') }}" class="footer-link">Support Center</a>
-                    <a href="mailto:support@royalit.com" class="footer-link">Contact Admin</a>
+                    <a href="mailto:info@royalit.com" class="footer-link">Contact Admin</a>
                 </div>
 
                 <div class="footer-bottom">

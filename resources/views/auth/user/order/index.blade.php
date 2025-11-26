@@ -176,17 +176,32 @@
             background: var(--accent-color);
             color: white;
         }
+
+        .btn-outline-success {
+            line-height: 35px;
+        }
+
+        .btn-outline-success:hover {
+            /* background: var(--primary-green); */
+            color: white;
+        }
     </style>
     <div class="ec-shop-rightside col-lg-9 col-md-12 mt-2">
         <div class="order-header">
             <div class="order-header-left">
-                <span class="order-header-icon"><i class="fas fa-shopping-bag"></i></span>
+                <span class="order-header-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-handbag-icon lucide-handbag">
+                        <path
+                            d="M2.048 18.566A2 2 0 0 0 4 21h16a2 2 0 0 0 1.952-2.434l-2-9A2 2 0 0 0 18 8H6a2 2 0 0 0-1.952 1.566z" />
+                        <path d="M8 11V6a4 4 0 0 1 8 0v5" />
+                    </svg></span>
                 <span class="order-header-title">My Orders</span>
             </div>
             <div class="order-header-filter">
                 <div class="btn-group">
-                    <button class="btn btn-green btn-sm dropdown-toggle d-flex align-items-center rounded-pill" type="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-green btn-sm dropdown-toggle d-flex align-items-center rounded-pill"
+                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         @if (request()->status === '0')
                             Pending Order
                         @elseif (request()->status === '1')
@@ -234,10 +249,11 @@
 
                             <div class="order-products-list mb-3">
                                 @foreach ($order->products->take(3) as $product)
-                              
                                     <div class="d-flex align-items-center mb-2">
-                                        <img src="{{ Storage::url($product->image ?? '') }}" alt="" width="45"
-                                            height="45" class="rounded me-3">
+                                        @if ($product->image)
+                                            <img src="{{ Storage::url($product->image ?? '') }}" alt=""
+                                                width="45" height="45" class="rounded me-3">
+                                        @endif
                                         <div class="flex-grow-1">
                                             <div class="fw-semibold">{{ Str::limit($product->name, 40) }}</div>
                                             <small class="text-muted">x{{ $product->pivot->quantity }} —
@@ -259,9 +275,17 @@
                                     <span class="me-2">
                                         <strong>Payment:</strong> {{ $order->payment_status == 1 ? 'Paid' : 'Unpaid' }}
                                     </span>
-                                    <a href="{{ route('user.invoice', $order) }}" class="btn btn-sm btn-outline-success">
-                                        View Invoice
-                                    </a>
+                                    @if ($order->payment_status == 1)
+                                        <a href="{{ route('user.invoice', $order) }}" class="btn btn-sm text-light"
+                                            style="background: var(--accent-color);">
+                                            View Invoice
+                                        </a>
+                                    @else
+                                        <a href="{{ route('checkout.paymentPage', $order) }}" target="_blank"
+                                            class="btn btn-sm text-light" style="background: var(--accent-color);">
+                                            Pay
+                                        </a>
+                                    @endif
                                 </div>
                             </div>
                         </div>

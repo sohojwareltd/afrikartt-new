@@ -24,7 +24,7 @@
         .thankyou-title {
             font-size: 2.5rem;
             font-weight: 700;
-            color: var(--accent-color);
+            color: var(--text-green);
             margin-bottom: 0.5rem;
         }
 
@@ -57,7 +57,7 @@
         }
 
         .new-arrivals-title {
-            color: var(--accent-color);
+            color: var(--text-green);
             font-weight: 700;
             font-size: 2rem;
         }

@@ -709,7 +709,7 @@
                 <h3 class="referral-title">$30 for you, $30 for a friend</h3>
                 <p class="referral-description">Share the link below and you'll get every friend who places an order
                     over $60. Easy peasy.</p>
-                <div class="referral-link">https://royalit.com/?ref={{ $order->user_id ?? 'guest' }}</div>
+                <div class="referral-link">https://royalit.sohojware.com/?ref={{ $order->user_id ?? 'guest' }}</div>
                 <a href="#" class="share-btn">Share Link</a>
             </div>
 

@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AlterationRequestMail;
+use App\Mail\OnRequestMail;
+use App\Mail\WholesaleRequestMail;
+use App\Mail\CustomizedRequestMail;
 use App\Mail\ContactMessageMail;
 use App\Models\Address;
+use App\Models\Alteration;
 use App\Models\Email;
 use App\Models\Order;
 use App\Models\Page;
@@ -28,6 +33,7 @@ use App\Models\Blog;
 use App\Models\Faq;
 use App\Models\ProdcatProduct;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class PageController extends Controller
 {
@@ -95,7 +101,13 @@ class PageController extends Controller
 
         $latest_shops =  ShopRepsitory::getLatestShops();
 
-        return view('pages.shops', compact('products', 'categories', 'latest_shops'));
+        $brands = \App\Models\Brand::where('status', true)
+            ->withCount('products')
+            ->having('products_count', '>', 0)
+            ->orderBy('name')
+            ->get();
+
+        return view('pages.shops', compact('products', 'categories', 'latest_shops', 'brands'));
     }
     public function product_details($slug)
     {
@@ -753,5 +765,165 @@ class PageController extends Controller
             ->get();
 
         return view('pages.blogs.details', compact('blog', 'relatedBlogs'));
+    }
+
+    public function alteration()
+    {
+        return view('pages.alteration');
+    }
+
+    public function alterationStore(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'type' => 'required|string|max:255',
+            'description' => 'required|string',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+        ]);
+
+        // File upload
+        $attachmentPath = null;
+
+        if ($request->hasFile('attachment')) {
+            $attachmentPath = $request->file('attachment')->store('alteration-attachments', 'public');
+        }
+        // Create alteration request using request->only()
+        $alteration = Alteration::create(
+            $request->only(['name', 'email', 'phone', 'type', 'description']) + [
+                'attachment' => $attachmentPath
+            ]
+        );
+
+        try {
+            // Send notification email to admin
+            Mail::to(Settings::setting('admin_email'))->send(new AlterationRequestMail($alteration));
+        } catch (\Exception $e) {
+            // Log the error but do not interrupt the user flow
+            Log::error('Failed to send alteration request email: ' . $e->getMessage());
+        }
+
+        return redirect()->back()->with('success', 'Your alteration request has been submitted successfully! We will contact you within 24 hours.');
+    }
+    public function onRequest()
+    {
+        return view('pages.on_request');
+    }
+
+    public function onRequestStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'type' => 'required|string|max:255',
+            'description' => 'required|string',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+        ]);
+
+        // File upload
+        $attachmentPath = null;
+
+        if ($request->hasFile('attachment')) {
+            $attachmentPath = $request->file('attachment')->store('on-request-attachments', 'public');
+        }
+        // Create alteration request using request->only()
+        $alteration = Alteration::create(
+            $request->only(['name', 'email', 'phone', 'type', 'description']) + [
+                'attachment' => $attachmentPath
+            ]
+        );
+
+        try {
+            // Send notification email to admin
+            Mail::to(Settings::setting('admin_email'))->send(new OnRequestMail($alteration));
+        } catch (\Exception $e) {
+            // Log the error but do not interrupt the user flow
+            Log::error('Failed to send on request email: ' . $e->getMessage());
+        }
+
+        return redirect()->back()->with('success', 'Your on request has been submitted successfully! We will contact you within 24 hours.');
+    }
+    public function wholesale()
+    {
+        return view('pages.wholesale');
+    }
+
+    public function wholesaleStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'type' => 'required|string|max:255',
+            'quantity' => 'required|integer|min:1',
+            'description' => 'required|string',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+        ]);
+        // File upload
+        $attachmentPath = null;
+
+        if ($request->hasFile('attachment')) {
+            $attachmentPath = $request->file('attachment')->store('wholesale-attachments', 'public');
+        }
+        // Create alteration request using request->only()
+        $wholesale = Alteration::create(
+            $request->only(['name', 'email', 'phone', 'type', 'description', 'quantity']) + [
+                'attachment' => $attachmentPath
+            ]
+        );
+
+        try {
+            // Send notification email to admin
+            Mail::to(Settings::setting('admin_email'))->send(new WholesaleRequestMail($wholesale));
+        } catch (\Exception $e) {
+            // Log the error but do not interrupt the user flow
+            Log::error('Failed to send wholesale request email: ' . $e->getMessage());
+        }
+        
+
+        return redirect()->back()->with('success', 'Your wholesale request has been submitted successfully! We will contact you within 24 hours.');
+    }
+
+    public function customized()
+    {
+        return view('pages.customized');
+    }
+
+    public function customizedStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'type' => 'required|string|max:255',
+            'description' => 'required|string',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+        ]);
+
+        // File upload
+        $attachmentPath = null;
+
+        if ($request->hasFile('attachment')) {
+            $attachmentPath = $request->file('attachment')->store('customized-attachments', 'public');
+        }
+
+        // Create customized request
+        $customized = Alteration::create(
+            $request->only(['name', 'email', 'phone', 'type', 'description']) + [
+                'attachment' => $attachmentPath
+            ]
+        );
+
+        try {
+            // Send notification email to admin
+            Mail::to(Settings::setting('admin_email'))->send(new CustomizedRequestMail($customized));
+        } catch (\Exception $e) {
+            // Log the error but do not interrupt the user flow
+            Log::error('Failed to send customized request email: ' . $e->getMessage());
+        }
+
+        return redirect()->back()->with('success', 'Your custom design request has been submitted successfully! We will contact you within 24 hours.');
     }
 }

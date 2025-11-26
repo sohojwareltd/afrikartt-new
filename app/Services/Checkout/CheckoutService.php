@@ -78,7 +78,7 @@ class CheckoutService
 
     private function setTotal()
     {
-        $this->total = $this->cartSubtotal ;
+       $this->total = max(0, $this->cartSubtotal);
     }
 
 

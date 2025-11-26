@@ -81,6 +81,11 @@ class Product extends Model
         return route('product', $this->slug);
     }
 
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
+
     public function attributes()
     {
         return $this->hasMany(Attribute::class);
@@ -123,6 +128,9 @@ class Product extends Model
                 return $q->whereHas('prodcats', function ($query) {
                     $query->where('slug', request()->category);
                 });
+            })
+            ->when(request()->filled('brand'), function ($q) {
+                return $q->where('brand_id', request()->brand);
             })
             ->when(request()->has('search'), function ($q) {
                 return $q->where(function ($query) {

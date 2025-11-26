@@ -122,9 +122,9 @@
         }
 
         /* @keyframes spin {
-                                                                                                                                                                                                                                                                    from { transform: rotate(0deg); }
-                                                                                                                                                                                                                                                                    to { transform: rotate(360deg); }
-                                                                                                                                                                                                                                                                } */
+                                                                                                                                                                                                                                                                        from { transform: rotate(0deg); }
+                                                                                                                                                                                                                                                                        to { transform: rotate(360deg); }
+                                                                                                                                                                                                                                                                    } */
 
         .product-title {
             font-size: 0.9rem;
@@ -138,8 +138,8 @@
 
         @media (max-width: 576px) {
             /* .product-image {
-                                                                                                                                                                                                height: 180px;
-                                                                                                                                                                                            } */
+                                                                                                                                                                                                    height: 180px;
+                                                                                                                                                                                                } */
 
             .product-content {
                 padding: 12px;
@@ -464,7 +464,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 55px;
+            width: 100px;
             height: 45px;
             border-radius: 8px;
             border: 1px solid #ddd;
@@ -572,8 +572,8 @@
                                                 @endphp
                                                 @if ($skuImages && $skuImages->count() > 0)
                                                     @foreach ($skuImages as $skuImage)
-                                                        <div class="single-slide zoom-image-hover"
-                                                            style="height: 500px" data-sku-id="{{ $skuImage->id }}">
+                                                        <div class="single-slide zoom-image-hover" style="height: 500px"
+                                                            data-sku-id="{{ $skuImage->id }}">
                                                             <img class="img-responsive"
                                                                 style="object-fit: cover;
                                                 width: 100%;
@@ -612,7 +612,7 @@
                                                 @endif
                                             </div>
 
-                                      
+
                                         </div>
                                     </div>
                                     <div class="single-pro-desc single-pro-desc-no-sidebar">
@@ -645,16 +645,23 @@
                                                 @if ($mainProduct->is_variable_product && $mainProduct->skus && $mainProduct->skus->count() > 0)
                                                     @php
                                                         // Group attribute values by attribute
-                                                        $attributesGrouped = $mainProduct->attributeValues->groupBy('attribute_id');
+                                                        $attributesGrouped = $mainProduct->attributeValues->groupBy(
+                                                            'attribute_id',
+                                                        );
                                                         $skusData = [];
                                                         foreach ($mainProduct->skus as $sku) {
                                                             $skuAttributes = [];
                                                             foreach ($sku->attributeValues as $attrValue) {
-                                                                $skuAttributes[$attrValue->attribute->name ?? 'Unknown'] = [
+                                                                $skuAttributes[
+                                                                    $attrValue->attribute->name ?? 'Unknown'
+                                                                ] = [
                                                                     'id' => $attrValue->id,
                                                                     'value' => $attrValue->getDisplayName(),
                                                                     'type' => $attrValue->type,
-                                                                    'image_path' => $attrValue->type === 'image' ? $attrValue->getImagePath() : null,
+                                                                    'image_path' =>
+                                                                        $attrValue->type === 'image'
+                                                                            ? $attrValue->getImagePath()
+                                                                            : null,
                                                                 ];
                                                             }
                                                             $skusData[] = [
@@ -664,7 +671,9 @@
                                                                 'compare_at_price' => $sku->compare_at_price,
                                                                 'quantity' => $sku->quantity,
                                                                 'title' => $sku->title,
-                                                                'image' => $sku->image ? Storage::url($sku->image) : null,
+                                                                'image' => $sku->image
+                                                                    ? Storage::url($sku->image)
+                                                                    : null,
                                                                 'attributes' => $skuAttributes,
                                                             ];
                                                         }
@@ -678,7 +687,8 @@
                                                             @php
                                                                 $attribute = $attributeValues->first()->attribute;
                                                                 $attributeName = $attribute->name ?? 'Unknown';
-                                                                $isImageAttribute = $attributeValues->first()->type === 'image';
+                                                                $isImageAttribute =
+                                                                    $attributeValues->first()->type === 'image';
                                                             @endphp
                                                             <label for=""
                                                                 class="form-label w-bold fs-4 mb-3 d-block">{{ $attributeName }}
@@ -690,9 +700,16 @@
                                                                 data-center-text="true">
                                                                 @foreach ($attributeValues as $index => $attrValue)
                                                                     @php
-                                                                        $uniqueId = 'attr-' . $attributeId . '-' . $attrValue->id;
+                                                                        $uniqueId =
+                                                                            'attr-' .
+                                                                            $attributeId .
+                                                                            '-' .
+                                                                            $attrValue->id;
                                                                         $displayName = $attrValue->getDisplayName();
-                                                                        $imagePath = $attrValue->type === 'image' ? $attrValue->getImagePath() : null;
+                                                                        $imagePath =
+                                                                            $attrValue->type === 'image'
+                                                                                ? $attrValue->getImagePath()
+                                                                                : null;
                                                                     @endphp
                                                                     <div class="variant-input">
                                                                         <input type="radio" id="{{ $uniqueId }}"
@@ -701,12 +718,14 @@
                                                                             data-attribute-value-id="{{ $attrValue->id }}"
                                                                             @if ($index === 0) checked @endif>
                                                                         @if ($isImageAttribute && $imagePath)
-                                                                            <label for="{{ $uniqueId }}" class="color-swatch"
+                                                                            <label for="{{ $uniqueId }}"
+                                                                                class="color-swatch"
                                                                                 style="background-image: url('{{ Storage::url($imagePath) }}');"
                                                                                 title="{{ $displayName }}">
                                                                             </label>
                                                                         @else
-                                                                            <label for="{{ $uniqueId }}" class="size-swatch">{{ $displayName }}</label>
+                                                                            <label for="{{ $uniqueId }}"
+                                                                                class="size-swatch">{{ $displayName }}</label>
                                                                         @endif
                                                                     </div>
                                                                 @endforeach
@@ -1108,7 +1127,7 @@
             // Load SKU data from JSON script tag
             const skusDataScript = document.getElementById('skus-data');
             const SKUS_DATA = skusDataScript ? JSON.parse(skusDataScript.textContent) : [];
-            
+
             const priceElement = document.querySelector('.new-price');
             const oldPriceElement = document.querySelector('.old-price');
             const stockElement = document.getElementById('stock-display');
@@ -1120,7 +1139,7 @@
             const mainProductImage = document.querySelector('.single-product-cover .single-slide img');
             const selectedVariantInfo = document.getElementById('selected-variant-info');
             const selectedVariantDetails = document.getElementById('selected-variant-details');
-            
+
             // Get all attribute radio inputs
             const attributeInputs = document.querySelectorAll('input[name^="attribute["]');
 
@@ -1152,31 +1171,32 @@
             // Function to find matching SKU based on selected attribute values
             function findMatchingSku() {
                 if (SKUS_DATA.length === 0) return null;
-                
+
                 // Get all selected attribute value IDs
                 const selectedAttributeValueIds = [];
                 attributeInputs.forEach(input => {
                     if (input.checked) {
-                        selectedAttributeValueIds.push(parseInt(input.dataset.attributeValueId || input.value));
+                        selectedAttributeValueIds.push(parseInt(input.dataset.attributeValueId || input
+                            .value));
                     }
                 });
-                
+
                 if (selectedAttributeValueIds.length === 0) return null;
-                
+
                 // Find SKU that matches all selected attribute values
                 for (const sku of SKUS_DATA) {
                     const skuAttributeValueIds = Object.values(sku.attributes).map(attr => attr.id);
-                    
+
                     // Check if all selected attribute value IDs are in this SKU
                     const allMatch = selectedAttributeValueIds.every(id => skuAttributeValueIds.includes(id));
                     // Check if SKU has the same number of attributes (to avoid partial matches)
                     const sameCount = skuAttributeValueIds.length === selectedAttributeValueIds.length;
-                    
+
                     if (allMatch && sameCount) {
                         return sku;
                     }
                 }
-                
+
                 return null;
             }
 
@@ -1195,7 +1215,7 @@
                 // Get all original slides (not cloned) in order
                 const $originalSlides = $coverSlider.find('.single-slide:not(.slick-cloned)');
                 let targetIndex = -1;
-                
+
                 if (skuId) {
                     // Find the slide with matching SKU ID
                     $originalSlides.each(function(index) {
@@ -1216,7 +1236,7 @@
                             return false; // break
                         }
                     });
-                    
+
                     // Fallback to first slide if no default found
                     if (targetIndex === -1) {
                         targetIndex = 0;
@@ -1232,29 +1252,29 @@
                 }
             };
 
-        function selectAttributesForSku(sku) {
-            if (!sku || !sku.attributes) {
-                return;
+            function selectAttributesForSku(sku) {
+                if (!sku || !sku.attributes) {
+                    return;
+                }
+
+                const attributeValues = Object.values(sku.attributes);
+
+                attributeValues.forEach(attr => {
+                    const selector = 'input[data-attribute-value-id="' + attr.id + '"]';
+                    const input = document.querySelector(selector);
+                    if (input && !input.checked) {
+                        input.checked = true;
+                    }
+                });
+
+                updateProductDisplay(sku);
+
+                @if (!Auth::check())
+                    if (typeof updateGuestModalContent === 'function') {
+                        updateGuestModalContent();
+                    }
+                @endif
             }
-
-            const attributeValues = Object.values(sku.attributes);
-
-            attributeValues.forEach(attr => {
-                const selector = 'input[data-attribute-value-id="' + attr.id + '"]';
-                const input = document.querySelector(selector);
-                if (input && !input.checked) {
-                    input.checked = true;
-                }
-            });
-
-            updateProductDisplay(sku);
-
-            @if (!Auth::check())
-                if (typeof updateGuestModalContent === 'function') {
-                    updateGuestModalContent();
-                }
-            @endif
-        }
 
             // Function to update product display based on selected SKU
             function updateProductDisplay(sku) {
@@ -1291,7 +1311,8 @@
                 }
 
                 // Update compare price
-                if (oldPriceElement && sku.compare_at_price && parseFloat(sku.compare_at_price) > 0 && parseFloat(sku.compare_at_price) > parseFloat(sku.price)) {
+                if (oldPriceElement && sku.compare_at_price && parseFloat(sku.compare_at_price) > 0 && parseFloat(
+                        sku.compare_at_price) > parseFloat(sku.price)) {
                     oldPriceElement.textContent = '$' + parseFloat(sku.compare_at_price).toFixed(2);
                     if (oldPriceElement.parentElement) {
                         oldPriceElement.parentElement.style.display = 'inline';
@@ -1343,7 +1364,7 @@
                 input.addEventListener('change', function() {
                     const matchingSku = findMatchingSku();
                     updateProductDisplay(matchingSku);
-                    
+
                     // Update guest modal content if user is not logged in
                     @if (!Auth::check())
                         updateGuestModalContent();
@@ -1385,7 +1406,9 @@
 
             // Form validation - require variant selection for variable products
             const cartForm = document.getElementById('buy-now-form');
-            if (cartForm && {{ $mainProduct->is_variable_product && $mainProduct->skus && $mainProduct->skus->count() > 0 ? 'true' : 'false' }}) {
+            if (cartForm &&
+                {{ $mainProduct->is_variable_product && $mainProduct->skus && $mainProduct->skus->count() > 0 ? 'true' : 'false' }}
+                ) {
                 cartForm.addEventListener('submit', function(e) {
                     const selectedSku = selectedSkuInput ? selectedSkuInput.value : '';
                     if (!selectedSku) {
@@ -1393,7 +1416,7 @@
                         alert('Please select all options before adding to cart.');
                         return false;
                     }
-                    
+
                     // Check if selected SKU is out of stock
                     const matchingSku = findMatchingSku();
                     if (matchingSku && matchingSku.quantity <= 0) {
@@ -1464,14 +1487,15 @@
 
                     if (matchingSku) {
                         // Update with SKU information
-                        const attributeText = Object.values(matchingSku.attributes).map(attr => attr.value).join(', ');
-                        
+                        const attributeText = Object.values(matchingSku.attributes).map(attr => attr.value).join(
+                            ', ');
+
                         // Use SKU image if available, otherwise try to find image from attributes
                         let variantImage = matchingSku.image || null;
                         if (!variantImage) {
                             for (const attr of Object.values(matchingSku.attributes)) {
                                 if (attr.type === 'image' && attr.image_path) {
-                                    variantImage = '{{ url("storage/") }}/' + attr.image_path;
+                                    variantImage = '{{ url('storage/') }}/' + attr.image_path;
                                     break;
                                 }
                             }
@@ -1495,8 +1519,10 @@
                         modalPrice.textContent = '$' + parseFloat(matchingSku.price).toFixed(2);
 
                         // Update compare price
-                        if (matchingSku.compare_at_price && parseFloat(matchingSku.compare_at_price) > 0 && parseFloat(matchingSku.compare_at_price) > parseFloat(matchingSku.price)) {
-                            modalComparePrice.textContent = '$' + parseFloat(matchingSku.compare_at_price).toFixed(2);
+                        if (matchingSku.compare_at_price && parseFloat(matchingSku.compare_at_price) > 0 &&
+                            parseFloat(matchingSku.compare_at_price) > parseFloat(matchingSku.price)) {
+                            modalComparePrice.textContent = '$' + parseFloat(matchingSku.compare_at_price).toFixed(
+                                2);
                             modalComparePrice.style.display = 'block';
                         } else {
                             modalComparePrice.style.display = 'none';
@@ -1555,11 +1581,12 @@
 
                     // Variant validation (since form.submit() bypasses handlers)
                     const selectedSku = selectedSkuInput ? selectedSkuInput.value : '';
-                    if ({{ $mainProduct->is_variable_product && $mainProduct->skus && $mainProduct->skus->count() > 0 ? 'true' : 'false' }} && !selectedSku) {
+                    if ({{ $mainProduct->is_variable_product && $mainProduct->skus && $mainProduct->skus->count() > 0 ? 'true' : 'false' }} &&
+                        !selectedSku) {
                         alert('Please select all options before proceeding.');
                         return;
                     }
-                    
+
                     // Check if selected SKU is out of stock
                     const matchingSku = findMatchingSku();
                     if (matchingSku && matchingSku.quantity <= 0) {
