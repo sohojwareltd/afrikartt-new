@@ -17,7 +17,7 @@ use Sohoj;
 class CheckoutService
 {
     public Cart $cart;
-    public array $address;
+    public ShippingAndBillingInformation $address;
     public  $customer;
     public float $cartSubtotal;
     public float $platformFee;
@@ -25,23 +25,22 @@ class CheckoutService
     public float $total;
     public string | null $discountCode;
     public float $tax;
-    public function __construct(
-        array $shippingAndBillingInformation,
+     public function __construct(
+        ShippingAndBillingInformation $shippingAndBillingInformation,
 
 
 
     ) {
-        
+
         $this->address = $shippingAndBillingInformation;
 
         $this->cart = new Cart();
-       
-        if(Auth::check()){ 
+
+        if (Auth::check()) {
             $this->customer = Auth::user();
-        }elseif(Auth::guard('sanctum')->check()){
+        } elseif (Auth::guard('sanctum')->check()) {
             $this->customer = Auth::guard('sanctum')->user();
-        }
-        else{
+        } else {
             $this->customer = null;
         }
 
