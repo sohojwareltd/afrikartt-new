@@ -49,19 +49,20 @@ class CheckoutController extends Controller
         try {
             $data = $validator->validated();
 
+        
             $this->createCart($request->products);
 
-            $shippingAndBillingInformation = (new ShippingAndBillingInformationApi(
-                firstName: $request->first_name,
-                lastName: $request->last_name,
-                email: $request->email,
-                address_line: $request->address_1,
-                city: $request->city,
-                state: $request->state,
-                post_code: $request->post_code,
-                phone: $request->phone,
-                country: $request->country,
-            ))->createShippingAndBillingInformation();
+            $shippingAndBillingInformation = [
+                'firstName' => $request->first_name,
+                'lastName' => $request->last_name,
+                'email' => $request->email,
+                'address_line' => $request->address_1,
+                'city' => $request->city,
+                'state' => $request->state,
+                'post_code' => $request->post_code,
+                'phone' => $request->phone,
+                'country_code' => $request->country,
+            ];
 
 
 
@@ -70,6 +71,8 @@ class CheckoutController extends Controller
             $order           = $checkoutService->createOrder();
 
             return $order;
+
+            return response()->json(['message' => 'Shipping and billing information stored successfully']);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception  | Error $e) {

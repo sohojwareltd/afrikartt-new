@@ -17,7 +17,7 @@ use Sohoj;
 class CheckoutService
 {
     public Cart $cart;
-    public ShippingAndBillingInformation $address;
+    public array $address;
     public  $customer;
     public float $cartSubtotal;
     public float $platformFee;
@@ -26,7 +26,7 @@ class CheckoutService
     public string | null $discountCode;
     public float $tax;
     public function __construct(
-        ShippingAndBillingInformation $shippingAndBillingInformation,
+        array $shippingAndBillingInformation,
 
 
 
@@ -95,7 +95,7 @@ class CheckoutService
             'user_id' =>  $this->customer ? $this->customer->id : null,
             'shop_id' => null,
             'product_id' => null,
-            'shipping' => $this->address->toJson(),
+            'shipping' => json_encode($this->address),
             'subtotal' => $this->cartSubtotal,
             'discount' => $this->discount,
             'discount_code' => $this->discountCode,
@@ -124,7 +124,7 @@ class CheckoutService
                 'user_id' => $this->customer ? $this->customer->id : null,
                 'parent_id' => $order->id,
                 'shop_id' => $shop->id,
-                'shipping' => $this->address->toJson(),
+                'shipping' => json_encode($this->address),
                 'subtotal' => $total_price,
                 'platform_fee' => $flat_commision,
                 'total' => $total_price,

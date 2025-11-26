@@ -92,10 +92,11 @@ class OrderApiController extends Controller
 
     public function getShippingRates(Order $order)
     {
-
-
+    
+        $shipping = json_decode($order->shipping, true);
+        $packages = $order->products;
         $eashShip = new EashShipProvider();
-
+        $rates = $eashShip->getRates($shipping, $packages);
 
         // Post-commit actions
         $shipping = json_decode($order->shipping, true);
