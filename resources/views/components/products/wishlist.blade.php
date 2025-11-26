@@ -28,15 +28,23 @@
                             <i class="fas fa-eye text-light"></i>
                         </a>
 
-                        <form action="{{ route('cart.store') }}" method="post" class="cart-form">
-                            @csrf
-                            <input type="hidden" name="quantity" value="1">
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <button class="action-btn" title="Add to Cart" type="submit"
-                                aria-label="Add {{ $product->name }} to cart">
-                                <i class="fas fa-shopping-cart"></i>
-                            </button>
-                        </form>
+                         @if ($product->is_variable_product == 1)
+                            <a href="{{ route('product_details', $product->slug) }}" class="action-btn"
+                                @if ($product->quantity == 0) disabled @endif>
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        @else
+                            <form action="{{ route('cart.store') }}" method="post" class="cart-form">
+                                @csrf
+                                <input type="hidden" name="quantity" value="1">
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <button class="action-btn" title="Add to Cart"
+                                    @if ($product->quantity == 0) disabled @endif type="submit"
+                                    aria-label="Add {{ $product->name }} to cart">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </form>
+                        @endif
 
                         @if (!in_array($product->id, session()->get('wishlist', [])))
                             <a href="{{ route('wishlist.add', ['productId' => $product->id]) }}"

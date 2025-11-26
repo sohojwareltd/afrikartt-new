@@ -56,7 +56,7 @@
                             <i class="fas fa-eye text-light"></i>
                         </a> --}}
 
-                        @if ($product->is_variable_product === 1)
+                        @if ($product->is_variable_product == 1)
                             <a href="{{ route('product_details', $product->slug) }}" class="action-btn"
                                 @if ($product->quantity == 0) disabled @endif>
                                 <i class="fas fa-eye"></i>
