@@ -842,17 +842,16 @@
                 return $item->model->shop_id;
             });
             $country = $shippingRate->country->code ?? ($shippingRate->country_code ?? null);
-            $shippingPrice = $shippingRate->rate ?? ($shippingRate->price ?? 0);
             $state_tax = $shippingRate->tax ?? ($shippingRate->tax ?? 0);
             $shippingName = $shippingRate->state ?? ($shippingRate->country_name ?? 'Standard Delivery');
 
-            $tax = $order->subtotal * ($state_tax / 100);
-            // $freeShipping = false;
-            // if (in_array($country, ['US', 'USA']) && $order->subtotal >= 75) {
-            //     $freeShipping = Sohoj::price($shippingPrice);
-            // } else {
-            //     $freeShipping = true;
-            // }
+            if ($order->delivery_option == 'pickup_point') {
+                $shippingPrice = 0;
+                $stateTax = 0;
+            } else {
+                $shippingPrice = $shippingRate->rate ?? ($shippingRate->price ?? 0);
+                $stateTax = $order->subtotal * ($state_tax / 100);
+            }
         @endphp
         <div class="container">
             <div class="checkout-hero mb-4 position-relative">
@@ -933,31 +932,41 @@
 
                             <div class="border border-lg-1 p-1">
                                 <span>Tax:</span>
-                                <span id="summaryTax">{{ Sohoj::price($tax) }}</span>
+                                <span id="summaryTax">{{ Sohoj::price($stateTax) }}</span>
                             </div>
                             {{-- @dd($freeShipping) --}}
-                            @if (in_array($country, ['US', 'USA']) && $order->subtotal >= Settings::setting('free_shipping_amount', 75))
-                                <div class="alert alert-success">Free Shipping – Applied!</div>
-                            @else
-                                <div class="border border-lg-1 p-1">
-                                    <span>Shipping Cost:</span>
-                                    <span id="summaryShipping">
-                                        {{ Sohoj::price($shippingPrice) }}
-                                    </span>
-                                </div>
+                            @if ($order->delivery_option == 'home_delivery')
+
+                                @if (in_array($country, ['US', 'USA']) && $order->subtotal >= Settings::setting('free_shipping_amount', 75))
+                                    <div class="alert alert-success">Free Shipping – Applied!</div>
+                                @else
+                                    <div class="border border-lg-1 p-1">
+                                        <span>Shipping Cost:</span>
+                                        <span id="summaryShipping">
+                                            {{ Sohoj::price($shippingPrice) }}
+                                        </span>
+                                    </div>
+                                @endif
                             @endif
                         </div>
                         @php
-                            if (in_array($country, ['US', 'USA']) && $order->subtotal >= Settings::setting('free_shipping_amount', 75)) {
-                                $shippingCost = 0;
+                            if ($order->delivery_option == 'home_delivery') {
+                                if (
+                                    in_array($country, ['US', 'USA']) &&
+                                    $order->subtotal >= Settings::setting('free_shipping_amount', 75)
+                                ) {
+                                    $shippingCost = 0;
+                                } else {
+                                    $shippingCost = $shippingPrice;
+                                }
                             } else {
-                                $shippingCost = $shippingPrice;
+                                $shippingCost = 0;
                             }
                         @endphp
                         <div class="checkout-summary-total d-flex justify-content-between align-items-center">
                             <span class="fw-bold">Order Total:</span>
                             <span class="fw-bold"
-                                id="summaryTotal">{{ Sohoj::price($order->subtotal + $order->shipping_total + $shippingCost + $tax - $order->discount) }}</span>
+                                id="summaryTotal">{{ Sohoj::price($order->subtotal + $shippingCost + $stateTax - $order->discount) }}</span>
                         </div>
                     </div>
                 </aside>
@@ -973,186 +982,95 @@
                                     <!-- Step 2: Shipping -->
                                     <div class="tab-pane fade show active" id="step2" role="tabpanel"
                                         aria-labelledby="step2-tab">
-                                        <h4 class="fw-semibold mb-3" style="color: #5D6532 !important">Select Shipping Rate
-                                        </h4>
+                                        @if ($order->delivery_option == 'home_delivery')
+                                            <h4 class="fw-semibold mb-3" style="color: #5D6532 !important">Select Shipping
+                                                Rate
+                                            </h4>
 
-                                        <div class="mt-3">
-                                            {{-- @if (!empty($rates))
-                                                <div class="shipping-rates-container">
-                                                    <div class="shipping-header mb-3">
-                                                        <h5 class="mb-1" style="color: #5D6532">
-                                                            <i class="fas fa-truck me-2 text-primary"></i>
-                                                            Available Shipping Options
-                                                        </h5>
-                                                        <p class="text-muted small mb-0">Choose your preferred delivery
-                                                            method</p>
-                                                    </div>
-
-                                                    <input type="hidden" name="selected_shipping_service"
-                                                        id="selected_shipping_service">
-                                                    <input type="hidden" name="selected_shipping_amount"
-                                                        id="selected_shipping_amount">
-
-                                                    <div class="shipping-options-grid">
-                                                        @foreach ($rates['rates'] as $rate)
-                                                            <div class="shipping-option-card"
-                                                                data-rate="{{ $rate['courier_service']['id'] }}">
-                                                                <label class="shipping-option-label">
-                                                                    <input type="radio" name="shipping_rate"
-                                                                        class="shipping-radio-input"
-                                                                        value="{{ $rate['courier_service']['id'] }}"
-                                                                        @checked($loop->first) required>
-                                                                    <div class="shipping-option-content">
-                                                                        <div class="shipping-logo-section">
-                                                                            <img src="{{ $rate['courier_service']['logo'] }}"
-                                                                                alt="{{ $rate['courier_service']['name'] }}"
-                                                                                class="shipping-logo">
-                                                                            <div class="shipping-radio-indicator"></div>
-                                                                        </div>
-
-                                                                        <div class="shipping-info-section">
-                                                                            <div class="shipping-company-info">
-                                                                                <h6 class="shipping-company-name mb-1">
-                                                                                    {{ $rate['courier_service']['name'] }}
-                                                                                </h6>
-                                                                                @if ($rate['courier_service']['umbrella_name'] && $rate['courier_service']['umbrella_name'] !== $rate['courier_service']['name'])
-                                                                                    <span
-                                                                                        class="shipping-network text-muted small">
-                                                                                        via
-                                                                                        {{ $rate['courier_service']['umbrella_name'] }}
-                                                                                    </span>
-                                                                                @endif
-                                                                            </div>
-
-                                                                            <div class="shipping-details">
-                                                                                <div class="delivery-time">
-                                                                                    <i
-                                                                                        class="fas fa-clock text-warning me-1"></i>
-                                                                                    @if ($rate['max_delivery_time'])
-                                                                                        <span class="delivery-text">
-                                                                                            {{ $rate['max_delivery_time'] }}
-                                                                                            business
-                                                                                            day{{ $rate['max_delivery_time'] > 1 ? 's' : '' }}
-                                                                                        </span>
-                                                                                    @else
-                                                                                        <span
-                                                                                            class="delivery-text text-muted">
-                                                                                            Delivery time not specified
-                                                                                        </span>
-                                                                                    @endif
-                                                                                </div>
-
-                                                                                <div class="shipping-cost">
-                                                                                    <span class="cost-amount">
-                                                                                        {{ $rate['rates_in_origin_currency']['currency'] }}
-                                                                                        {{ number_format((float) $rate['rates_in_origin_currency']['total_charge'], 2) }}
-                                                                                    </span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="shipping-selection-indicator">
-                                                                            <i class="fas fa-check-circle"></i>
-                                                                        </div>
-                                                                    </div>
-                                                                </label>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                </div>
-                                            @else
-                                                <div class="shipping-error-state">
-                                                    <div class="text-center py-4">
-                                                        <i class="fas fa-exclamation-triangle text-warning mb-3"
-                                                            style="font-size: 2.5rem;"></i>
-                                                        <h5 class="text-warning mb-2">No Shipping Options Available</h5>
-                                                        <p class="text-muted mb-3">We couldn't find shipping options for
-                                                            your address. Please verify your shipping information.</p>
-                                                        <button type="button" class="btn btn-outline-primary"
-                                                            onclick="history.back()">
-                                                            <i class="fas fa-arrow-left me-2"></i>Go Back & Update Address
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            @endif --}}
+                                            <div class="mt-3">
 
 
-                                            @if ($shippingRate)
-                                                <div class="card border-0 shadow-sm rounded-4 mb-4 shipping-section">
-                                                    <div
-                                                        class="card-header bg-transparent border-0 d-flex align-items-center pb-0">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" height="28"
-                                                            width="28" class="text-primary me-2" viewBox="0 0 640 640">
-                                                            <path
-                                                                d="M64 160C64 124.7 92.7 96 128 96L416 96C451.3 96 480 124.7 480 160L480 192L530.7 192C547.7 192 564 198.7 576 210.7L621.3 256C633.3 268 640 284.3 640 301.3L640 448C640 483.3 611.3 512 576 512L572.7 512C562.3 548.9 528.3 576 488 576C447.7 576 413.8 548.9 403.3 512L300.7 512C290.3 548.9 256.3 576 216 576C175.7 576 141.8 548.9 131.3 512L128 512C92.7 512 64 483.3 64 448L64 400L24 400C10.7 400 0 389.3 0 376C0 362.7 10.7 352 24 352L136 352C149.3 352 160 341.3 160 328C160 314.7 149.3 304 136 304L24 304C10.7 304 0 293.3 0 280C0 266.7 10.7 256 24 256L200 256C213.3 256 224 245.3 224 232C224 218.7 213.3 208 200 208L24 208C10.7 208 0 197.3 0 184C0 170.7 10.7 160 24 160L64 160zM576 352L576 301.3L530.7 256L480 256L480 352L576 352zM256 488C256 465.9 238.1 448 216 448C193.9 448 176 465.9 176 488C176 510.1 193.9 528 216 528C238.1 528 256 510.1 256 488zM488 528C510.1 528 528 510.1 528 488C528 465.9 510.1 448 488 448C465.9 448 448 465.9 448 488C448 510.1 465.9 528 488 528z" />
-                                                        </svg>
-                                                        <div>
-                                                            <h5 class="mb-1 fw-semibold">Shipping Option</h5>
-                                                            <p class="text-muted small mb-0">Available shipping based on
-                                                                your location</p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="card-body">
-                                                        <input type="hidden" name="selected_shipping_service"
-                                                            value="standard">
-                                                        <input type="hidden" name="selected_shipping_amount"
-                                                            value="{{ $shippingPrice }}">
-
+                                                @if ($shippingRate)
+                                                    <div class="card border-0 shadow-sm rounded-4 mb-4 shipping-section">
                                                         <div
-                                                            class="shipping-option d-flex align-items-center justify-content-between border rounded-4 p-3 px-4 hover-shadow transition">
-                                                            <div class="d-flex align-items-center gap-3">
-                                                                <input type="radio" name="shipping_rate"
-                                                                    class="form-check-input mt-0" value="standard" checked
-                                                                    required>
+                                                            class="card-header bg-transparent border-0 d-flex align-items-center pb-0">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" height="28"
+                                                                width="28" class="text-primary me-2"
+                                                                viewBox="0 0 640 640">
+                                                                <path
+                                                                    d="M64 160C64 124.7 92.7 96 128 96L416 96C451.3 96 480 124.7 480 160L480 192L530.7 192C547.7 192 564 198.7 576 210.7L621.3 256C633.3 268 640 284.3 640 301.3L640 448C640 483.3 611.3 512 576 512L572.7 512C562.3 548.9 528.3 576 488 576C447.7 576 413.8 548.9 403.3 512L300.7 512C290.3 548.9 256.3 576 216 576C175.7 576 141.8 548.9 131.3 512L128 512C92.7 512 64 483.3 64 448L64 400L24 400C10.7 400 0 389.3 0 376C0 362.7 10.7 352 24 352L136 352C149.3 352 160 341.3 160 328C160 314.7 149.3 304 136 304L24 304C10.7 304 0 293.3 0 280C0 266.7 10.7 256 24 256L200 256C213.3 256 224 245.3 224 232C224 218.7 213.3 208 200 208L24 208C10.7 208 0 197.3 0 184C0 170.7 10.7 160 24 160L64 160zM576 352L576 301.3L530.7 256L480 256L480 352L576 352zM256 488C256 465.9 238.1 448 216 448C193.9 448 176 465.9 176 488C176 510.1 193.9 528 216 528C238.1 528 256 510.1 256 488zM488 528C510.1 528 528 510.1 528 488C528 465.9 510.1 448 488 448C465.9 448 448 465.9 448 488C448 510.1 465.9 528 488 528z" />
+                                                            </svg>
+                                                            <div>
+                                                                <h5 class="mb-1 fw-semibold">Shipping Option</h5>
+                                                                <p class="text-muted small mb-0">Available shipping based on
+                                                                    your location</p>
+                                                            </div>
+                                                        </div>
 
-                                                                <div>
-                                                                    <h6 class="mb-1 fw-semibold">Standard Shipping</h6>
+                                                        <div class="card-body">
+                                                            <input type="hidden" name="selected_shipping_service"
+                                                                value="standard">
+                                                            <input type="hidden" name="selected_shipping_amount"
+                                                                value="{{ $shippingPrice }}">
+
+                                                            <div
+                                                                class="shipping-option d-flex align-items-center justify-content-between border rounded-4 p-3 px-4 hover-shadow transition">
+                                                                <div class="d-flex align-items-center gap-3">
+                                                                    <input type="radio" name="shipping_rate"
+                                                                        class="form-check-input mt-0" value="standard"
+                                                                        checked required>
+
+                                                                    <div>
+                                                                        <h6 class="mb-1 fw-semibold">Standard Shipping</h6>
+                                                                        <span
+                                                                            class="text-muted small">{{ $shippingName }}</span><br>
+                                                                        <span
+                                                                            class="text-muted small text-burgundy">Estimated
+                                                                            Delivery: Dec
+                                                                            15–30</span>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="text-end">
                                                                     <span
-                                                                        class="text-muted small">{{ $shippingName }}</span><br>
-                                                                    <span class="text-muted small text-burgundy">Estimated
-                                                                        Delivery: Dec
-                                                                        15–30</span>
+                                                                        class="fw-bold fs-6 text-dark">{{ Sohoj::price($shippingPrice) }}</span>
                                                                 </div>
                                                             </div>
-
-                                                            <div class="text-end">
-                                                                <span
-                                                                    class="fw-bold fs-6 text-dark">{{ Sohoj::price($shippingPrice) }}</span>
-                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                </div>
-                                            @else
-                                                <div class="text-center border rounded-4 py-5 px-3 shadow-sm bg-light">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
-                                                        class="text-danger mb-3" viewBox="0 0 24 24" fill="none"
-                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                        stroke-linejoin="round">
-                                                        <path
-                                                            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
-                                                        <path d="M12 9v4" />
-                                                        <path d="M12 17h.01" />
-                                                    </svg>
-                                                    <h5 class="text-warning mb-2 fw-semibold">No Shipping Options Available
-                                                    </h5>
-                                                    <p class="text-muted mb-3 small">We couldn’t find shipping options for
-                                                        your address. Please check your shipping information.</p>
-                                                    <button type="button" class="btn btn-dark rounded-pill px-4"
-                                                        onclick="history.back()">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20"
-                                                            height="20" class="me-2" viewBox="0 0 24 24"
+                                                    </div>
+                                                @else
+                                                    <div class="text-center border rounded-4 py-5 px-3 shadow-sm bg-light">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="40"
+                                                            height="40" class="text-danger mb-3" viewBox="0 0 24 24"
                                                             fill="none" stroke="currentColor" stroke-width="2"
                                                             stroke-linecap="round" stroke-linejoin="round">
-                                                            <path d="m12 19-7-7 7-7" />
-                                                            <path d="M19 12H5" />
+                                                            <path
+                                                                d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                                                            <path d="M12 9v4" />
+                                                            <path d="M12 17h.01" />
                                                         </svg>
-                                                        Go Back & Update Address
-                                                    </button>
-                                                </div>
-                                            @endif
-                                        </div>
+                                                        <h5 class="text-warning mb-2 fw-semibold">No Shipping Options
+                                                            Available
+                                                        </h5>
+                                                        <p class="text-muted mb-3 small">We couldn’t find shipping options
+                                                            for
+                                                            your address. Please check your shipping information.</p>
+                                                        <button type="button" class="btn btn-dark rounded-pill px-4"
+                                                            onclick="history.back()">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20"
+                                                                height="20" class="me-2" viewBox="0 0 24 24"
+                                                                fill="none" stroke="currentColor" stroke-width="2"
+                                                                stroke-linecap="round" stroke-linejoin="round">
+                                                                <path d="m12 19-7-7 7-7" />
+                                                                <path d="M19 12H5" />
+                                                            </svg>
+                                                            Go Back & Update Address
+                                                        </button>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endif
 
                                         <h4 class="fw-semibold mb-4 mt-4" style="color: #5D6532">Select Payment Method
                                         </h4>

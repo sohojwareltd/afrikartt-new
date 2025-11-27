@@ -81,33 +81,40 @@ class PaymentService
             ];
         }
 
-        if ($this->order->shipping_total) {
-            $shippingTotal = floatval($this->order->shipping_total);
-            $lineItems[] = [
-                'price_data' => [
-                    'currency' => 'usd',
-                    'product_data' => [
-                        'name' => 'Shipping',
-                        'description' => 'Shipping cost',
+        // Add shipping as a separate line item if applicable
+
+        if ($this->order->delivery_option == 'home_delivery') {
+            if ($this->order->shipping_total) {
+                $shippingTotal = floatval($this->order->shipping_total);
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => [
+                            'name' => 'Shipping',
+                            'description' => 'Shipping cost',
+                        ],
+                        'unit_amount' => floatval($shippingTotal * 100),
                     ],
-                    'unit_amount' => floatval($shippingTotal * 100),
-                ],
-                'quantity' => 1,
-            ];
+                    'quantity' => 1,
+                ];
+            }
         }
-        if ($this->order->state_tax) {
-            $stateTax = floatval($this->order->state_tax);
-            $lineItems[] = [
-                'price_data' => [
-                    'currency' => 'usd',
-                    'product_data' => [
-                        'name' => 'Tax',
-                        'description' => 'Tax',
+
+        if ($this->order->delivery_option == 'home_delivery') {
+            if ($this->order->state_tax) {
+                $stateTax = floatval($this->order->state_tax);
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => [
+                            'name' => 'Tax',
+                            'description' => 'Tax',
+                        ],
+                        'unit_amount' => floatval($stateTax * 100),
                     ],
-                    'unit_amount' => floatval($stateTax * 100),
-                ],
-                'quantity' => 1,
-            ];
+                    'quantity' => 1,
+                ];
+            }
         }
         $discounts = [];
 

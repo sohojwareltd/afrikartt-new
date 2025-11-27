@@ -483,7 +483,7 @@
 
 @section('content')
 
- 
+
     <x-app.header />
 
     @guest
@@ -667,7 +667,7 @@
                                                     @enderror
                                                 </div>
 
-                                                <div class="col-md-6 mt-2">
+                                                <div class="col-md-12 mt-2">
                                                     <label for="email" class="form-label">Email</label>
                                                     <input type="email" class="form-control" id="email"
                                                         aria-describedby="email"
@@ -684,6 +684,22 @@
                                                         value="{{ old('phone', Auth()->user() ? Auth()->user()->phone : '') }}"
                                                         name="phone" placeholder="Phone Number">
                                                     @error('phone')
+                                                        <span class="text-danger small position-absolute"
+                                                            style="top:100%;left:0;">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-md-6 mt-2">
+                                                    <label for="delivery_option" class="form-label">Delivery
+                                                        Option</label>
+                                                    <select
+                                                        class="form-control @error('delivery_option') is-invalid @enderror"
+                                                        id="delivery_option" name="delivery_option">
+                                                        <option disabled selected>Select Delivery Option</option>
+                                                        <option value="home_delivery" {{ old('delivery_option') == 'home_delivery' ? 'selected' : '' }}>Home Delivery
+                                                        </option>
+                                                        <option value="pickup_point" {{ old('delivery_option') == 'pickup_point' ? 'selected' : '' }}>Pickup Point</option>
+                                                    </select>
+                                                    @error('delivery_option')
                                                         <span class="text-danger small position-absolute"
                                                             style="top:100%;left:0;">{{ $message }}</span>
                                                     @enderror
@@ -799,7 +815,7 @@
 
                 </div>
             </div>
-           
+
             <!-- New Product Content -->
 
         </div>
@@ -1115,7 +1131,8 @@
 
             // Get the order subtotal from your backend
             const orderSubtotal = {{ Cart::subtotal() }};
-            const freeShippingThreshold ={{ Settings::setting('free_shipping_amount', 75) }}; // $75 threshold for free shipping
+            const freeShippingThreshold =
+            {{ Settings::setting('free_shipping_amount', 75) }}; // $75 threshold for free shipping
 
             function updateShippingDisplay() {
                 const selectedCountry = countrySelect.value;

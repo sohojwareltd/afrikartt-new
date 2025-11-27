@@ -55,9 +55,9 @@ class CheckoutController extends Controller
             'state' => 'required',
             'post_code' => 'required',
             'phone' => 'required',
+            'delivery_option' => 'required',
             'country' => 'required',
         ]);
-
 
         try {
             DB::beginTransaction();
@@ -91,7 +91,7 @@ class CheckoutController extends Controller
                 country_name: $country->name
             );
 
-            $checkoutService = new CheckoutService($shippingAndBillingInformation);
+            $checkoutService = new CheckoutService($shippingAndBillingInformation, $request->delivery_option);
             $order = $checkoutService->createOrder();
 
 
