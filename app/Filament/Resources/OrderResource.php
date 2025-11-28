@@ -152,9 +152,15 @@ class OrderResource extends Resource
                     ->toggleable(),
                 TextColumn::make('user.name')
                     ->label('Customer')
+                    ->getStateUsing(
+                        fn($record) =>
+                        $record->user?->name
+                            ? $record->user->name
+                            : 'Guest Checkout'
+                    )
+                    ->icon(fn($record) => $record->user ? 'heroicon-o-user' : 'heroicon-o-user-circle')
                     ->sortable()
                     ->searchable()
-                    ->icon('heroicon-o-user')
                     ->toggleable(),
                 // TextColumn::make('shop.name')
                 //     ->label('Shop')
