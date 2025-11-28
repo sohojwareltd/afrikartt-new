@@ -109,6 +109,13 @@
                                         {{ $record->payment_status == 0 ? 'Pending' : ($record->payment_status == 1 ? 'Paid' : 'Failed') }}
                                     </p>
                                 </div>
+                                <div>
+                                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Delivery Option
+                                    </h3>
+                                    <p class="mt-1 text-sm font-medium">
+                                        {{ $record->delivery_option == 'pickup_point' ? 'Pickup Point' : ($record->delivery_option == 'home_delivery' ? 'Home Delivery' : 'Failed') }}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -420,6 +427,10 @@
                                 <div class="flex justify-between py-2 text-sm text-gray-600">
                                     <span>Shipping</span>
                                     <span>${{ number_format($record->shipping_total, 2) }}</span>
+                                </div>
+                                <div class="flex justify-between py-2 text-sm text-gray-600">
+                                    <span>Tax</span>
+                                    <span>${{ number_format($record->state_tax, 2) }}</span>
                                 </div>
                                 <div
                                     class="flex justify-between py-3 mt-2 border-t border-gray-200 text-base font-semibold text-primary-600">
