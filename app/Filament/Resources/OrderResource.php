@@ -163,7 +163,8 @@ class OrderResource extends Resource
                 //     ->toggleable(),
                 BadgeColumn::make('status')
                     ->label('Status')
-                    ->formatStateUsing(fn($state) => match ($state) {
+                    ->getStateUsing(fn($record) => $record->status) // FORCE state fix
+                    ->formatStateUsing(fn($state) => match ((int)$state) {
                         0 => 'Pending',
                         1 => 'Paid',
                         2 => 'On Its Way',
@@ -171,7 +172,7 @@ class OrderResource extends Resource
                         4 => 'Delivered',
                         default => 'Unknown',
                     })
-                    ->color(fn($state) => match ($state) {
+                    ->color(fn($state) => match ((int)$state) {
                         0 => 'secondary',
                         1 => 'success',
                         2 => 'warning',
@@ -179,7 +180,7 @@ class OrderResource extends Resource
                         4 => 'primary',
                         default => 'gray',
                     })
-                    ->icon(fn($state) => match ($state) {
+                    ->icon(fn($state) => match ((int)$state) {
                         0 => 'heroicon-o-clock',
                         1 => 'heroicon-o-currency-dollar',
                         2 => 'heroicon-o-truck',
