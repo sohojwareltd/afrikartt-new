@@ -190,13 +190,15 @@ class OrderResource extends Resource
                     ->toggleable(),
                 BadgeColumn::make('payment_status')
                     ->label('Payment Status')
-                    ->formatStateUsing(fn($state) => match ($state) {
+                    ->formatStateUsing(fn($state) => match ((int)$state) {
                         0 => 'Pending',
                         1 => 'Paid',
+                        default => 'Unknown',
                     })
-                    ->color(fn($state) => match ($state) {
+                    ->color(fn($state) => match ((int)$state) {
                         0 => 'danger',
                         1 => 'success',
+                        default => 'gray',
                     })
                     ->toggleable(),
                 TextColumn::make('payment_method')
