@@ -190,17 +190,23 @@ class OrderResource extends Resource
                     ->toggleable(),
                 BadgeColumn::make('payment_status')
                     ->label('Payment Status')
-                    ->formatStateUsing(fn($state) => match ((int)$state) {
+                    ->formatStateUsing(fn($state) => match ((int) $state) {
                         0 => 'Pending',
                         1 => 'Paid',
+                        2 => 'Failed',
+                        3 => 'Cancelled',
                         default => 'Unknown',
                     })
-                    ->color(fn($state) => match ((int)$state) {
-                        0 => 'danger',
+                    ->color(fn($state) => match ((int) $state) {
+                        0 => 'warning',
                         1 => 'success',
-                        default => 'gray',
+                        2 => 'danger',
+                        3 => 'gray',
+                        default => 'secondary',
                     })
+                    ->sortable()
                     ->toggleable(),
+
                 TextColumn::make('payment_method')
                     ->label('Payment Method')
                     ->formatStateUsing(fn($state) => match ($state) {
@@ -431,7 +437,7 @@ class OrderResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->whereNull('parent_id');
+        return parent::getEloquentQuery()->whereNull('parent_id')->latest();
     }
 
     public static function getPages(): array
