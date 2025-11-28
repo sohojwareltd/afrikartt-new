@@ -438,17 +438,17 @@
                                     @if (Auth::user()->role_id == 3)
                                         <span>
                                             @if ($record->childs && $record->childs->count() > 0)
-                                                ${{ number_format($totalVendorSubtotal + $record->shipping_total, 2) }}
+                                                ${{ number_format($totalVendorSubtotal + $record->shipping_total + $record->state_tax, 2) }}
                                             @else
-                                                ${{ number_format($vendorSubtotal + $record->shipping_total, 2) }}
+                                                ${{ number_format($vendorSubtotal + $record->shipping_total + $record->state_tax, 2) }}
                                             @endif
                                         </span>
                                     @else
                                         <span>
                                             @if ($record->childs && $record->childs->count() > 0)
-                                                ${{ number_format($totalAdminSubtotal + $record->shipping_total, 2) }}
+                                                ${{ number_format($totalAdminSubtotal + $record->shipping_total + $record->state_tax, 2) }}
                                             @else
-                                                ${{ number_format($adminSubtotal + $record->shipping_total, 2) }}
+                                                ${{ number_format($adminSubtotal + $record->shipping_total + $record->state_tax, 2) }}
                                             @endif
                                         </span>
                                     @endif
