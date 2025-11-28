@@ -44,8 +44,9 @@ class Order extends Model
         return $this->hasMany(Order::class, 'parent_id');
     }
 
-    public function parent(){
-        return $this->belongsTo(Order::class,'parent_id');
+    public function parent()
+    {
+        return $this->belongsTo(Order::class, 'parent_id');
     }
     public function feedback()
     {
@@ -129,5 +130,89 @@ class Order extends Model
     public function scopeParent($query)
     {
         return $query->whereNull('parent_id');
+    }
+
+    /**
+     * Relationship to the user who verified the bank payment
+     */
+    public function bankPaymentVerifiedBy()
+    {
+        return $this->belongsTo(User::class, 'bank_payment_verified_by');
+    }
+
+    /**
+     * Check if order is using bank transfer payment
+     */
+    public function isBankTransfer(): bool
+    {
+        return $this->payment_method === 'bank_transfer';
+    }
+
+    /**
+     * Check if bank transfer payment is pending verification
+     */
+    public function isBankPaymentPending(): bool
+    {
+        return $this->isBankTransfer() && $this->bank_payment_status === 'pending';
+    }
+
+    /**
+     * Check if bank transfer payment is verified
+     */
+    public function isBankPaymentVerified(): bool
+    {
+        return $this->isBankTransfer() && $this->bank_payment_status === 'verified';
+    }
+
+    /**
+     * Check if bank transfer payment is rejected
+     */
+    public function isBankPaymentRejected(): bool
+    {
+        return $this->isBankTransfer() && $this->bank_payment_status === 'rejected';
+    }
+
+    /**
+     * Get bank payment status badge color
+     */
+    public function getBankPaymentStatusColorAttribute(): string
+    {
+        return match ($this->bank_payment_status) {
+            'pending' => 'warning',
+            'verified' => 'success',
+            'rejected' => 'danger',
+            default => 'secondary',
+        };
+    }
+
+    /**
+     * Get bank payment status label
+     */
+    public function getBankPaymentStatusLabelAttribute(): string
+    {
+        return match ($this->bank_payment_status) {
+            'pending' => 'Pending Verification',
+            'verified' => 'Payment Verified',
+            'rejected' => 'Payment Rejected',
+            default => 'N/A',
+        };
+    }
+
+    /**
+     * Scope for pending bank transfer payments
+     */
+    public function scopePendingBankPayments($query)
+    {
+        return $query->where('payment_method', 'bank_transfer')
+            ->where('bank_payment_status', 'pending');
+    }
+
+    /**
+     * Scope for verified bank transfer payments
+     */
+    public function scopeVerifiedBankPayments($query)
+    {
+        return $query->where('payment_method', 'bank_transfer')
+            ->where('bank_payment_status', 'verified');
     }
 }

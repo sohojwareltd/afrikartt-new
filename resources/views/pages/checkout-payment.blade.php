@@ -1109,7 +1109,50 @@
                                                     </span>
                                                 </span>
                                             </label>
+
+                                            @php
+                                                $bankTransferSettings = \App\Models\BankTransferSetting::settings();
+                                            @endphp
+
+                                            @if ($bankTransferSettings && $bankTransferSettings->enabled)
+                                                <label class="payment-card-option">
+                                                    <input type="radio" name="payment_method" id="bank_transfer"
+                                                        value="bank_transfer" class="form-check-input">
+                                                    <span class="custom-radio-indicator"></span>
+                                                    <span class="payment-card-content">
+                                                        <span class="payment-img-wrap">
+                                                            <img src="https://img.icons8.com/color/64/000000/bank.png"
+                                                                alt="Bank Transfer" class="pay-img" />
+                                                        </span>
+                                                        <span class="payment-text-wrap">
+                                                            <span class="payment-title">Direct Bank Transfer (US)</span>
+                                                            <span class="payment-desc">Transfer payment directly to our
+                                                                bank account.</span>
+                                                        </span>
+                                                    </span>
+                                                </label>
+                                            @endif
                                         </div>
+
+                                        @if ($bankTransferSettings && $bankTransferSettings->enabled)
+                                            <!-- Bank Transfer Info Message -->
+                                            <div id="bank-transfer-info" style="display: none;" class="mt-4">
+                                                <div class="alert alert-info d-flex align-items-start"
+                                                    style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-left: 4px solid #3b82f6;">
+                                                    <i class="fas fa-info-circle me-3 mt-1"
+                                                        style="font-size: 1.5rem; color: #1e40af;"></i>
+                                                    <div>
+                                                        <h6 class="fw-bold mb-2" style="color: #1e40af;">Next Step: Bank
+                                                            Transfer Payment</h6>
+                                                        <p class="mb-0" style="color: #1e3a8a; line-height: 1.6;">
+                                                            After placing your order, you will be redirected to a secure
+                                                            payment page where you can view our bank details and upload your
+                                                            payment receipt.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
 
                                         <div class="terms-wrapper mt-4 mb-3 shadow-sm">
                                             <input type="checkbox" required id="terms" value="1" name="terms"
@@ -1434,6 +1477,28 @@
                         updateProgress(idx);
                     });
             });
+        });
+    </script>
+
+    <script>
+        // Bank Transfer Payment Method Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const bankTransferRadio = document.getElementById('bank_transfer');
+            const bankTransferInfo = document.getElementById('bank-transfer-info');
+            const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
+
+            if (bankTransferRadio && bankTransferInfo) {
+                // Show/hide bank transfer info message based on selection
+                paymentMethodRadios.forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        if (this.value === 'bank_transfer' && this.checked) {
+                            bankTransferInfo.style.display = 'block';
+                        } else {
+                            bankTransferInfo.style.display = 'none';
+                        }
+                    });
+                });
+            }
         });
     </script>
 @endsection

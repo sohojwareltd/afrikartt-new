@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Data\Country\CountryStateCity;
+use App\Mail\AdminBankTransferVerificationMail;
 use App\Mail\AdminOrderPlacedMail;
 use App\Mail\AdminOrderSuccessMail;
+use App\Mail\BankTransferOrderPlacedMail;
 use App\Mail\CustomarOrderPlacedMail;
 use App\Mail\CustomerOrderSuccessMail;
 use App\Mail\VendorOrderPlacedMail;
@@ -135,11 +137,16 @@ class CheckoutController extends Controller
     {
         $shipping = json_decode($order->shipping, true);
         // Check if country code is USA (using code from Country table)
-        if (in_array($shipping['country_code'], ['US', 'USA']) && $order->subtotal >= 75) {
+        if ($order->delivery_option == 'pickup_point') {
             $shippingAmount = 0;
         } else {
-            $shippingAmount = $request->selected_shipping_amount;
+            if (in_array($shipping['country_code'], ['US', 'USA']) && $order->subtotal >= Settings::setting('free_shipping_minimum', 75)) {
+                $shippingAmount = 0;
+            } else {
+                $shippingAmount = $request->selected_shipping_amount;
+            }
         }
+
 
         $stateRate = null;
         if (isset($shipping['state_code'])) {
@@ -148,13 +155,18 @@ class CheckoutController extends Controller
 
         // Fallback to Shipping table if state rate not found
         $shippingRate = $stateRate ?? Shipping::where('country_code', $shipping['country_code'])->first();
-        
+
         if (!$shippingRate) {
             $shippingRate = Shipping::where('default', 1)->first();
         }
 
-        $state_tax = $shippingRate->tax ?? ($shippingRate->tax ?? 0);
-        $tax = ($order->subtotal * ($state_tax / 100));
+        if ($order->delivery_option == 'pickup_point') {
+            $tax = 0;
+        } else {
+            $state_tax = $shippingRate->tax ?? ($shippingRate->tax ?? 0);
+            $tax = ($order->subtotal * ($state_tax / 100));
+        }
+
 
         // $free = SohojFacade::freeShippingInfo();
 
@@ -165,21 +177,29 @@ class CheckoutController extends Controller
             'state_tax' => $tax,
             'total' => ($order->subtotal + $shippingAmount + $tax) - $order->discount,
             'payment_method' => $request->payment_method,
+            'bank_payment_status' => $request->payment_method === 'bank_transfer' ? 'pending' : null,
         ]);
         // dd($order);
+
+        // Store order ID in session for guest access to bank transfer page
+        Session::put('last_order_id', $order->id);
 
         $payment = new PaymentService(Order::find($order->id));
         $url = $payment->getPaymentRedirectUrl();
 
-        foreach ($order->childs as $childOrder) {
-            if ($shipping['email']) {
-                Mail::to($shipping['email'])->send(new CustomarOrderPlacedMail($order, $childOrder));
-            }
-            if (optional($childOrder->shop)->email) {
-                Mail::to(optional($childOrder->shop)->email)->send(new VendorOrderPlacedMail($order, $childOrder));
-            }
-            if (Settings::setting('admin_email')) {
-                Mail::to(Settings::setting('admin_email'))->send(new AdminOrderPlacedMail($order, $childOrder));
+        // Send emails based on payment method - bank transfer emails sent after receipt upload
+        if ($request->payment_method !== 'bank_transfer') {
+            // Send regular order placed emails for other payment methods
+            foreach ($order->childs as $childOrder) {
+                if ($shipping['email']) {
+                    Mail::to($shipping['email'])->send(new CustomarOrderPlacedMail($order, $childOrder));
+                }
+                if (optional($childOrder->shop)->email) {
+                    Mail::to(optional($childOrder->shop)->email)->send(new VendorOrderPlacedMail($order, $childOrder));
+                }
+                if (Settings::setting('admin_email')) {
+                    Mail::to(Settings::setting('admin_email'))->send(new AdminOrderPlacedMail($order, $childOrder));
+                }
             }
         }
 

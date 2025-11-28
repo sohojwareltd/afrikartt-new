@@ -27,6 +27,9 @@ class PaymentService
                 return $this->createPayPalCheckoutLink();
             case 'cash':
                 return route('thankyou');
+            case 'bank_transfer':
+            case 'direct_bank_transfer':
+                return route('payment.bank-transfer', ['order' => $this->order->id]);
             default:
                 throw new Exception('Invalid payment method.');
         }

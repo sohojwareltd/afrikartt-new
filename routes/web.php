@@ -139,6 +139,12 @@ Route::group(['prefix' => 'checkout'], function () {
 
 Route::post('/store-checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
+// Bank Transfer Payment Routes
+Route::get('/payment/bank-transfer/{order}', [App\Http\Controllers\BankTransferPaymentController::class, 'showPaymentPage'])->name('payment.bank-transfer');
+Route::post('/payment/bank-transfer/{order}/submit', [App\Http\Controllers\BankTransferPaymentController::class, 'submitPayment'])->name('payment.bank-transfer.submit');
+Route::get('/payment/bank-transfer/success', [App\Http\Controllers\BankTransferPaymentController::class, 'successPage'])->name('payment.bank-transfer.success');
+Route::get('/payment/bank-transfer/{order}/download', [App\Http\Controllers\BankTransferPaymentController::class, 'downloadReceipt'])->name('payment.bank-transfer.download');
+
 //Rating
 Route::post('rating/{product_id}', [PageController::class, 'rating'])->name('rating');
 // Route::get('/profile/{slug}', [PageController::class, 'store_front'])->name('store_front');
