@@ -46,7 +46,7 @@ class OrderResource extends Resource
         $pendingBankPayments = static::$model::where('payment_method', 'bank_transfer')
             ->where('bank_payment_status', 'pending')
             ->count();
-        
+
         return $pendingBankPayments > 0 ? (string) $pendingBankPayments : null;
     }
 
@@ -205,19 +205,22 @@ class OrderResource extends Resource
                         'stripe' => 'Card Payment',
                         'paypal' => 'PayPal',
                         'bank_transfer' => 'Bank Transfer',
-                        default => ucfirst(str_replace('_', ' ', $state ?? 'N/A')),
+                        null => 'N/A',
+                        default => ucfirst(str_replace('_', ' ', $state)),
                     })
                     ->badge()
                     ->icon(fn($state) => match ($state) {
                         'stripe' => 'heroicon-o-credit-card',
                         'paypal' => 'heroicon-o-banknotes',
                         'bank_transfer' => 'heroicon-o-building-library',
+                        null => 'heroicon-o-question-mark-circle',
                         default => 'heroicon-o-currency-dollar',
                     })
                     ->color(fn($state) => match ($state) {
                         'stripe' => 'info',
                         'paypal' => 'warning',
                         'bank_transfer' => 'primary',
+                        null => 'gray',
                         default => 'gray',
                     })
                     ->toggleable(),
@@ -293,10 +296,13 @@ class OrderResource extends Resource
                         'verified' => 'Verified',
                         'rejected' => 'Rejected',
                     ])
-                    ->query(fn(Builder $query, $state) => 
-                        $query->when($state['value'], fn($query) => 
+                    ->query(
+                        fn(Builder $query, $state) =>
+                        $query->when(
+                            $state['value'],
+                            fn($query) =>
                             $query->where('payment_method', 'bank_transfer')
-                                  ->where('bank_payment_status', $state['value'])
+                                ->where('bank_payment_status', $state['value'])
                         )
                     ),
             ])
@@ -313,7 +319,7 @@ class OrderResource extends Resource
                     Tables\Actions\DeleteAction::make()
                         ->label('Delete')
                         ->icon('heroicon-o-trash'),
-                    
+
                     // Bank Transfer Actions
                     Tables\Actions\Action::make('viewReceipt')
                         ->label('View Receipt')
@@ -324,7 +330,7 @@ class OrderResource extends Resource
                         ->modalContent(function (Order $record) {
                             $url = Storage::url($record->bank_transfer_receipt);
                             $extension = pathinfo($record->bank_transfer_receipt, PATHINFO_EXTENSION);
-                            
+
                             if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png'])) {
                                 return view('filament.modals.image-viewer', ['url' => $url]);
                             } else {
@@ -333,7 +339,7 @@ class OrderResource extends Resource
                         })
                         ->modalSubmitAction(false)
                         ->modalCancelActionLabel('Close'),
-                    
+
                     Tables\Actions\Action::make('verifyPayment')
                         ->label('Verify Payment')
                         ->icon('heroicon-o-check-circle')
@@ -357,20 +363,20 @@ class OrderResource extends Resource
                                 'status' => 1, // Set order status to Paid
                                 'payment_status' => 1, // Set payment status to Paid
                             ]);
-                            
+
                             // Send verification email to customer
                             $shipping = json_decode($record->shipping);
                             if ($shipping && isset($shipping->email)) {
                                 Mail::to($shipping->email)->send(new BankTransferPaymentVerifiedMail($record));
                             }
-                            
+
                             Notification::make()
                                 ->title('Payment Verified')
                                 ->success()
                                 ->body('The bank transfer payment has been verified and the customer has been notified.')
                                 ->send();
                         }),
-                    
+
                     Tables\Actions\Action::make('rejectPayment')
                         ->label('Reject Payment')
                         ->icon('heroicon-o-x-circle')
@@ -394,11 +400,11 @@ class OrderResource extends Resource
                                 'bank_payment_notes' => $data['bank_payment_notes'],
                                 'status' => 3, // Set order status to Cancelled
                                 'payment_status' => 0, // Set payment status to Unpaid
-                                
+
                             ]);
-                            
+
                             // TODO: Send rejection email to customer
-                            
+
                             Notification::make()
                                 ->title('Payment Rejected')
                                 ->warning()
