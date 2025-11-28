@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Mail\BankTransferPaymentVerifiedMail;
+use App\Mail\BankTransferPaymentRejectedMail;
 use App\Models\Order;
 use Filament\Forms;
 use Filament\Notifications\Notification;
@@ -412,7 +413,11 @@ class OrderResource extends Resource
 
                             ]);
 
-                            // TODO: Send rejection email to customer
+                            // Send rejection email to customer
+                            $shipping = json_decode($record->shipping);
+                            if ($shipping && isset($shipping->email)) {
+                                Mail::to($shipping->email)->send(new BankTransferPaymentRejectedMail($record));
+                            }
 
                             Notification::make()
                                 ->title('Payment Rejected')
