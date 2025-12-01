@@ -27,18 +27,18 @@ class BankTransferPaymentController extends Controller
         // Security check - ensure order belongs to current user or is guest order
         $shipping = json_decode($order->shipping);
 
-        if (Auth::check()) {
-            // Authenticated user - check ownership
-            if ($order->user_id !== Auth::id()) {
-                abort(403, 'Unauthorized access to this order.');
-            }
-        } else {
-            // Guest order - check session
-            $sessionOrderId = session('last_order_id');
-            if ($sessionOrderId != $order->id) {
-                abort(403, 'Unauthorized access to this order.');
-            }
-        }
+        // if (Auth::check()) {
+        //     // Authenticated user - check ownership
+        //     if ($order->user_id !== Auth::id()) {
+        //         abort(403, 'Unauthorized access to this order.');
+        //     }
+        // } else {
+        //     // Guest order - check session
+        //     $sessionOrderId = session('last_order_id');
+        //     if ($sessionOrderId != $order->id) {
+        //         abort(403, 'Unauthorized access to this order.');
+        //     }
+        // }
 
         // Check if payment method is bank transfer
         if ($order->payment_method !== 'bank_transfer') {
@@ -69,16 +69,16 @@ class BankTransferPaymentController extends Controller
         $settings = BankTransferSetting::settings();
 
         // Security check - ensure order belongs to current user
-        if (Auth::check()) {
-            if ($order->user_id !== Auth::id()) {
-                abort(403, 'Unauthorized access to this order.');
-            }
-        } else {
-            $sessionOrderId = session('last_order_id');
-            if ($sessionOrderId != $order->id) {
-                abort(403, 'Unauthorized access to this order.');
-            }
-        }
+        // if (Auth::check()) {
+        //     if ($order->user_id !== Auth::id()) {
+        //         abort(403, 'Unauthorized access to this order.');
+        //     }
+        // } else {
+        //     $sessionOrderId = session('last_order_id');
+        //     if ($sessionOrderId != $order->id) {
+        //         abort(403, 'Unauthorized access to this order.');
+        //     }
+        // }
 
         // Check if already uploaded
         if ($order->bank_transfer_receipt) {
