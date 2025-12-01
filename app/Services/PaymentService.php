@@ -190,10 +190,10 @@ class PaymentService
         return $taxRates[$state] ?? 0.08; // Default 8%
     }
 
-    public function createPayPalCheckoutLink()
+     public function createPayPalCheckoutLink()
     {
 
-        $endpoint = Settings::setting('paypal_sandbox') == 0
+        $endpoint = Settings::setting('paypal_sandbox')
             ?  'https://api.sandbox.paypal.com/v2/checkout/orders'
             : 'https://api-m.paypal.com/v2/checkout/orders';
         $token = \App\Services\Payouts::token();

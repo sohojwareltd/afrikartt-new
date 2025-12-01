@@ -357,12 +357,16 @@ class CheckoutController extends Controller
         $paypalOrderId = $request->query('token');
         $token = \App\Services\Payouts::token();
 
+        $captureEndpoint = Settings::setting('paypal_sandbox')
+            ? 'https://api.sandbox.paypal.com/v2/checkout/orders/' . $paypalOrderId . '/capture'
+            : 'https://api-m.paypal.com/v2/checkout/orders/' . $paypalOrderId . '/capture';
+
         $captureResponse = Http::withHeaders([
             'Authorization' => 'Bearer ' . $token,
             'Content-Type'  => 'application/json',
         ])
             ->withBody('{}', 'application/json')
-            ->post('https://api-m.sandbox.paypal.com/v2/checkout/orders/' . $paypalOrderId . '/capture');
+            ->post($captureEndpoint);
 
         $paypalData = $captureResponse->json();
 
@@ -372,17 +376,26 @@ class CheckoutController extends Controller
         // Step 3: Save to DB
         $order->update([
             'payment_status' => 1,
+            'status' => 1,
             'transaction_id' => $transactionId,
         ]);
         foreach ($order->childs as $childOrder) {
             $childOrder->update(['payment_status' => 1, 'transaction_id' => $transactionId]);
-            Mail::to($childOrder->shop->email)->send(new VendorOrderSuccessMail($childOrder));
+            if ($childOrder->shop->email) {
+                Mail::to($childOrder->shop->email)->send(new VendorOrderSuccessMail($childOrder));
+            }
         }
-
-        Mail::to(json_decode($order->shipping, true)['email'])->send(new CustomerOrderSuccessMail($order));
+        $shipping = json_decode($order->shipping, true);
+        if ($shipping['email']) {
+            Mail::to($shipping['email'])->send(new CustomerOrderSuccessMail($order));
+        }
         if (Settings::setting('admin_email')) {
             Mail::to(Settings::setting('admin_email'))->send(new AdminOrderSuccessMail($order));
         }
+
+        // Decrease product quantities and increment total_sale
+        $this->decreaseQuantities();
+
         Cart::destroy();
         session()->forget('discount');
         session()->forget('discount_code');
