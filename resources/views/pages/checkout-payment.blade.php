@@ -1076,7 +1076,7 @@
                                         </h4>
 
                                         <div class="payment-methods">
-                                            {{-- <label class="payment-card-option">
+                                            <label class="payment-card-option">
                                                 <input type="radio" name="payment_method" id="paypal"
                                                     value="paypal" class="form-check-input" required>
                                                 <span class="custom-radio-indicator"></span>
@@ -1091,7 +1091,7 @@
                                                             account.</span>
                                                     </span>
                                                 </span>
-                                            </label> --}}
+                                            </label>
 
                                             <label class="payment-card-option">
                                                 <input type="radio" name="payment_method" id="stripe"
