@@ -306,6 +306,12 @@ class CheckoutController extends Controller
     public function handle(Order $order, Request $request)
     {
         $transactionId = $request->get('payment_intent');
+        // Only proceed if transaction ID exists (payment successful)
+        if (!$transactionId) {
+            Log::error('Stripe payment failed - no transaction ID', ['order_id' => $order->id]);
+            return redirect()->route('payment.cancel')->with('error', 'Payment was not successful. Please try again.');
+        }
+        
         $order->update([
             'status' => 1,
             'payment_status' => 1,
@@ -371,7 +377,28 @@ class CheckoutController extends Controller
         $paypalData = $captureResponse->json();
 
         $transactionId = $paypalData['purchase_units'][0]['payments']['captures'][0]['id'] ?? null;
+        $captureStatus = $paypalData['status'] ?? null;
+        $paymentStatus = $paypalData['purchase_units'][0]['payments']['captures'][0]['status'] ?? null;
 
+        // Log the capture attempt
+        Log::info('PayPal Capture Attempt', [
+            'order_id' => $order->id,
+            'transaction_id' => $transactionId,
+            'capture_status' => $captureStatus,
+            'payment_status' => $paymentStatus,
+            'http_status' => $captureResponse->status()
+        ]);
+
+        // Only proceed if capture was successful
+        if (!$transactionId || $paymentStatus !== 'COMPLETED') {
+            Log::error('PayPal capture failed', [
+                'order_id' => $order->id,
+                'transaction_id' => $transactionId,
+                'payment_status' => $paymentStatus,
+                'response' => $paypalData
+            ]);
+            return redirect()->route('payment.cancel')->with('error', 'Payment capture failed. Please contact support.');
+        }
 
         // Step 3: Save to DB
         $order->update([
@@ -380,15 +407,11 @@ class CheckoutController extends Controller
             'transaction_id' => $transactionId,
         ]);
         foreach ($order->childs as $childOrder) {
-            $childOrder->update(['payment_status' => 1, 'transaction_id' => $transactionId]);
-            if ($childOrder->shop->email) {
-                Mail::to($childOrder->shop->email)->send(new VendorOrderSuccessMail($childOrder));
-            }
+            $childOrder->update(['payment_status' => 1, 'transaction_id' => $transactionId, 'status' => 1]);
+            Mail::to($childOrder->shop->email)->send(new VendorOrderSuccessMail($childOrder));
         }
-        $shipping = json_decode($order->shipping, true);
-        if ($shipping['email']) {
-            Mail::to($shipping['email'])->send(new CustomerOrderSuccessMail($order));
-        }
+
+        Mail::to(json_decode($order->shipping, true)['email'])->send(new CustomerOrderSuccessMail($order));
         if (Settings::setting('admin_email')) {
             Mail::to(Settings::setting('admin_email'))->send(new AdminOrderSuccessMail($order));
         }
