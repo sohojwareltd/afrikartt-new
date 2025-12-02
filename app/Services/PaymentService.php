@@ -27,6 +27,9 @@ class PaymentService
                 return $this->createPayPalCheckoutLink();
             case 'cash':
                 return route('thankyou');
+            case 'bank_transfer':
+            case 'direct_bank_transfer':
+                return route('payment.bank-transfer', ['order' => $this->order->id]);
             default:
                 throw new Exception('Invalid payment method.');
         }
@@ -44,7 +47,6 @@ class PaymentService
             // if (empty($shopOrder->p) || empty($shopOrder->quantity)) {
             //     continue;
             // }
-
             $lineItems[] = [
                 'price_data' => [
                     'currency' => 'usd',
@@ -82,19 +84,40 @@ class PaymentService
             ];
         }
 
-        if ($this->order->shipping_total) {
-            $shippingTotal = floatval($this->order->shipping_total);
-            $lineItems[] = [
-                'price_data' => [
-                    'currency' => 'usd',
-                    'product_data' => [
-                        'name' => 'Shipping',
-                        'description' => 'Shipping cost',
+        // Add shipping as a separate line item if applicable
+
+        if ($this->order->delivery_option == 'home_delivery') {
+            if ($this->order->shipping_total) {
+                $shippingTotal = floatval($this->order->shipping_total);
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => [
+                            'name' => 'Shipping',
+                            'description' => 'Shipping cost',
+                        ],
+                        'unit_amount' => floatval($shippingTotal * 100),
                     ],
-                    'unit_amount' => floatval($shippingTotal * 100),
-                ],
-                'quantity' => 1,
-            ];
+                    'quantity' => 1,
+                ];
+            }
+        }
+
+        if ($this->order->delivery_option == 'home_delivery') {
+            if ($this->order->state_tax) {
+                $stateTax = floatval($this->order->state_tax);
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => [
+                            'name' => 'Tax',
+                            'description' => 'Tax',
+                        ],
+                        'unit_amount' => floatval($stateTax * 100),
+                    ],
+                    'quantity' => 1,
+                ];
+            }
         }
         $discounts = [];
 
@@ -167,10 +190,10 @@ class PaymentService
         return $taxRates[$state] ?? 0.08; // Default 8%
     }
 
-    public function createPayPalCheckoutLink()
+     public function createPayPalCheckoutLink()
     {
 
-        $endpoint = Settings::setting('paypal_sandbox') == 0
+        $endpoint = Settings::setting('paypal_sandbox')
             ?  'https://api.sandbox.paypal.com/v2/checkout/orders'
             : 'https://api-m.paypal.com/v2/checkout/orders';
         $token = \App\Services\Payouts::token();

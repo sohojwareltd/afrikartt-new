@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Data\Country\CountryStateCity;
 use App\Models\Coupon;
+use App\Models\Country;
 use App\Models\Product;
+use App\Models\Shipping;
+use App\Models\StateRate;
 use App\Services\Checkout\CheckoutService;
 use App\Services\Checkout\Data\ShippingAndBillingInformationApi;
 use Error;
@@ -67,10 +70,9 @@ class CheckoutController extends Controller
             $checkoutService = new CheckoutService($shippingAndBillingInformation);
             $order           = $checkoutService->createOrder();
 
-            return response()->json([
-                'message' => 'Shipping and billing information stored successfully',
-                'order' => $order,
-            ]);
+            return $order;
+
+            return response()->json(['message' => 'Shipping and billing information stored successfully']);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception  | Error $e) {
@@ -107,14 +109,58 @@ class CheckoutController extends Controller
 
     public function countries()
     {
-        $data = (new CountryStateCity())->countries();
-        return response()->json($data);
+        $countries = Country::where('status', 1)
+            ->orderBy('name', 'asc')
+            ->get(['id', 'name']);
+
+        $formatted = [];
+
+        foreach ($countries as $country) {
+            $formatted[$country->id] = $country->name;
+        }
+
+        return response()->json($formatted);
     }
 
-    public function states($country)
+    public function resolveCountry(Request $request)
     {
-        $data = (new CountryStateCity())->states($country);
-        return response()->json($data);
+        $needle = $request->query('needle');
+        if (!$needle) {
+            return response()->json(['error' => 'needle parameter required'], 400);
+        }
+
+        $country = Country::where('status', 1)
+            ->where(function ($q) use ($needle) {
+                $q->where('code', 'like', $needle . '%')
+                    ->orWhere('name', 'like', '%' . $needle . '%');
+            })
+            ->first(['id', 'name', 'code']);
+
+        if (!$country) {
+            return response()->json(['error' => 'Country not found'], 404);
+        }
+
+        return response()->json([
+            'id' => $country->id,
+            'name' => $country->name,
+            'code' => $country->code,
+        ]);
+    }
+
+    public function states($countryId)
+    {
+        $states = StateRate::where('country_id', $countryId)
+            ->where('status', 1)
+            ->orderBy('state', 'asc')
+            ->get(['id', 'state']);
+
+        $formatted = [];
+
+        foreach ($states as $state) {
+            $formatted[$state->id] = $state->state;
+        }
+
+        return response()->json($formatted);
     }
 
     public function cities($country, $state)
@@ -161,5 +207,38 @@ class CheckoutController extends Controller
             'code' => $data->code,
 
         ], 200);
+    }
+
+    public function shippingRates(Request $request)
+    {
+        $country = $request->query('country');
+
+        $query = Shipping::query();
+
+        // Filter by country name or country code if provided
+        if ($country) {
+            $query->where(function ($q) use ($country) {
+                $q->where('country_name', $country)
+                    ->orWhere('country_code', $country);
+            });
+        }
+
+        $shippingRates = $query->orderBy('country_name', 'asc')
+            ->get()
+            ->map(function ($shipping) {
+                return [
+                    'id' => $shipping->id,
+                    'country_code' => $shipping->country_code,
+                    'country_name' => $shipping->country_name,
+                    'price' => (float) $shipping->price,
+                    'is_default' => (bool) $shipping->default,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'country' => $country,
+            'rates' => $shippingRates
+        ]);
     }
 }

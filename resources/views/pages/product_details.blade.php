@@ -122,9 +122,9 @@
         }
 
         /* @keyframes spin {
-                                                                                                                                                                                                                                                                        from { transform: rotate(0deg); }
-                                                                                                                                                                                                                                                                        to { transform: rotate(360deg); }
-                                                                                                                                                                                                                                                                    } */
+                                                                                                                                                                                                                                                                                from { transform: rotate(0deg); }
+                                                                                                                                                                                                                                                                                to { transform: rotate(360deg); }
+                                                                                                                                                                                                                                                                            } */
 
         .product-title {
             font-size: 0.9rem;
@@ -138,8 +138,8 @@
 
         @media (max-width: 576px) {
             /* .product-image {
-                                                                                                                                                                                                    height: 180px;
-                                                                                                                                                                                                } */
+                                                                                                                                                                                                            height: 180px;
+                                                                                                                                                                                                        } */
 
             .product-content {
                 padding: 12px;
@@ -835,20 +835,21 @@
                                                                 <input type="submit"
                                                                     class="btn btn-sm flex-fill text-light"
                                                                     name="add_to_cart"
+                                                                    @if ($mainProduct->quantity == 0) disabled @endif
                                                                     style="background-color: var(--accent-color); border-radius: 3px"
                                                                     id="add-to-cart-btn" value="Add to Cart">
 
 
-                                                                <button class="btn btn-sm btn-burgundy flex-fill"
+                                                                {{-- <button class="btn btn-sm btn-burgundy flex-fill"
                                                                     style="width: 100%" type="submit" id="buy-now-btn">
                                                                     Buy Now
-                                                                </button>
+                                                                </button> --}}
                                                             </div>
                                                         @endif
                                                         <div>
                                                             @if (!in_array($mainProduct->id, session()->get('wishlist', [])))
                                                                 <a href="{{ route('wishlist.add', ['productId' => $mainProduct->id]) }}"
-                                                                    class="btn btn-outline-dark wishlist">
+                                                                    class="btn btn-sm btn-burgundy flex-fill">
                                                                     Add to wishlist
                                                                 </a>
                                                             @else
@@ -1425,7 +1426,7 @@
             const cartForm = document.getElementById('buy-now-form');
             if (cartForm &&
                 {{ $mainProduct->is_variable_product && $mainProduct->skus && $mainProduct->skus->count() > 0 ? 'true' : 'false' }}
-                ) {
+            ) {
                 cartForm.addEventListener('submit', function(e) {
                     const selectedSku = selectedSkuInput ? selectedSkuInput.value : '';
                     if (!selectedSku) {

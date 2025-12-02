@@ -4,8 +4,13 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
+use App\Mail\BankTransferPaymentVerifiedMail;
+use App\Mail\BankTransferPaymentRejectedMail;
 use App\Models\Order;
 use Filament\Forms;
+use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
@@ -39,10 +44,22 @@ class OrderResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        // TEMPORARILY DISABLED FOR DEBUGGING
-        return null;
-        
-        return static::$model::count();
+        $pendingBankPayments = static::$model::where('payment_method', 'bank_transfer')
+            ->where('bank_payment_status', 'pending')
+            ->count();
+
+        return $pendingBankPayments > 0 ? (string) $pendingBankPayments : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'warning';
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        $count = static::getNavigationBadge();
+        return $count ? "{$count} bank transfer payment(s) pending verification" : null;
     }
 
     public static function canCreate(): bool
@@ -135,9 +152,15 @@ class OrderResource extends Resource
                     ->toggleable(),
                 TextColumn::make('user.name')
                     ->label('Customer')
+                    ->getStateUsing(
+                        fn($record) =>
+                        $record->user?->name
+                            ? $record->user->name
+                            : 'Guest Checkout'
+                    )
+                    ->icon(fn($record) => $record->user ? 'heroicon-o-user' : 'heroicon-o-user-circle')
                     ->sortable()
                     ->searchable()
-                    ->icon('heroicon-o-user')
                     ->toggleable(),
                 // TextColumn::make('shop.name')
                 //     ->label('Shop')
@@ -147,7 +170,8 @@ class OrderResource extends Resource
                 //     ->toggleable(),
                 BadgeColumn::make('status')
                     ->label('Status')
-                    ->formatStateUsing(fn($state) => match ($state) {
+                    ->getStateUsing(fn($record) => $record->status) // FORCE state fix
+                    ->formatStateUsing(fn($state) => match ((int)$state) {
                         0 => 'Pending',
                         1 => 'Paid',
                         2 => 'On Its Way',
@@ -155,7 +179,7 @@ class OrderResource extends Resource
                         4 => 'Delivered',
                         default => 'Unknown',
                     })
-                    ->color(fn($state) => match ($state) {
+                    ->color(fn($state) => match ((int)$state) {
                         0 => 'secondary',
                         1 => 'success',
                         2 => 'warning',
@@ -163,7 +187,7 @@ class OrderResource extends Resource
                         4 => 'primary',
                         default => 'gray',
                     })
-                    ->icon(fn($state) => match ($state) {
+                    ->icon(fn($state) => match ((int)$state) {
                         0 => 'heroicon-o-clock',
                         1 => 'heroicon-o-currency-dollar',
                         2 => 'heroicon-o-truck',
@@ -174,13 +198,68 @@ class OrderResource extends Resource
                     ->toggleable(),
                 BadgeColumn::make('payment_status')
                     ->label('Payment Status')
-                    ->formatStateUsing(fn($state) => match ($state) {
+                    ->formatStateUsing(fn($state) => match ((int) $state) {
                         0 => 'Pending',
                         1 => 'Paid',
+                        2 => 'Failed',
+                        3 => 'Cancelled',
+                        default => 'Unknown',
+                    })
+                    ->color(fn($state) => match ((int) $state) {
+                        0 => 'warning',
+                        1 => 'success',
+                        2 => 'danger',
+                        3 => 'gray',
+                        default => 'secondary',
+                    })
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('payment_method')
+                    ->label('Payment Method')
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'stripe' => 'Card Payment',
+                        'paypal' => 'PayPal',
+                        'bank_transfer' => 'Bank Transfer',
+                        null => 'N/A',
+                        default => ucfirst(str_replace('_', ' ', $state)),
+                    })
+                    ->badge()
+                    ->icon(fn($state) => match ($state) {
+                        'stripe' => 'heroicon-o-credit-card',
+                        'paypal' => 'heroicon-o-banknotes',
+                        'bank_transfer' => 'heroicon-o-building-library',
+                        null => 'heroicon-o-question-mark-circle',
+                        default => 'heroicon-o-currency-dollar',
                     })
                     ->color(fn($state) => match ($state) {
-                        0 => 'danger',
-                        1 => 'success',
+                        'stripe' => 'info',
+                        'paypal' => 'warning',
+                        'bank_transfer' => 'primary',
+                        null => 'gray',
+                        default => 'gray',
+                    })
+                    ->toggleable(),
+                BadgeColumn::make('bank_payment_status')
+                    ->label('Bank Payment')
+                    ->visible(fn($record) => $record && $record->payment_method === 'bank_transfer')
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'pending' => 'Pending Verification',
+                        'verified' => 'Verified',
+                        'rejected' => 'Rejected',
+                        default => 'N/A',
+                    })
+                    ->color(fn($state) => match ($state) {
+                        'pending' => 'warning',
+                        'verified' => 'success',
+                        'rejected' => 'danger',
+                        default => 'gray',
+                    })
+                    ->icon(fn($state) => match ($state) {
+                        'pending' => 'heroicon-o-clock',
+                        'verified' => 'heroicon-o-check-badge',
+                        'rejected' => 'heroicon-o-x-circle',
+                        default => 'heroicon-o-question-mark-circle',
                     })
                     ->toggleable(),
                 TextColumn::make('total')
@@ -219,6 +298,29 @@ class OrderResource extends Resource
                 Tables\Filters\Filter::make('order_accept')
                     ->label('Accepted')
                     ->query(fn(Builder $query) => $query->where('order_accept', true)),
+                Tables\Filters\SelectFilter::make('payment_method')
+                    ->label('Payment Method')
+                    ->options([
+                        'stripe' => 'Card Payment (Stripe)',
+                        'paypal' => 'PayPal',
+                        'bank_transfer' => 'Bank Transfer',
+                    ]),
+                Tables\Filters\SelectFilter::make('bank_payment_status')
+                    ->label('Bank Payment Status')
+                    ->options([
+                        'pending' => 'Pending Verification',
+                        'verified' => 'Verified',
+                        'rejected' => 'Rejected',
+                    ])
+                    ->query(
+                        fn(Builder $query, $state) =>
+                        $query->when(
+                            $state['value'],
+                            fn($query) =>
+                            $query->where('payment_method', 'bank_transfer')
+                                ->where('bank_payment_status', $state['value'])
+                        )
+                    ),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -233,6 +335,102 @@ class OrderResource extends Resource
                     Tables\Actions\DeleteAction::make()
                         ->label('Delete')
                         ->icon('heroicon-o-trash'),
+
+                    // Bank Transfer Actions
+                    Tables\Actions\Action::make('viewReceipt')
+                        ->label('View Receipt')
+                        ->icon('heroicon-o-document-magnifying-glass')
+                        ->color('info')
+                        ->visible(fn(Order $record) => $record->payment_method === 'bank_transfer' && $record->bank_transfer_receipt)
+                        ->modalHeading('Payment Receipt')
+                        ->modalContent(function (Order $record) {
+                            $url = Storage::url($record->bank_transfer_receipt);
+                            $extension = pathinfo($record->bank_transfer_receipt, PATHINFO_EXTENSION);
+
+                            if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png'])) {
+                                return view('filament.modals.image-viewer', ['url' => $url]);
+                            } else {
+                                return view('filament.modals.pdf-viewer', ['url' => $url]);
+                            }
+                        })
+                        ->modalSubmitAction(false)
+                        ->modalCancelActionLabel('Close'),
+
+                    Tables\Actions\Action::make('verifyPayment')
+                        ->label('Verify Payment')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->visible(fn(Order $record) => $record->payment_method === 'bank_transfer' && $record->bank_payment_status === 'pending')
+                        ->requiresConfirmation()
+                        ->modalHeading('Verify Bank Transfer Payment')
+                        ->modalDescription('Are you sure you want to mark this payment as verified? The customer will be notified via email.')
+                        ->form([
+                            Textarea::make('bank_payment_notes')
+                                ->label('Notes (Optional)')
+                                ->placeholder('Add any notes about the payment verification...')
+                                ->rows(3),
+                        ])
+                        ->action(function (Order $record, array $data) {
+                            $record->update([
+                                'bank_payment_status' => 'verified',
+                                'bank_payment_verified_at' => now(),
+                                'bank_payment_verified_by' => auth()->id(),
+                                'bank_payment_notes' => $data['bank_payment_notes'] ?? null,
+                                'status' => 1, // Set order status to Paid
+                                'payment_status' => 1, // Set payment status to Paid
+                            ]);
+
+                            // Send verification email to customer
+                            $shipping = json_decode($record->shipping);
+                            if ($shipping && isset($shipping->email)) {
+                                Mail::to($shipping->email)->send(new BankTransferPaymentVerifiedMail($record));
+                            }
+
+                            Notification::make()
+                                ->title('Payment Verified')
+                                ->success()
+                                ->body('The bank transfer payment has been verified and the customer has been notified.')
+                                ->send();
+                        }),
+
+                    Tables\Actions\Action::make('rejectPayment')
+                        ->label('Reject Payment')
+                        ->icon('heroicon-o-x-circle')
+                        ->color('danger')
+                        ->visible(fn(Order $record) => $record->payment_method === 'bank_transfer' && $record->bank_payment_status === 'pending')
+                        ->requiresConfirmation()
+                        ->modalHeading('Reject Bank Transfer Payment')
+                        ->modalDescription('Please provide a reason for rejecting this payment. The customer will be notified.')
+                        ->form([
+                            Textarea::make('bank_payment_notes')
+                                ->label('Rejection Reason')
+                                ->placeholder('Please explain why this payment is being rejected...')
+                                ->required()
+                                ->rows(4),
+                        ])
+                        ->action(function (Order $record, array $data) {
+                            $record->update([
+                                'bank_payment_status' => 'rejected',
+                                'bank_payment_verified_at' => now(),
+                                'bank_payment_verified_by' => auth()->id(),
+                                'bank_payment_notes' => $data['bank_payment_notes'],
+                                'status' => 3, // Set order status to Cancelled
+                                'payment_status' => 0, // Set payment status to Unpaid
+
+                            ]);
+
+                            // Send rejection email to customer
+                            $shipping = json_decode($record->shipping);
+                            if ($shipping && isset($shipping->email)) {
+                                Mail::to($shipping->email)->send(new BankTransferPaymentRejectedMail($record));
+                            }
+
+                            Notification::make()
+                                ->title('Payment Rejected')
+                                ->warning()
+                                ->body('The bank transfer payment has been rejected and the customer has been notified.')
+                                ->send();
+                        }),
                 ]),
             ])
             ->bulkActions([
@@ -251,7 +449,7 @@ class OrderResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->whereNull('parent_id');
+        return parent::getEloquentQuery()->whereNull('parent_id')->latest();
     }
 
     public static function getPages(): array

@@ -140,18 +140,30 @@ class Sohoj
         $country = strtoupper(Session::get('detected_country', 'US'));
         $subtotal = Cart::subtotal();
 
-        if ($country === 'US' && $subtotal >= 75) {
-            return ['eligible' => true, 'message' => 'Free Shipping – Applied!'];
-        }
+        // Free shipping for US only
+        if (in_array($country, ['US', 'USA'])) {
 
-        if ($country === 'US' && $subtotal < 75) {
+            // Eligible
+            if ($subtotal >= Settings::setting('free_shipping_amount', 75)) {
+                return [
+                    'eligible' => true,
+                    'message' => 'Free Shipping – Applied!'
+                ];
+            }
+
+            // Not eligible: show remaining
             $remaining = 75 - $subtotal;
+
             return [
                 'eligible' => false,
                 'message' => "Add $" . number_format($remaining, 2) . " more for free U.S. shipping!"
             ];
         }
 
-        return ['eligible' => false, 'message' => null];
+        // Non-US countries = no free shipping
+        return [
+            'eligible' => false,
+            'message' => null
+        ];
     }
 }

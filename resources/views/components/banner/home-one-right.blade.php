@@ -1,4 +1,4 @@
-<div>
+<div class="w-100 h-auto">
     <!-- The whole future lies in uncertainty: live immediately. - Seneca -->
     @if ($banner->image)
         <img src="{{ Storage::url($banner->image) }}" onclick="window.location.href='{{ $banner->url }}'"

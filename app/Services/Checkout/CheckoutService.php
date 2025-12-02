@@ -17,31 +17,32 @@ use Sohoj;
 class CheckoutService
 {
     public Cart $cart;
-    public array $address;
+    public ShippingAndBillingInformation $address;
     public  $customer;
     public float $cartSubtotal;
     public float $platformFee;
     public float $discount;
     public float $total;
+    public ?string $delivery_option;
     public string | null $discountCode;
     public float $tax;
-    public function __construct(
-        array $shippingAndBillingInformation,
-
+     public function __construct(
+        ShippingAndBillingInformation $shippingAndBillingInformation,
+        ?string $delivery_option = null
 
 
     ) {
-        
+
         $this->address = $shippingAndBillingInformation;
+        $this->delivery_option = $delivery_option;
 
         $this->cart = new Cart();
-       
-        if(Auth::check()){ 
+
+        if (Auth::check()) {
             $this->customer = Auth::user();
-        }elseif(Auth::guard('sanctum')->check()){
+        } elseif (Auth::guard('sanctum')->check()) {
             $this->customer = Auth::guard('sanctum')->user();
-        }
-        else{
+        } else {
             $this->customer = null;
         }
 
@@ -100,6 +101,7 @@ class CheckoutService
             'discount' => $this->discount,
             'discount_code' => $this->discountCode,
             'tax' => $this->tax,
+            'delivery_option' => $this->delivery_option,
             'platform_fee' => $this->platformFee,
             'total' => $this->total,
         ]);
