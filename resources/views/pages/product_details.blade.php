@@ -122,9 +122,9 @@
         }
 
         /* @keyframes spin {
-                                                                                                                                                                                                                                                                                from { transform: rotate(0deg); }
-                                                                                                                                                                                                                                                                                to { transform: rotate(360deg); }
-                                                                                                                                                                                                                                                                            } */
+                                                                                                                                                                                                                                                                                            from { transform: rotate(0deg); }
+                                                                                                                                                                                                                                                                                            to { transform: rotate(360deg); }
+                                                                                                                                                                                                                                                                                        } */
 
         .product-title {
             font-size: 0.9rem;
@@ -138,8 +138,8 @@
 
         @media (max-width: 576px) {
             /* .product-image {
-                                                                                                                                                                                                            height: 180px;
-                                                                                                                                                                                                        } */
+                                                                                                                                                                                                                        height: 180px;
+                                                                                                                                                                                                                    } */
 
             .product-content {
                 padding: 12px;
@@ -1202,15 +1202,16 @@
             }
 
             const goToSkuSlideById = (skuId) => {
+                console.log('goToSkuSlideById', skuId);
                 if (!window.jQuery) {
-                    return;
+                    return false;
                 }
 
                 const $coverSlider = window.jQuery('.single-product-cover');
                 if (!$coverSlider.length || !$coverSlider.hasClass('slick-initialized')) {
                     // Wait a bit for slick to initialize
                     setTimeout(() => goToSkuSlideById(skuId), 100);
-                    return;
+                    return false;
                 }
 
                 // Get all original slides (not cloned) in order
@@ -1219,38 +1220,38 @@
 
                 if (skuId) {
                     // Find the slide with matching SKU ID
-                    $originalSlides.each(function(index) {
+                    // Convert to string for consistent comparison (data attributes are always strings)
+                    const skuIdStr = String(skuId);
+                    $originalSlides.each(function(index, el) {
+
                         const $slide = window.jQuery(this);
-                        if ($slide.attr('data-sku-id') == skuId) {
-                            targetIndex = index;
+
+                        const slideSkuId = $(el).attr('data-sku-id');
+                        // Compare as strings since data attributes are always strings
+                        if (slideSkuId && String(slideSkuId) == skuIdStr) {
+
+
+                            targetIndex = $(el).parent().parent().attr('data-slick-index');
+                            console.log('targetIndex', targetIndex);
                             return false; // break
                         }
                     });
                 }
-
+                console.log('targetIndex', targetIndex);
                 // If no SKU slide found or no SKU ID, go to default
-                if (targetIndex === -1) {
-                    $originalSlides.each(function(index) {
-                        const $slide = window.jQuery(this);
-                        if ($slide.attr('data-sku-default') === 'true') {
-                            targetIndex = index;
-                            return false; // break
-                        }
-                    });
 
-                    // Fallback to first slide if no default found
-                    if (targetIndex === -1) {
-                        targetIndex = 0;
-                    }
+
+
+                try {
+                    $coverSlider.slick('slickGoTo', targetIndex, false);
+                    return true;
+                } catch (e) {
+                    console.warn('Error navigating slick slider:', e);
+                    return false;
                 }
 
-                if (targetIndex >= 0) {
-                    try {
-                        $coverSlider.slick('slickGoTo', targetIndex, false);
-                    } catch (e) {
-                        console.warn('Error navigating slick slider:', e);
-                    }
-                }
+
+                return false;
             };
 
             function selectAttributesForSku(sku) {
@@ -1334,14 +1335,90 @@
                 if (productSku) productSku.textContent = sku.sku;
                 if (selectedSkuInput) selectedSkuInput.value = sku.sku;
 
-                // Update main product image if SKU has an image
-                if (sku.image && mainProductImage) {
-                    mainProductImage.src = sku.image;
-                    mainProductImage.alt = 'Selected variation: ' + (sku.title || sku.sku);
-                } else if (mainProductImage) {
-                    // Reset to original image if no SKU image
-                    mainProductImage.src = originalImage;
-                    mainProductImage.alt = MAIN_PRODUCT.name;
+                // Resolve best image for this SKU:
+                //   1) Use SKU image if present
+                //   2) Otherwise, use the first image-type attribute's image_path
+                //   3) Fallback to original product image
+                let variantImage = sku.image || null;
+
+                if (!variantImage && sku.attributes) {
+                    for (const attr of Object.values(sku.attributes)) {
+                        if (attr.type === 'image' && attr.image_path) {
+                            variantImage = '{{ url('storage/') }}/' + attr.image_path;
+                            break;
+                        }
+                    }
+                }
+
+                // Priority 1: Navigate to SKU-specific slide if it exists (dedicated slide with data-sku-id)
+                let hasSkuSlide = false;
+                if (sku.image && sku.id && window.jQuery) {
+                    const $coverSlider = window.jQuery('.single-product-cover');
+                    if ($coverSlider.length && $coverSlider.hasClass('slick-initialized')) {
+                        const $slides = $coverSlider.find('.single-slide:not(.slick-cloned)');
+                        // Convert sku.id to string for consistent comparison (data attributes are always strings)
+                        const skuIdStr = String(sku.id);
+                        $slides.each(function() {
+                            const $slide = window.jQuery(this);
+                            const slideSkuId = $slide.attr('data-sku-id');
+                            // Compare as strings since data attributes are always strings
+                            if (slideSkuId && String(slideSkuId) === skuIdStr) {
+                                hasSkuSlide = true;
+                                return false; // break
+                            }
+                        });
+                    }
+                }
+
+                // Navigate to SKU slide if it exists, otherwise handle image update
+                if (hasSkuSlide) {
+                    // Navigate to the dedicated SKU slide
+
+                    goToSkuSlideById(sku.id);
+                } else if (variantImage) {
+                    // No dedicated slide, so update the current visible slide's image
+                    if (window.jQuery) {
+                        const $coverSlider = window.jQuery('.single-product-cover');
+                        if ($coverSlider.length && $coverSlider.hasClass('slick-initialized')) {
+                            // Wait a moment for any slider animations, then update the visible image
+                            setTimeout(() => {
+                                const $currentSlide = $coverSlider.find('.slick-current img');
+                                if ($currentSlide.length) {
+                                    $currentSlide.attr('src', variantImage);
+                                    $currentSlide.attr('alt', 'Selected variation: ' + (sku.title || sku
+                                        .sku));
+                                }
+                            }, 100);
+                        } else {
+                            // Fallback if slick not initialized
+                            if (mainProductImage) {
+                                mainProductImage.src = variantImage;
+                                mainProductImage.alt = 'Selected variation: ' + (sku.title || sku.sku);
+                            }
+                        }
+                    } else {
+                        // Fallback if jQuery not available
+                        if (mainProductImage) {
+                            mainProductImage.src = variantImage;
+                            mainProductImage.alt = 'Selected variation: ' + (sku.title || sku.sku);
+                        }
+                    }
+                } else {
+                    // No variant image, go back to default slide and reset image
+                    goToSkuSlideById(null);
+                    // Also ensure image is reset to original
+                    if (window.jQuery) {
+                        setTimeout(() => {
+                            const $coverSlider = window.jQuery('.single-product-cover');
+                            if ($coverSlider.length && $coverSlider.hasClass('slick-initialized')) {
+                                const $currentSlide = $coverSlider.find('.slick-current img');
+                                if ($currentSlide.length) {
+                                    $currentSlide.attr('src', originalImage);
+                                    $currentSlide.attr('alt', MAIN_PRODUCT.name);
+                                }
+                            }
+                        }, 100);
+                    }
                 }
 
                 // Update variant info
@@ -1357,7 +1434,10 @@
                     buyNowBtn.textContent = sku.quantity <= 0 ? 'Out of Stock' : 'Buy Now';
                 }
 
-                goToSkuSlideById(sku.image ? sku.id : null);
+                // Navigate to default if no SKU-specific slide
+                if (!sku.image || !sku.id) {
+                    goToSkuSlideById(null);
+                }
             }
 
             // Listen for attribute changes
