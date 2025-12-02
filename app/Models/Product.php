@@ -37,22 +37,6 @@ class Product extends Model
         return json_decode($value, true);
     }
 
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::saved(function ($product) {
-            if ($product->isDirty('featured')) {
-                Cache::forget('homepage_data');
-            }
-        });
-
-        static::deleted(function ($product) {
-            Cache::forget('homepage_data');
-        });
-    }
-
     public function shop()
     {
         return $this->belongsTo(Shop::class);
