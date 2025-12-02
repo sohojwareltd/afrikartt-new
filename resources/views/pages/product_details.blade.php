@@ -1333,14 +1333,29 @@
                 if (productSku) productSku.textContent = sku.sku;
                 if (selectedSkuInput) selectedSkuInput.value = sku.sku;
 
-                // Update main product image if SKU has an image
-                if (sku.image && mainProductImage) {
-                    mainProductImage.src = sku.image;
-                    mainProductImage.alt = 'Selected variation: ' + (sku.title || sku.sku);
-                } else if (mainProductImage) {
-                    // Reset to original image if no SKU image
-                    mainProductImage.src = originalImage;
-                    mainProductImage.alt = MAIN_PRODUCT.name;
+                // Resolve best image for this SKU:
+                //   1) Use SKU image if present
+                //   2) Otherwise, use the first image-type attribute's image_path
+                //   3) Fallback to original product image
+                if (mainProductImage) {
+                    let variantImage = sku.image || null;
+
+                    if (!variantImage && sku.attributes) {
+                        for (const attr of Object.values(sku.attributes)) {
+                            if (attr.type === 'image' && attr.image_path) {
+                                variantImage = '{{ url('storage/') }}/' + attr.image_path;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (variantImage) {
+                        mainProductImage.src = variantImage;
+                        mainProductImage.alt = 'Selected variation: ' + (sku.title || sku.sku);
+                    } else {
+                        mainProductImage.src = originalImage;
+                        mainProductImage.alt = MAIN_PRODUCT.name;
+                    }
                 }
 
                 // Update variant info
@@ -1356,6 +1371,8 @@
                     buyNowBtn.textContent = sku.quantity <= 0 ? 'Out of Stock' : 'Buy Now';
                 }
 
+                // Only navigate slider when SKU has its own image slide;
+                // attribute-only images won't have dedicated slides.
                 goToSkuSlideById(sku.image ? sku.id : null);
             }
 
