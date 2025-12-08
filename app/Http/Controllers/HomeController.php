@@ -519,4 +519,105 @@ class HomeController extends Controller
 
         return back()->with('success_msg', 'Password updated successfully!');
     }
+
+    public function updateVendorData(Request $request)
+    {
+        $user = auth()->user();
+        $shop = $user->shop;
+
+        if (!$shop) {
+            return back()->with('error', 'Shop not found');
+        }
+
+        // Get existing vendor data
+        $vendorData = is_string($shop->vendor_data)
+            ? json_decode($shop->vendor_data, true)
+            : ($shop->vendor_data ?? []);
+
+        // Update vendor data based on section
+        $section = $request->input('section');
+
+        switch ($section) {
+            case 'business':
+                $vendorData['contact_person'] = $request->input('contact_person');
+                $vendorData['business_type'] = $request->input('business_type');
+                $vendorData['years_operation'] = $request->input('years_operation');
+                $vendorData['employee_count'] = $request->input('employee_count');
+                $vendorData['website_social'] = $request->input('website_social');
+                break;
+
+            case 'production':
+                $vendorData['product_categories'] = $request->input('product_categories');
+                $vendorData['materials_used'] = $request->input('materials_used');
+                $vendorData['production_capacity'] = $request->input('production_capacity');
+                $vendorData['lead_time'] = $request->input('lead_time');
+                $vendorData['quality_control'] = $request->input('quality_control');
+                $vendorData['certifications'] = $request->input('certifications');
+                $vendorData['packaging_type'] = $request->input('packaging_type');
+                $vendorData['storage_conditions'] = $request->input('storage_conditions');
+                $vendorData['export_standards'] = $request->input('export_standards');
+                break;
+
+            case 'shipping':
+                $vendorData['export_license'] = $request->input('export_license');
+                $vendorData['export_license_number'] = $request->input('export_license_number');
+                $vendorData['export_experience'] = $request->input('export_experience');
+                $vendorData['export_partner'] = $request->input('export_partner');
+                $vendorData['shipping_method'] = $request->input('shipping_method');
+                $vendorData['export_port'] = $request->input('export_port');
+                $vendorData['shipment_frequency'] = $request->input('shipment_frequency');
+                $vendorData['export_readiness'] = $request->input('export_readiness');
+                break;
+        }
+
+        // Save updated vendor data
+        $shop->vendor_data = json_encode($vendorData);
+        $shop->save();
+
+        return back()->with('success_msg', ucfirst($section) . ' information updated successfully!');
+    }
+
+    public function updateBankAccount(Request $request)
+    {
+        $user = auth()->user();
+
+        if (!$user->shop) {
+            return back()->with('error', 'Shop not found');
+        }
+
+        $validated = $request->validate([
+            'account_holder' => 'required|string|max:255',
+            'bank_name' => 'required|string|max:255',
+            'account_number' => 'required|string|max:50',
+            'routing_number' => 'nullable|string|max:50',
+            'swift_code' => 'nullable|string|max:50',
+            'currency' => 'required|string|max:10',
+            'account_type' => 'required|in:Checking,Savings',
+        ]);
+
+        $bankAccountData = [
+            'user_id' => $user->id,
+            'account_holder' => $validated['account_holder'],
+            'bank_name' => $validated['bank_name'],
+            'account_number' => $validated['account_number'],
+            'routing_number' => $validated['routing_number'],
+            'swift_code' => $validated['swift_code'],
+            'currency' => $validated['currency'],
+            'account_type' => $validated['account_type'],
+            'status' => 'active',
+            'is_default' => true,
+        ];
+
+        // Update or create bank account
+        if ($request->bank_account_id) {
+            $bankAccount = BankAccount::find($request->bank_account_id);
+            if ($bankAccount && $bankAccount->user_id == $user->id) {
+                $bankAccount->update($bankAccountData);
+            }
+        } else {
+            BankAccount::create($bankAccountData);
+        }
+
+        return back()->with('success_msg', 'Bank account updated successfully!');
+    }
 }

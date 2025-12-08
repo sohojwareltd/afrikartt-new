@@ -1120,6 +1120,22 @@ class ProductResource extends Resource
                     Tables\Actions\EditAction::make()
                         ->label('Edit Product')
                         ->icon('heroicon-o-pencil-square'),
+                    Tables\Actions\Action::make('activate')
+                        ->label('Activate')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->action(fn($record) => $record->update(['status' => true]))
+                        ->visible(fn($record) => !$record->status)
+                        ->successNotificationTitle('Product activated successfully'),
+                    Tables\Actions\Action::make('deactivate')
+                        ->label('Deactivate')
+                        ->icon('heroicon-o-x-circle')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->action(fn($record) => $record->update(['status' => false]))
+                        ->visible(fn($record) => $record->status)
+                        ->successNotificationTitle('Product deactivated successfully'),
                     Tables\Actions\DeleteAction::make()
                         ->label('Delete Product')
                         ->icon('heroicon-o-trash'),

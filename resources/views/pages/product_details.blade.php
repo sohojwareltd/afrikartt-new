@@ -835,7 +835,6 @@
                                                                 <input type="submit"
                                                                     class="btn btn-sm flex-fill text-light"
                                                                     name="add_to_cart"
-                                                                    @if ($mainProduct->quantity == 0) disabled @endif
                                                                     style="background-color: var(--accent-color); border-radius: 3px"
                                                                     id="add-to-cart-btn" value="Add to Cart">
 

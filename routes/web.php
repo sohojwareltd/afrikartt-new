@@ -353,6 +353,9 @@ Route::post('vendor/vendor-profile-page', [HomeController::class, 'logoCover'])-
 Route::post('vendor/personal-info', [HomeController::class, 'personalInfoUpdate'])->name('vendor.personal_info');
 Route::post('/vendor/update-password', [HomeController::class, 'updatePassword'])
     ->name('vendor.update_password');
+Route::post('vendor/update-vendor-data', [HomeController::class, 'updateVendorData'])->name('vendor.update_vendor_data');
+Route::post('vendor/update-bank-account', [HomeController::class, 'updateBankAccount'])->name('vendor.update_bank_account');
+
 
 // CSRF token refresh endpoint
 Route::get('refresh-csrf-token', function () {

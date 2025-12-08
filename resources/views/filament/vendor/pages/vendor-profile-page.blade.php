@@ -209,18 +209,25 @@
         $radius = 28;
         $circumference = 2 * M_PI * $radius;
         $offset = $circumference * (1 - $profileCompletion / 100);
+
+        // Parse vendor data once for all tabs
+        $vendorData = is_string($shop->vendor_data ?? null)
+            ? json_decode($shop->vendor_data, true)
+            : $shop->vendor_data ?? [];
     @endphp
 
     <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
             <!-- Success Alert Box -->
-            @if(session('success_msg'))
+            @if (session('success_msg'))
                 <div class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd"></path>
                             </svg>
                         </div>
                         <div class="ml-3">
@@ -230,10 +237,14 @@
                         </div>
                         <div class="ml-auto pl-3">
                             <div class="-mx-1.5 -my-1.5">
-                                <button type="button" onclick="this.parentElement.parentElement.parentElement.parentElement.remove()" class="inline-flex bg-green-50 text-green-500 rounded-full p-1.5 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-50 focus:ring-green-600">
+                                <button type="button"
+                                    onclick="this.parentElement.parentElement.parentElement.parentElement.remove()"
+                                    class="inline-flex bg-green-50 text-green-500 rounded-full p-1.5 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-50 focus:ring-green-600">
                                     <span class="sr-only">Dismiss</span>
                                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                        <path fill-rule="evenodd"
+                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                            clip-rule="evenodd"></path>
                                     </svg>
                                 </button>
                             </div>
@@ -270,7 +281,6 @@
                                         $isVideo = $bannerPath && in_array($extension, $videoExtensions);
                                         $isImage = $bannerPath && in_array($extension, $imageExtensions);
                                     @endphp
-                                    {{-- @dd($bannerPath, $isVideo, $isImage) --}}
                                     @if ($bannerPath)
                                         @if ($isVideo)
                                             <video src="{{ Storage::url($bannerPath) }}" autoplay muted loop
@@ -344,16 +354,22 @@
                                         </span>
                                         @if ($shop)
                                             @if ($shop->status == 1)
-                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200 shadow-sm ms-1">
-                                                    <svg class="w-4 h-4 mr-1 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                                                <span
+                                                    class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200 shadow-sm ms-1">
+                                                    <svg class="w-4 h-4 mr-1 text-green-500" fill="none"
+                                                        stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M5 13l4 4L19 7" />
                                                     </svg>
                                                     Shop Active
                                                 </span>
                                             @else
-                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200 shadow-sm ms-1">
-                                                    <svg class="w-4 h-4 mr-1 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-12.728 12.728M5.636 5.636l12.728 12.728"/>
+                                                <span
+                                                    class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200 shadow-sm ms-1">
+                                                    <svg class="w-4 h-4 mr-1 text-red-500" fill="none"
+                                                        stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M18.364 5.636l-12.728 12.728M5.636 5.636l12.728 12.728" />
                                                     </svg>
                                                     Shop Inactive
                                                 </span>
@@ -393,43 +409,55 @@
             <div x-data="{ tab: 'personal' }"
                 class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mt-6">
                 <!-- Enhanced Tab Navigation -->
-                <div class="border-b border-gray-200 bg-gray-50">
-                    <nav class="flex space-x-8 px-6" aria-label="Tabs">
+                <div class="border-b border-gray-200 bg-white">
+                    <nav class="flex flex-wrap gap-1 px-6" aria-label="Tabs">
                         <button @click="tab = 'personal'"
-                            :class="tab === 'personal' ? 'border-primary-600 text-primary-600' :
-                                'border-transparent text-gray-500 hover:text-primary-600 hover:border-primary-600'"
-                            class="py-4 px-1 border-b-2 font-medium text-sm transition">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
-                                Shop Information
-                            </div>
+                            :class="tab === 'personal' ? 'border-primary-600 text-primary-600 bg-primary-50' :
+                                'border-transparent text-gray-600 hover:text-primary-600 hover:border-primary-300 hover:bg-gray-50'"
+                            class="py-3 px-4 border-b-2 font-medium text-sm transition-all whitespace-nowrap">
+                            Shop Information
                         </button>
                         <button @click="tab = 'shop'"
-                            :class="tab === 'shop' ? 'border-primary-600 text-primary-600' :
-                                'border-transparent text-gray-500 hover:text-primary-600 hover:border-primary-600'"
-                            class="py-4 px-1 border-b-2 font-medium text-sm transition">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                                Personal Information
-                            </div>
+                            :class="tab === 'shop' ? 'border-primary-600 text-primary-600 bg-primary-50' :
+                                'border-transparent text-gray-600 hover:text-primary-600 hover:border-primary-300 hover:bg-gray-50'"
+                            class="py-3 px-4 border-b-2 font-medium text-sm transition-all whitespace-nowrap">
+                            Personal Info
                         </button>
                         <button @click="tab = 'security'"
-                            :class="tab === 'security' ? 'border-primary-600 text-primary-600' :
-                                'border-transparent text-gray-500 hover:text-primary-600 hover:border-primary-600'"
-                            class="py-4 px-1 border-b-2 font-medium text-sm transition">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                </svg>
-                                Security & Privacy
-                            </div>
+                            :class="tab === 'security' ? 'border-primary-600 text-primary-600 bg-primary-50' :
+                                'border-transparent text-gray-600 hover:text-primary-600 hover:border-primary-300 hover:bg-gray-50'"
+                            class="py-3 px-4 border-b-2 font-medium text-sm transition-all whitespace-nowrap">
+                            Security
+                        </button>
+                        <button @click="tab = 'business'"
+                            :class="tab === 'business' ? 'border-primary-600 text-primary-600 bg-primary-50' :
+                                'border-transparent text-gray-600 hover:text-primary-600 hover:border-primary-300 hover:bg-gray-50'"
+                            class="py-3 px-4 border-b-2 font-medium text-sm transition-all whitespace-nowrap">
+                            Business
+                        </button>
+                        <button @click="tab = 'production'"
+                            :class="tab === 'production' ? 'border-primary-600 text-primary-600 bg-primary-50' :
+                                'border-transparent text-gray-600 hover:text-primary-600 hover:border-primary-300 hover:bg-gray-50'"
+                            class="py-3 px-4 border-b-2 font-medium text-sm transition-all whitespace-nowrap">
+                            Production
+                        </button>
+                        <button @click="tab = 'shipping'"
+                            :class="tab === 'shipping' ? 'border-primary-600 text-primary-600 bg-primary-50' :
+                                'border-transparent text-gray-600 hover:text-primary-600 hover:border-primary-300 hover:bg-gray-50'"
+                            class="py-3 px-4 border-b-2 font-medium text-sm transition-all whitespace-nowrap">
+                            Shipping
+                        </button>
+                        <button @click="tab = 'payment'"
+                            :class="tab === 'payment' ? 'border-primary-600 text-primary-600 bg-primary-50' :
+                                'border-transparent text-gray-600 hover:text-primary-600 hover:border-primary-300 hover:bg-gray-50'"
+                            class="py-3 px-4 border-b-2 font-medium text-sm transition-all whitespace-nowrap">
+                            Payment
+                        </button>
+                        <button @click="tab = 'documents'"
+                            :class="tab === 'documents' ? 'border-primary-600 text-primary-600 bg-primary-50' :
+                                'border-transparent text-gray-600 hover:text-primary-600 hover:border-primary-300 hover:bg-gray-50'"
+                            class="py-3 px-4 border-b-2 font-medium text-sm transition-all whitespace-nowrap">
+                            Documents
                         </button>
                     </nav>
                 </div>
@@ -482,14 +510,6 @@
                                         <input type="file" name="avatar"
                                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500">
                                     </div>
-                                    {{-- @dd($user->avatar) --}}
-                                    {{-- @if ($user->avatar)
-                                        <div class="col-span-1 md:col-span-2">
-                                        <label class="block mb-1">Avatar</label>
-                                        <img src="{{ Storage::url($user->avatar) }}" alt="User Avatar"
-                                            class="w-20 h-20 object-cover mt-2 border border-gray-300 shadow" />
-                                    </div>
-                                    @endif --}}
                                 </div>
                                 <div class="flex justify-end mt-6">
                                     <button type="submit"
@@ -544,34 +564,51 @@
 
                             </div>
 
-                        
+
                         </div>
                     </div>
+
+                    {{-- Business Information Tab (Editable) --}}
+                    <x-shop.tabs.business-editable :shop="$shop" :vendorData="$vendorData" />
+
+                    {{-- Production Details Tab (Editable) --}}
+                    <x-shop.tabs.production-editable :shop="$shop" :vendorData="$vendorData" />
+
+                    {{-- Shipping & Export Tab (Editable) --}}
+                    <x-shop.tabs.shipping-editable :shop="$shop" :vendorData="$vendorData" />
+
+                    {{-- Payment & Banking Tab (Editable) --}}
+                    <x-shop.tabs.payment-editable :shop="$shop" :vendorData="$vendorData" />
+
+                    {{-- Documents Tab --}}
+                    <x-shop.tabs.documents :shop="$shop" :vendorData="$vendorData" />
                 </div>
             </div>
 
         </div>
     </div>
 
-    @push('scripts')
+   @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const bannerInput = document.getElementById('banner-upload');
                 const logoInput = document.getElementById('logo-upload');
 
-                bannerInput.addEventListener('change', function() {
-                    this.closest('form').submit();
-                });
+                if (bannerInput) {
+                    bannerInput.addEventListener('change', function() {
+                        if (this.files && this.files.length > 0) {
+                            this.closest('form').submit();
+                        }
+                    });
+                }
 
-                logoInput.addEventListener('change', function() {
-                    this.closest('form').submit();
-                });
-
-                // Auto-open modal if shop is inactive
-                @if ($shop && $shop->status == 1)
-                    const shopStatusModal = new bootstrap.Modal(document.getElementById('shopStatusModal'));
-                    shopStatusModal.show();
-                @endif
+                if (logoInput) {
+                    logoInput.addEventListener('change', function() {
+                        if (this.files && this.files.length > 0) {
+                            this.closest('form').submit();
+                        }
+                    });
+                }
             });
         </script>
     @endpush
