@@ -546,9 +546,9 @@
                                         <div class="single-product-scroll">
 
                                             <div class="single-product-cover">
-                                                <div class="single-slide zoom-image-hover" style="height: 500px"
+                                                <div class="single-slide product-image-clickable" style="height: 500px; cursor: pointer;"
                                                     data-sku-default="true">
-                                                    <img class="img-responsive"
+                                                    <img class="img-responsive product-main-image"
                                                         style="object-fit: contain;
                                                 width: 100%;
                                                 height: 100%;"
@@ -557,8 +557,8 @@
                                                 </div>
                                                 @if ($images)
                                                     @foreach ($images as $key => $image)
-                                                        <div class="single-slide zoom-image-hover" style="height: 500px">
-                                                            <img class="img-responsive"
+                                                        <div class="single-slide product-image-clickable" style="height: 500px; cursor: pointer;">
+                                                            <img class="img-responsive product-main-image"
                                                                 style="object-fit: cover;
                                                 width: 100%;
                                                 height: 100%;"
@@ -572,9 +572,9 @@
                                                 @endphp
                                                 @if ($skuImages && $skuImages->count() > 0)
                                                     @foreach ($skuImages as $skuImage)
-                                                        <div class="single-slide zoom-image-hover" style="height: 500px"
+                                                        <div class="single-slide product-image-clickable" style="height: 500px; cursor: pointer;"
                                                             data-sku-id="{{ $skuImage->id }}">
-                                                            <img class="img-responsive"
+                                                            <img class="img-responsive product-main-image"
                                                                 style="object-fit: cover;
                                                 width: 100%;
                                                 height: 100%;"

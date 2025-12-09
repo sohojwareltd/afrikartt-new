@@ -765,61 +765,81 @@ class ProductResource extends Resource
                                             ]),
                                     ]),
                             ]),
-                        Tabs\Tab::make('Shipping')
-                            ->icon('heroicon-o-truck')
+                        // Tabs\Tab::make('Shipping')
+                        //     ->icon('heroicon-o-truck')
+                        //     ->schema([
+                        //         Section::make('Parcels')
+                        //             ->schema([
+                        //                 Forms\Components\Group::make()
+                        //                     ->statePath('parcels.0')
+                        //                     ->schema([
+                        //                         Fieldset::make('Safety & Restrictions')
+                        //                             ->schema([
+                        //                                 Toggle::make('contains_battery_pi966')->label('Battery PI966')->required(),
+                        //                                 Toggle::make('contains_battery_pi967')->label('Battery PI967')->required(),
+                        //                                 Toggle::make('contains_liquids')->label('Liquids')->required(),
+                        //                             ])
+                        //                             ->columns(3),
+
+                        //                         Fieldset::make('Basic Info')
+                        //                             ->schema([
+                        //                                 TextInput::make('description')->label('Description')->required(),
+                        //                                 Select::make('category_id')
+                        //                                     ->label('Category')
+                        //                                     ->options(
+                        //                                         ShippingCategory::query()
+                        //                                             ->where('active', true)
+                        //                                             ->pluck('name', 'hs_code') // key = id, value = name
+                        //                                             ->toArray()
+                        //                                     )
+                        //                                     ->searchable()
+                        //                                     ->required(),
+                        //                                 TextInput::make('origin_country_alpha2')->label('Origin Country (ISO-2)')->maxLength(2)->required(),
+
+                        //                             ])
+                        //                             ->columns(3),
+
+                        //                         Fieldset::make('Dimensions (cm)')
+                        //                             ->schema([
+                        //                                 TextInput::make('length')->numeric()->label('Length')->required(),
+                        //                                 TextInput::make('width')->numeric()->label('Width')->required(),
+                        //                                 TextInput::make('height')->numeric()->label('Height')->required(),
+                        //                             ])
+                        //                             ->columns(3),
+
+                        //                         Fieldset::make('Weight & Value')
+                        //                             ->schema([
+                        //                                 TextInput::make('actual_weight')->numeric()->label('Weight (kg)')->required(),
+                        //                                 // TextInput::make('declared_customs_value')->numeric()->label('Customs Value'),
+                        //                             ])
+                        //                             ->columns(2),
+                        //                     ])->afterStateHydrated(function ($state, callable $set) {
+                        //                         if ($state === null || $state === [] || $state === '') {
+                        //                             $set('parcels.0', []);
+                        //                         }
+                        //                     }),
+                        //             ]),
+                        //     ]),
+
+                        Tabs\Tab::make('Physical Properties')
+                            ->icon('heroicon-o-cube')
                             ->schema([
-                                Section::make('Parcels')
+                                Forms\Components\Grid::make()
                                     ->schema([
-                                        Forms\Components\Group::make()
-                                            ->statePath('parcels.0')
-                                            ->schema([
-                                                Fieldset::make('Safety & Restrictions')
-                                                    ->schema([
-                                                        Toggle::make('contains_battery_pi966')->label('Battery PI966')->required(),
-                                                        Toggle::make('contains_battery_pi967')->label('Battery PI967')->required(),
-                                                        Toggle::make('contains_liquids')->label('Liquids')->required(),
-                                                    ])
-                                                    ->columns(3),
+                                        TextInput::make('weight')
+                                            ->label('Weight')
+                                            ->columnSpan(1),
 
-                                                Fieldset::make('Basic Info')
-                                                    ->schema([
-                                                        TextInput::make('description')->label('Description')->required(),
-                                                        Select::make('category_id')
-                                                            ->label('Category')
-                                                            ->options(
-                                                                ShippingCategory::query()
-                                                                    ->where('active', true)
-                                                                    ->pluck('name', 'hs_code') // key = id, value = name
-                                                                    ->toArray()
-                                                            )
-                                                            ->searchable()
-                                                            ->required(),
-                                                        TextInput::make('origin_country_alpha2')->label('Origin Country (ISO-2)')->maxLength(2)->required(),
-
-                                                    ])
-                                                    ->columns(3),
-
-                                                Fieldset::make('Dimensions (cm)')
-                                                    ->schema([
-                                                        TextInput::make('length')->numeric()->label('Length')->required(),
-                                                        TextInput::make('width')->numeric()->label('Width')->required(),
-                                                        TextInput::make('height')->numeric()->label('Height')->required(),
-                                                    ])
-                                                    ->columns(3),
-
-                                                Fieldset::make('Weight & Value')
-                                                    ->schema([
-                                                        TextInput::make('actual_weight')->numeric()->label('Weight (kg)')->required(),
-                                                        // TextInput::make('declared_customs_value')->numeric()->label('Customs Value'),
-                                                    ])
-                                                    ->columns(2),
-                                            ])->afterStateHydrated(function ($state, callable $set) {
-                                                if ($state === null || $state === [] || $state === '') {
-                                                    $set('parcels.0', []);
-                                                }
-                                            }),
+                                        TextInput::make('weight_unit')
+                                            ->label('Weight Unit')
+                                            ->columnSpan(1),
                                     ]),
+
+                                TextInput::make('dimensions')
+                                    ->label('Dimensions')
+                                    ->columnSpanFull(),
                             ]),
+                            
                         Tabs\Tab::make('Settings')
                             ->icon('heroicon-o-cog-6-tooth')
                             ->schema([
