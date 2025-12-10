@@ -21,7 +21,14 @@ class CartController extends Controller
 		
 		// If cart() returns a response (error), return it
 		if ($result instanceof \Illuminate\Http\JsonResponse) {
-			return $result;
+			// For API requests, return JSON as-is
+			if ($request->expectsJson()) {
+				return $result;
+			}
+
+			// For web requests, redirect back with the error message
+			$errorData = json_decode($result->getContent(), true);
+			return redirect()->back()->withErrors($errorData['error'] ?? 'Failed to add item to cart.');
 		}
 		
 		$this->validateCoupon();
