@@ -33,7 +33,7 @@
             right: -50%;
             width: 200%;
             height: 200%;
-            background: #f68b1e;
+            /* background: #f68b1e; */
             pointer-events: none;
         }
 

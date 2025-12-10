@@ -3,6 +3,7 @@
 namespace App\Filament\Vendor\Resources\ProductResource\Pages;
 
 use App\Filament\Vendor\Resources\ProductResource;
+use App\Services\SkuGenerationService;
 use App\Setting\Settings;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
@@ -16,10 +17,10 @@ class CreateProduct extends CreateRecord
 {
     protected static string $resource = ProductResource::class;
 
-    protected function getRedirectUrl(): string
-    {
-        return $this->getResource()::getUrl('index');
-    }
+    // protected function getRedirectUrl(): string
+    // {
+    //     return $this->getResource()::getUrl('index');
+    // }
 
     protected function getCreatedNotification(): ?Notification
     {
@@ -42,6 +43,13 @@ class CreateProduct extends CreateRecord
 
     protected function afterCreate(): void
     {
+
+        // Refresh the record to ensure attribute values are loaded
+        $this->record->refresh();
+        
+        // Generate SKUs after creating product with attribute values
+        $service = new SkuGenerationService();
+        $skuIds = $service->generateSkus($this->record);
         $product = $this->record;
         // Send email notification to admin
         try {

@@ -760,6 +760,9 @@
             margin: 0 10px;
             transition: color 0.2s, border-bottom 0.2s;
             border-bottom: 2px solid transparent;
+            padding-top: 8px;
+            padding-top: 8px;
+            border-radius: 0px !important;
         }
 
         .main-header .navbar-nav .nav-link:hover,
@@ -767,6 +770,7 @@
             color: var(--accent-color);
             border-bottom: 2px solid var(--accent-color);
             background: var(--shadow-primary);
+            border-radius: 0px !important;
             /* This background on hover seems unusual for a nav link, consider removing if unintended. Kept to preserve original design logic. */
         }
 

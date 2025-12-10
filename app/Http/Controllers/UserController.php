@@ -95,7 +95,7 @@ class UserController extends Controller
     public function ordersIndex(Request $request)
     {
 
-        $latest_orders = Order::where('user_id', auth()->user()->id)->whereNotNUll('parent_id')->when($request->filled('status'), function ($query) use ($request) {
+        $latest_orders = Order::where('user_id', auth()->user()->id)->whereNUll('parent_id')->when($request->filled('status'), function ($query) use ($request) {
             $query->where('status', $request->status);
         })->latest()->get();
         // $past_orders = Order::where('user_id', auth()->user()->id)->where('status',1)->latest()->get();
@@ -122,11 +122,24 @@ class UserController extends Controller
     }
     public function order_cancel(Order $order)
     {
+        // Check if user owns this order
+        if (auth()->user()->id != $order->user_id) {
+            abort(403, 'Unauthorized action');
+        }
 
-        if (auth()->user()->id != $order->user_id) abort(403);
+        // Only allow cancellation for Pending (0) or Paid (1) status
+        if (!in_array($order->status, [0, 1])) {
+            return redirect()->back()->with('error_msg', 'This order cannot be cancelled. It is already ' .
+                ($order->status == 2 ? 'on the way' : ($order->status == 3 ? 'cancelled' : ($order->status == 4 ? 'delivered' : 'processed'))) . '.');
+        }
+
+        // Update order status to cancelled (3)
+        $order->status = 3;
         $order->cancel_request = 1;
+        $order->cancelled_at = now();
         $order->save();
-        return redirect()->back();
+
+        return redirect()->back()->with('success_msg', 'Order #' . $order->id . ' has been cancelled successfully.');
     }
     public function returnOrder(Order $order, Request $request)
     {

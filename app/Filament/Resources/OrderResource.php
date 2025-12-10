@@ -6,6 +6,7 @@ use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Mail\BankTransferPaymentVerifiedMail;
 use App\Mail\BankTransferPaymentRejectedMail;
+use App\Mail\OrderStatusUpdatedMail;
 use App\Models\Order;
 use Filament\Forms;
 use Filament\Notifications\Notification;
@@ -336,6 +337,74 @@ class OrderResource extends Resource
                         ->label('Delete')
                         ->icon('heroicon-o-trash'),
 
+                    // Order Status Update Action
+                    Tables\Actions\Action::make('updateStatus')
+                        ->label('Update Status')
+                        ->icon('heroicon-o-arrow-path')
+                        ->color('warning')
+                        ->form([
+                            Select::make('status')
+                                ->label('Order Status')
+                                ->options([
+                                    0 => 'Pending',
+                                    1 => 'Paid',
+                                    2 => 'On Its Way',
+                                    3 => 'Cancelled',
+                                    4 => 'Delivered',
+                                ])
+                                ->required()
+                                ->default(fn(Order $record) => $record->status),
+                            Textarea::make('status_note')
+                                ->label('Note (Optional)')
+                                ->placeholder('Add any notes about this status change...')
+                                ->rows(3),
+                        ])
+                        ->action(function (Order $record, array $data) {
+                            $oldStatus = $record->status;
+                            $newStatus = $data['status'];
+
+                            // Update order status
+                            $record->update([
+                                'status' => $newStatus,
+                            ]);
+
+                            $statusNames = [
+                                0 => 'Pending',
+                                1 => 'Paid',
+                                2 => 'On Its Way',
+                                3 => 'Cancelled',
+                                4 => 'Delivered',
+                            ];
+
+                            // Send email notification to customer
+                            try {
+                                $shipping = json_decode($record->shipping);
+                                $customerEmail = $shipping->email ?? $record->user->email ?? null;
+
+                                if ($customerEmail) {
+                                    Mail::to($customerEmail)->send(new OrderStatusUpdatedMail($record, $oldStatus, $newStatus, $data['status_note'] ?? null));
+
+                                    Notification::make()
+                                        ->title('Order Status Updated')
+                                        ->success()
+                                        ->body("Status changed from {$statusNames[$oldStatus]} to {$statusNames[$newStatus]}. Email sent to customer.")
+                                        ->send();
+                                } else {
+                                    Notification::make()
+                                        ->title('Order Status Updated')
+                                        ->success()
+                                        ->body("Status changed from {$statusNames[$oldStatus]} to {$statusNames[$newStatus]}. No customer email found.")
+                                        ->send();
+                                }
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('Status Updated (Email Failed)')
+                                    ->warning()
+                                    ->body("Status changed successfully, but email notification failed: " . $e->getMessage())
+                                    ->send();
+                            }
+                        }),
+
                     // Bank Transfer Actions
                     Tables\Actions\Action::make('viewReceipt')
                         ->label('View Receipt')
@@ -431,6 +500,8 @@ class OrderResource extends Resource
                                 ->body('The bank transfer payment has been rejected and the customer has been notified.')
                                 ->send();
                         }),
+
+
                 ]),
             ])
             ->bulkActions([

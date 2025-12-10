@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Providers;
+
 use App\Facade\Sohoj;
+use App\Models\Product;
+use App\Observers\ProductObserver;
 use App\Services\Checkout\CheckoutService;
 use App\Services\Checkout\Data\ShippingAndBillingInformation;
 use App\Setting\Settings;
@@ -16,13 +19,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-         $this->app->bind('sohoj', function () {
+        $this->app->bind('sohoj', function () {
             return new Sohoj();
         });
-         $this->app->bind('settings', function () {
+        $this->app->bind('settings', function () {
             return new Settings();
         });
-
     }
 
     /**
@@ -31,5 +33,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrapFive();
+
+        // Register Product Observer to auto-clear caches
+        Product::observe(ProductObserver::class);
     }
 }

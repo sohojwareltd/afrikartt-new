@@ -68,8 +68,8 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <h1 class="text-2xl font-bold">{{ $record->shop->name }}</h1>
-                                    <p class="text-primary-100 text-sm">{{ $record->shop->email }}</p>
+                                    <h1 class="text-2xl font-bold">{{ $record->shop->name ?? 'N/A' }}</h1>
+                                    <p class="text-primary-100 text-sm">{{ $record->shop->email ?? 'N/A' }}</p>
                                 </div>
                             </div>
                             {{-- <div class="text-right">
@@ -116,16 +116,18 @@
                     </div>
 
                     <!-- From/To -->
-                    <div class="px-8 py-6 px-8 py-6 flex justify-between flex md:grid-cols-2 gap-8 border-b border-gray-100">
+                    <div
+                        class="px-8 py-6 px-8 py-6 flex justify-between flex md:grid-cols-2 gap-8 border-b border-gray-100">
                         <div class="bg-gray-50 p-4 rounded-lg w-1/2">
                             <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">From</h3>
                             <div class="space-y-2">
-                                <p class="font-medium text-gray-900">{{ $record->shop->name }}</p>
-                                <p class="text-sm text-gray-600">{{ $record->shop->address }}</p>
-                                <p class="text-sm text-gray-600">{{ $record->shop->state }}, {{ $record->shop->city }},
-                                    {{ $record->shop->post_code }}</p>
-                                <p class="text-sm text-gray-600 mt-3">Phone: {{ $record->shop->phone }}</p>
-                                <p class="text-sm text-gray-600">Email: {{ $record->shop->email }}</p>
+                                <p class="font-medium text-gray-900">{{ $record->shop->name ?? 'N/A' }}</p>
+                                <p class="text-sm text-gray-600">{{ $record->shop->address ?? 'N/A' }}</p>
+                                <p class="text-sm text-gray-600">{{ $record->shop->state ?? 'N/A' }},
+                                    {{ $record->shop->city ?? 'N/A' }},
+                                    {{ $record->shop->post_code ?? 'N/A' }}</p>
+                                <p class="text-sm text-gray-600 mt-3">Phone: {{ $record->shop->phone ?? 'N/A' }}</p>
+                                <p class="text-sm text-gray-600">Email: {{ $record->shop->email ?? 'N/A' }}</p>
                             </div>
                         </div>
 
@@ -168,10 +170,10 @@
                                 <tr>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
-                                            @if ($record->product->image)
+                                            @if ($record->product && $record->product->image)
                                                 <div class="flex-shrink-0 h-32 bg-gray-100 rounded-md overflow-hidden">
                                                     <img src="{{ Storage::url($record->product->image) }}"
-                                                        alt="{{ $record->product->name }}"
+                                                        alt="{{ $record->product->name ?? 'Product' }}"
                                                         class="h-full w-full object-cover">
                                                 </div>
                                             @else
@@ -188,22 +190,23 @@
                                             @endif
                                             <div class="ml-4">
                                                 <div class="text-sm font-medium text-gray-900">
-                                                    {{ $record->product->name }}
+                                                    {{ $record->product->name ?? 'N/A' }}
                                                 </div>
-                                                <div class="text-sm text-gray-500">SKU: {{ $record->product->sku }}
+                                                <div class="text-sm text-gray-500">SKU:
+                                                    {{ $record->product->sku ?? 'N/A' }}
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ Sohoj::price($record->product->vendor_price) }}
+                                        {{ $record->product && $record->product->vendor_price ? Sohoj::price($record->product->vendor_price) : 'N/A' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $record->quantity }}
+                                        {{ $record->quantity ?? 0 }}
                                     </td>
                                     <td
                                         class="px-6 py-4 whitespace-nowrap text-sm font-medium text-right text-gray-900">
-                                        {{ Sohoj::price($record->product->vendor_price * $record->quantity) }}
+                                        {{ $record->product && $record->product->vendor_price && $record->quantity ? Sohoj::price($record->product->vendor_price * $record->quantity) : 'N/A' }}
                                     </td>
                                 </tr>
                             </tbody>
@@ -230,7 +233,7 @@
                                     <div class="flex justify-between">
                                         <span class="text-base font-semibold">Total Vendor Amount :</span>
                                         <span class="text-base font-semibold text-primary-600">
-                                            {{ Sohoj::price($record->vendor_total) }}
+                                            {{ $record->vendor_total ? Sohoj::price($record->vendor_total) : 'N/A' }}
                                         </span>
                                     </div>
                                 </div>
@@ -244,8 +247,8 @@
 
                         <div class="flex flex-wrap justify-center gap-4">
 
-                            @if ($record->status == 0 || $record->status == 1)
-                                @if ($order->cancel_request == 1)
+                            @if (isset($record->status) && ($record->status == 0 || $record->status == 1))
+                                @if (isset($order->cancel_request) && $order->cancel_request == 1)
                                     <a href="{{ route('vendor.order.cancel', ['order' => $order->id]) }}"
                                         class="px-4 py-2 bg-gray-600 text-white font-medium rounded-md hover:bg-gray-700 transition-colors">
                                         Accept Cancel Request
@@ -361,46 +364,46 @@
                         </div>
 
                         <!-- Tracking Links -->
-                        @if ($order->shipping_url)
+                        @if (!empty($order->shipping_url))
                             <div class="mt-6 pt-6 border-t border-gray-200 flex justify-center gap-3 items-center">
-                                @if ($order->shipping_url == !null)
+                                @if (!empty($order->shipping_url) && isset($order->shipping_method))
                                     <div class="flex flex-wrap gap-3">
-                                        @if ($order->shipping_method == 'DHL')
+                                        @if (isset($order->shipping_method) && $order->shipping_method == 'DHL' && !empty($order->tracking_Id))
                                             <a href="https://nolp.dhl.de/nextt-online-public/set_identcodes.do?lang=de&idc={{ $order->tracking_Id }}"
                                                 target="_blank" class="px-3 py-1.5 text-white text-sm rounded"
                                                 style="background-color: #5193B3">
                                                 Track with DHL
                                             </a>
                                         @endif
-                                        @if ($order->shipping_method == 'Hermes')
+                                        @if (isset($order->shipping_method) && $order->shipping_method == 'Hermes' && !empty($order->tracking_Id))
                                             <a href="https://www.myhermes.de/empfangen/sendungsverfolgung/suchen/sendungsinformation/{{ $order->tracking_Id }}"
                                                 target="_blank" class="px-3 py-1.5 text-white text-sm rounded"
                                                 style="background-color: #5193B3">
                                                 Track with Hermes
                                             </a>
                                         @endif
-                                        @if ($order->shipping_method == 'DPD')
+                                        @if (isset($order->shipping_method) && $order->shipping_method == 'DPD' && !empty($order->tracking_Id))
                                             <a href="https://tracking.dpd.de/parcelstatus?query={{ $order->tracking_Id }}&locale=de_DE"
                                                 target="_blank" class="px-3 py-1.5 text-white text-sm rounded"
                                                 style="background-color: #5193B3">
                                                 Track with DPD
                                             </a>
                                         @endif
-                                        @if ($order->shipping_method == 'UPS')
+                                        @if (isset($order->shipping_method) && $order->shipping_method == 'UPS' && !empty($order->tracking_Id))
                                             <a href="http://wwwapps.ups.com/WebTracking/processInputRequest?sort_by=status&tracknums_displayed=1&TypeOfInquiryNumber=T&loc=de_DE&InquiryNumber1={{ $order->tracking_Id }}&track.x=0&track.y=0"
                                                 target="_blank" class="px-3 py-1.5 text-white text-sm rounded"
                                                 style="background-color: #5193B3">
                                                 Track with UPS
                                             </a>
                                         @endif
-                                        @if ($order->shipping_method == 'GLS')
+                                        @if (isset($order->shipping_method) && $order->shipping_method == 'GLS' && !empty($order->tracking_Id))
                                             <a href="https://www.gls-pakete.de/sendungsverfolgung?match={{ $order->tracking_Id }}&txtAction=71000"
                                                 target="_blank" class="px-3 py-1.5 text-white text-sm rounded"
                                                 style="background-color: #5193B3">
                                                 Track with GLS
                                             </a>
                                         @endif
-                                        @if ($order->shipping_method == 'Fedex')
+                                        @if (isset($order->shipping_method) && $order->shipping_method == 'Fedex' && !empty($order->tracking_Id))
                                             <a href="https://www.fedex.com/fedextrack/?tracknumbers={{ $order->tracking_Id }}&locale=de_DE&cntry_code=de"
                                                 target="_blank" class="px-3 py-1.5 text-white text-sm rounded"
                                                 style="background-color: #5193B3">
@@ -453,7 +456,8 @@
                         <p class="text-sm text-gray-500">Thank you for your business!</p>
                         <div class="flex flex-wrap gap-3">
                             <button color="primary" icon="heroicon-o-printer" onclick="printDiv('printableArea')"
-                                class="w-full md:w-auto py-2 px-4 rounded-md" style="backdrop-filter: blur(5px); background-color: rgba(var(--primary-600), var(--tw-text-opacity)); color: white;">
+                                class="w-full md:w-auto py-2 px-4 rounded-md"
+                                style="backdrop-filter: blur(5px); background-color: rgba(var(--primary-600), var(--tw-text-opacity)); color: white;">
                                 Print Invoice
                             </button>
                             <a href="#" icon="heroicon-o-arrow-down-tray"

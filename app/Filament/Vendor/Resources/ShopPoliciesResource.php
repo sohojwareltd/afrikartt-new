@@ -23,6 +23,8 @@ class ShopPoliciesResource extends Resource
     public static ?string $title = "Shop Policy";
 
     public static ?string $navigationGroup = 'Profile';
+
+    protected static bool $shouldRegisterNavigation = false;
     public static ?string $description = "Manage your shop policies here.";
 
 
@@ -33,14 +35,14 @@ class ShopPoliciesResource extends Resource
         return parent::getEloquentQuery()
             ->where('shop_id', $shop->id); // assuming vendor has `shop_id`
     }
-    public static function shouldRegisterNavigation(): bool
-    {
-        if (auth()->check()) {
-            $shop = auth()->user()->shop;
-            return $shop && $shop->status == 1;
-        }
-        return false;
-    }
+    // public static function shouldRegisterNavigation(): bool
+    // {
+    //     if (auth()->check()) {
+    //         $shop = auth()->user()->shop;
+    //         return $shop && $shop->status == 1;
+    //     }
+    //     return false;
+    // }
 
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
