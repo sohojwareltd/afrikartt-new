@@ -173,10 +173,10 @@ class OrderResource extends Resource
                     Tables\Actions\ViewAction::make(),
                     // Tables\Actions\EditAction::make(),
                     // Tables\Actions\DeleteAction::make(),
-                    Tables\Actions\Action::make('orderDetails')
-                        ->label('Order Details')
-                        ->icon('heroicon-o-document-text')
-                        ->url(fn($record) => route('filament.vendor.resources.orders.order-details', ['record' => $record])),
+                    // Tables\Actions\Action::make('orderDetails')
+                    //     ->label('Order Details')
+                    //     ->icon('heroicon-o-document-text')
+                    //     ->url(fn($record) => route('filament.vendor.resources.orders.order-details', ['record' => $record])),
 
                     // Order Status Update Action
                     Tables\Actions\Action::make('updateStatus')

@@ -143,14 +143,8 @@
 
         <!-- Calculate shipping total from child orders if they exist -->
         @php
-            if ($order->childs && $order->childs->count() > 0) {
-                $orderShippingTotal = 0;
-                foreach ($order->childs as $childOrder) {
-                    $orderShippingTotal += $childOrder->shipping_total ?? 0;
-                }
-            } else {
-                $orderShippingTotal = $order->shipping_total;
-            }
+            $orderShippingTotal = $order->shipping_total;
+            $state_tax = $order->state_tax;
         @endphp
 
         <div class="total-section mt-3">
@@ -162,9 +156,13 @@
                 <span>Shipping:</span>
                 <span>{{ Sohoj::price($orderShippingTotal) }}</span>
             </div>
+            <div class="total-row">
+                <span>State Tax:</span>
+                <span>{{ Sohoj::price($state_tax) }}</span>
+            </div>
             <div class="total-row fw-bold">
                 <span>Total:</span>
-                <span>{{ Sohoj::price($orderSubtotal + $orderShippingTotal) }}</span>
+                <span>{{ Sohoj::price($orderSubtotal + $orderShippingTotal + $state_tax) }}</span>
             </div>
         </div>
 
@@ -175,7 +173,7 @@
             <p><strong>Transaction Number:</strong> {{ $order->transaction_id }}</p>
             <p class="text-center mt-3" style="font-size: 18px;">
                 <strong>Total Paid:</strong>
-                <span style="font-size: 24px; color: #2c3e50;">{{ Sohoj::price($order->total) }}</span>
+                <span style="font-size: 24px; color: #2c3e50;">{{ Sohoj::price($orderSubtotal + $orderShippingTotal + $state_tax) }}</span>
                 USD
             </p>
         </div>

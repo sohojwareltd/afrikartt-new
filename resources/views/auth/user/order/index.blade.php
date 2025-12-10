@@ -271,20 +271,28 @@
                                 <div class="mb-2">
                                     <strong>Total:</strong> {{ Sohoj::price($order->total) }}
                                 </div>
-                                <div class="mb-2">
+                                <div class="mb-2 d-flex gap-2 flex-wrap">
                                     <span class="me-2">
                                         <strong>Payment:</strong> {{ $order->payment_status == 1 ? 'Paid' : 'Unpaid' }}
                                     </span>
                                     @if ($order->payment_status == 1)
                                         <a href="{{ route('user.invoice', $order) }}" class="btn btn-sm text-light"
                                             style="background: var(--accent-color);">
-                                            View Invoice
+                                            <i class="fas fa-file-invoice me-1"></i> View Invoice
                                         </a>
                                     @else
                                         <a href="{{ route('checkout.paymentPage', $order) }}" target="_blank"
                                             class="btn btn-sm text-light" style="background: var(--accent-color);">
-                                            Pay
+                                            <i class="fas fa-credit-card me-1"></i> Pay
                                         </a>
+                                    @endif
+
+                                    {{-- Cancel Order Button - Only show for Pending (0) or Paid (1) status --}}
+                                    @if (in_array($order->status, [0, 1]))
+                                        <button type="button" class="btn btn-sm btn-danger"
+                                            onclick="confirmCancelOrder({{ $order->id }})">
+                                            <i class="fas fa-times-circle me-1"></i> Cancel Order
+                                        </button>
                                     @endif
                                 </div>
                             </div>
@@ -332,5 +340,15 @@
                 $("#returnOrderForm").attr("action", route);
             });
         });
+
+        // Order Cancel Confirmation
+        function confirmCancelOrder(orderId) {
+            if (confirm('Are you sure you want to cancel this order?\n\nOrder #' + orderId +
+                    ' will be cancelled and cannot be undone.')) {
+                // Redirect to cancel route
+                window.location.href = "{{ route('user.order.cancel', ['order' => ':order']) }}".replace(':order',
+                orderId);
+            }
+        }
     </script>
 @endsection
