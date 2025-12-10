@@ -5,6 +5,9 @@ namespace App\Filament\Vendor\Resources;
 use App\Filament\Vendor\Resources\OrderResource\Pages;
 use App\Filament\Vendor\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
+use App\Mail\OrderStatusUpdatedMail;
+use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Mail;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -174,6 +177,74 @@ class OrderResource extends Resource
                         ->label('Order Details')
                         ->icon('heroicon-o-document-text')
                         ->url(fn($record) => route('filament.vendor.resources.orders.order-details', ['record' => $record])),
+
+                    // Order Status Update Action
+                    Tables\Actions\Action::make('updateStatus')
+                        ->label('Update Status')
+                        ->icon('heroicon-o-arrow-path')
+                        ->color('warning')
+                        ->form([
+                            Select::make('status')
+                                ->label('Order Status')
+                                ->options([
+                                    0 => 'Pending',
+                                    1 => 'Paid',
+                                    2 => 'On Its Way',
+                                    3 => 'Cancelled',
+                                    4 => 'Delivered',
+                                ])
+                                ->required()
+                                ->default(fn(Order $record) => $record->status),
+                            Textarea::make('status_note')
+                                ->label('Note (Optional)')
+                                ->placeholder('Add any notes about this status change...')
+                                ->rows(3),
+                        ])
+                        ->action(function (Order $record, array $data) {
+                            $oldStatus = $record->status;
+                            $newStatus = $data['status'];
+
+                            // Update order status
+                            $record->update([
+                                'status' => $newStatus,
+                            ]);
+
+                            $statusNames = [
+                                0 => 'Pending',
+                                1 => 'Paid',
+                                2 => 'On Its Way',
+                                3 => 'Cancelled',
+                                4 => 'Delivered',
+                            ];
+
+                            // Send email notification to customer
+                            try {
+                                $shipping = json_decode($record->shipping);
+                                $customerEmail = $shipping->email ?? $record->user->email ?? null;
+
+                                if ($customerEmail) {
+                                    Mail::to($customerEmail)->send(new OrderStatusUpdatedMail($record, $oldStatus, $newStatus, $data['status_note'] ?? null));
+
+                                    Notification::make()
+                                        ->title('Order Status Updated')
+                                        ->success()
+                                        ->body("Status changed from {$statusNames[$oldStatus]} to {$statusNames[$newStatus]}. Email sent to customer.")
+                                        ->send();
+                                } else {
+                                    Notification::make()
+                                        ->title('Order Status Updated')
+                                        ->success()
+                                        ->body("Status changed from {$statusNames[$oldStatus]} to {$statusNames[$newStatus]}. No customer email found.")
+                                        ->send();
+                                }
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('Status Updated (Email Failed)')
+                                    ->warning()
+                                    ->body("Status changed successfully, but email notification failed: " . $e->getMessage())
+                                    ->send();
+                            }
+                        }),
                 ])->iconButton()
             ])
             ->bulkActions([
