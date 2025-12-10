@@ -122,9 +122,9 @@
         }
 
         /* @keyframes spin {
-                                                                                                                                                                                                                                                                                            from { transform: rotate(0deg); }
-                                                                                                                                                                                                                                                                                            to { transform: rotate(360deg); }
-                                                                                                                                                                                                                                                                                        } */
+                                                                                                                                                                                                                                                                                                    from { transform: rotate(0deg); }
+                                                                                                                                                                                                                                                                                                    to { transform: rotate(360deg); }
+                                                                                                                                                                                                                                                                                                } */
 
         .product-title {
             font-size: 0.9rem;
@@ -138,8 +138,8 @@
 
         @media (max-width: 576px) {
             /* .product-image {
-                                                                                                                                                                                                                        height: 180px;
-                                                                                                                                                                                                                    } */
+                                                                                                                                                                                                                                height: 180px;
+                                                                                                                                                                                                                            } */
 
             .product-content {
                 padding: 12px;
@@ -487,6 +487,193 @@
             color: #fff;
             transform: scale(1.05);
         }
+
+        /* ===== Professional Lightbox Image Viewer ===== */
+        .lightbox-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 99999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .lightbox-overlay.active .lightbox-content {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 90vh;
+            width: auto;
+            height: auto;
+            display: block;
+            border-radius: 4px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .lightbox-close {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            color: #fff;
+            font-size: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 100000;
+            backdrop-filter: blur(10px);
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .lightbox-close:active {
+            transform: rotate(90deg) scale(0.95);
+        }
+
+        .lightbox-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: lightbox-spin 0.8s linear infinite;
+        }
+
+        @keyframes lightbox-spin {
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Product image clickable effect - NO ZOOM */
+        .product-image-clickable {
+            position: relative;
+            cursor: zoom-in;
+            transition: all 0.2s ease;
+        }
+
+        .product-image-clickable:hover {
+            opacity: 0.9;
+        }
+
+        .product-image-clickable::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0);
+            transition: background 0.3s ease;
+            pointer-events: none;
+        }
+
+        .product-image-clickable:hover::before {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image-clickable::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .product-image-clickable:hover::after {
+            opacity: 0.8;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .lightbox-content {
+                max-width: 95vw;
+                max-height: 85vh;
+            }
+
+            .lightbox-image {
+                max-height: 85vh;
+            }
+
+            .lightbox-close {
+                top: 10px;
+                right: 10px;
+                width: 45px;
+                height: 45px;
+                font-size: 24px;
+            }
+
+            .product-image-clickable::after {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lightbox-close {
+                width: 40px;
+                height: 40px;
+                font-size: 22px;
+            }
+
+            .lightbox-container {
+                padding: 10px;
+            }
+        }
+
+        /* Prevent body scroll when lightbox is open */
+        body.lightbox-open {
+            overflow: hidden;
+        }
     </style>
 @endsection
 @section('canonical_url', route('product_details', $mainProduct->slug))
@@ -546,7 +733,7 @@
                                         <div class="single-product-scroll">
 
                                             <div class="single-product-cover">
-                                                <div class="single-slide product-image-clickable" style="height: 500px; cursor: pointer;"
+                                                <div class="single-slide product-image-clickable" style="height: 500px;"
                                                     data-sku-default="true">
                                                     <img class="img-responsive product-main-image"
                                                         style="object-fit: contain;
@@ -557,7 +744,8 @@
                                                 </div>
                                                 @if ($images)
                                                     @foreach ($images as $key => $image)
-                                                        <div class="single-slide product-image-clickable" style="height: 500px; cursor: pointer;">
+                                                        <div class="single-slide product-image-clickable"
+                                                            style="height: 500px;">
                                                             <img class="img-responsive product-main-image"
                                                                 style="object-fit: cover;
                                                 width: 100%;
@@ -572,8 +760,8 @@
                                                 @endphp
                                                 @if ($skuImages && $skuImages->count() > 0)
                                                     @foreach ($skuImages as $skuImage)
-                                                        <div class="single-slide product-image-clickable" style="height: 500px; cursor: pointer;"
-                                                            data-sku-id="{{ $skuImage->id }}">
+                                                        <div class="single-slide product-image-clickable"
+                                                            style="height: 500px;" data-sku-id="{{ $skuImage->id }}">
                                                             <img class="img-responsive product-main-image"
                                                                 style="object-fit: cover;
                                                 width: 100%;
@@ -906,7 +1094,7 @@
                                         <li><span>Weight</span> {{ $mainProduct->weight }} {{ $mainProduct->weight_unit }}
                                         </li>
                                         <li><span>Dimensions</span> {{ $mainProduct->dimensions }} cm</li>
-                                        <li><span>Shipping Cost</span> {{ Sohoj::price($mainProduct->shipping_cost) }}</li>
+                                        {{-- <li><span>Shipping Cost</span> {{ Sohoj::price($mainProduct->shipping_cost) }}</li> --}}
                                     </ul>
                                 </div>
                             </div>
@@ -996,6 +1184,25 @@
             <!-- product details description area end -->
         </section>
         <!-- End Single product -->
+
+        <!-- Lightbox Image Viewer -->
+        <div class="lightbox-overlay" id="lightboxOverlay" role="dialog" aria-modal="true"
+            aria-label="Image Lightbox">
+            <div class="lightbox-container">
+                <button class="lightbox-close" id="lightboxClose" aria-label="Close lightbox" title="Close (Esc)">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="lightbox-content">
+                    <div class="lightbox-loading" id="lightboxLoading"></div>
+                    <img class="lightbox-image" id="lightboxImage" src="" alt=""
+                        style="display: none;">
+                </div>
+            </div>
+        </div>
 
         <!-- Guest Buy Modal -->
         <!-- Store main product data to avoid Blade variable shadowing in later loops -->
@@ -1094,6 +1301,133 @@
     {{-- <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script> --}}
 
     <script>
+        // ===== Professional Lightbox Image Viewer =====
+        (function() {
+            'use strict';
+
+            // Get DOM elements
+            const lightbox = document.getElementById('lightboxOverlay');
+            const lightboxImage = document.getElementById('lightboxImage');
+            const lightboxLoading = document.getElementById('lightboxLoading');
+            const closeButton = document.getElementById('lightboxClose');
+            const clickableImages = document.querySelectorAll('.product-image-clickable');
+
+            // State
+            let isOpen = false;
+
+            // Initialize lightbox
+            function initLightbox() {
+                // Add click listeners to all product images
+                clickableImages.forEach(function(imageDiv) {
+                    imageDiv.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const img = this.querySelector('.product-main-image');
+                        if (img && img.src) {
+                            openLightbox(img.src, img.alt);
+                        }
+                    });
+                });
+
+                // Close button click
+                closeButton.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    closeLightbox();
+                });
+
+                // Click outside image to close
+                lightbox.addEventListener('click', function(e) {
+                    if (e.target === lightbox || e.target.classList.contains('lightbox-container')) {
+                        closeLightbox();
+                    }
+                });
+
+                // Prevent clicks on image from closing
+                lightboxImage.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+
+                // Keyboard support
+                document.addEventListener('keydown', function(e) {
+                    if (!isOpen) return;
+
+                    if (e.key === 'Escape') {
+                        closeLightbox();
+                    }
+                });
+            }
+
+            // Open lightbox with image
+            function openLightbox(imageSrc, imageAlt) {
+                if (isOpen) return;
+
+                isOpen = true;
+                document.body.classList.add('lightbox-open');
+
+                // Show overlay
+                lightbox.style.display = 'flex';
+
+                // Show loading spinner
+                lightboxLoading.style.display = 'block';
+                lightboxImage.style.display = 'none';
+
+                // Load image
+                const img = new Image();
+
+                img.onload = function() {
+                    lightboxImage.src = imageSrc;
+                    lightboxImage.alt = imageAlt || 'Product Image';
+
+                    // Hide loading, show image
+                    lightboxLoading.style.display = 'none';
+                    lightboxImage.style.display = 'block';
+
+                    // Trigger animation
+                    requestAnimationFrame(function() {
+                        lightbox.classList.add('active');
+                    });
+                };
+
+                img.onerror = function() {
+                    console.error('Failed to load image:', imageSrc);
+                    closeLightbox();
+                    alert('Failed to load image. Please try again.');
+                };
+
+                img.src = imageSrc;
+            }
+
+            // Close lightbox
+            function closeLightbox() {
+                if (!isOpen) return;
+
+                isOpen = false;
+
+                // Remove active class for fade out animation
+                lightbox.classList.remove('active');
+
+                // Wait for animation to complete
+                setTimeout(function() {
+                    lightbox.style.display = 'none';
+                    lightboxImage.src = '';
+                    lightboxImage.alt = '';
+                    lightboxImage.style.display = 'none';
+                    lightboxLoading.style.display = 'block';
+                    document.body.classList.remove('lightbox-open');
+                }, 300);
+            }
+
+            // Initialize when DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initLightbox);
+            } else {
+                initLightbox();
+            }
+
+            // Expose close function globally for external use if needed
+            window.closeLightbox = closeLightbox;
+        })();
+
         // const swiper = new Swiper('.related-products-slider', {
         //     slidesPerView: 4,
         //     spaceBetween: 30,
